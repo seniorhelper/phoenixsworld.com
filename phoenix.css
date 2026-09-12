@@ -1,0 +1,76 @@
+/* phoenix.css — styles for Princess Phoenix Sparkles.
+   Pair with js/phoenix.js and a <div id="phoenix"></div>. */
+
+.stage{position:relative;z-index:1;display:flex;justify-content:center;margin-top:0}
+.pcat{width:min(96vw,470px);height:auto;display:block;overflow:visible;
+    filter:drop-shadow(0 18px 22px rgba(120,80,160,.26))}
+.p-body{transform-box:view-box;transform-origin:250px 830px;animation:sway 5s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.4deg)}}
+.p-head{transform-box:view-box;transform-origin:250px 560px;animation:bob 3.3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2.4deg)}50%{transform:translateY(-11px) rotate(2.4deg)}}
+.p-tail{transform-box:view-box;transform-origin:352px 740px;animation:swish 2.7s ease-in-out infinite}
+@keyframes swish{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(16deg)}}
+.p-wand{transform-box:view-box;transform-origin:152px 712px;animation:wave 3s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(12deg)}}
+.p-star{transform-box:view-box;transform-origin:120px 604px;animation:spin 7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.p-rib1{transform-box:view-box;transform-origin:124px 626px;animation:rib 2.6s ease-in-out infinite}
+.p-rib2{transform-box:view-box;transform-origin:124px 626px;animation:rib 3.1s ease-in-out .4s infinite}
+@keyframes rib{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(9deg)}}
+.p-earL{transform-box:view-box;transform-origin:126px 296px;animation:earL 3.9s ease-in-out infinite}
+.p-earR{transform-box:view-box;transform-origin:374px 296px;animation:earR 4.3s ease-in-out infinite}
+@keyframes earL{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+@keyframes earR{0%,100%{transform:rotate(0)}50%{transform:rotate(7deg)}}
+.p-lockL{transform-box:view-box;transform-origin:150px 330px;animation:lockL 5.4s ease-in-out infinite}
+.p-lockR{transform-box:view-box;transform-origin:350px 330px;animation:lockR 5.9s ease-in-out infinite}
+@keyframes lockL{0%,100%{transform:rotate(-2.4deg)}50%{transform:rotate(3.4deg)}}
+@keyframes lockR{0%,100%{transform:rotate(2.4deg)}50%{transform:rotate(-3.4deg)}}
+.p-bowL{transform-box:view-box;transform-origin:128px 470px;animation:bowL 3.6s ease-in-out infinite}
+.p-bowR{transform-box:view-box;transform-origin:372px 470px;animation:bowR 4.1s ease-in-out infinite}
+@keyframes bowL{0%,100%{transform:rotate(-6deg) scale(1)}50%{transform:rotate(7deg) scale(1.05)}}
+@keyframes bowR{0%,100%{transform:rotate(6deg) scale(1)}50%{transform:rotate(-7deg) scale(1.05)}}
+.p-crown{transform-box:view-box;transform-origin:250px 280px;animation:crown 4.6s ease-in-out infinite}
+@keyframes crown{0%,100%{transform:translateY(-30px) rotate(-7deg)}50%{transform:translateY(-30px) rotate(-3deg)}}
+.fl{animation:floatUp linear infinite;transform-box:view-box}
+@keyframes floatUp{
+    0%{opacity:0;transform:translateY(20px) scale(.5) rotate(0)}
+    18%{opacity:1}70%{opacity:.9}
+    100%{opacity:0;transform:translateY(-84px) scale(1.15) rotate(180deg)}}
+.pcat.talking .p-head{animation:bobfast .36s ease-in-out infinite}
+@keyframes bobfast{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+.say{position:relative;z-index:2;margin:2px auto 0;max-width:min(92vw,560px);
+    background:#fff;border:5px solid #33234a;border-radius:26px;padding:20px 22px 22px;
+    box-shadow:0 12px 0 rgba(51,35,74,.12);text-align:center;font-size:20px;font-weight:700}
+.say b{color:#e0398f}
+.say i{font-style:normal;color:#7a3ddb}
+.say:after{content:"";position:absolute;left:50%;top:-22px;margin-left:-16px;
+    border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:22px solid #33234a}
+.say:before{content:"";position:absolute;left:50%;top:-13px;margin-left:-10px;z-index:1;
+    border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:14px solid #fff}
+.picks{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+    max-width:min(94vw,620px);margin:18px auto 0;padding:0 8px}
+.pick{flex:1 1 44%;min-height:74px;border:5px solid #33234a;border-radius:22px;
+    font:800 19px "Trebuchet MS",Verdana,sans-serif;color:#33234a;cursor:pointer;padding:12px 10px;
+    box-shadow:0 6px 0 rgba(51,35,74,.22);transition:transform .12s,box-shadow .12s}
+.pick:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(51,35,74,.22)}
+.p1{background:#ffd0e8}
+.p2{background:#d3ecff}
+.p3{background:#d8ffd9}
+.p4{background:#fff0c2}
+.p5{background:#e9d8ff}
+.p6{background:#ffe0cc}
+.askrow{position:relative;z-index:1;display:flex;gap:10px;max-width:min(94vw,620px);
+    margin:16px auto 30px;padding:0 8px}
+.askrow input{flex:1;min-width:0;border:5px solid #33234a;border-radius:20px;padding:14px 16px;
+    font:700 18px "Trebuchet MS",Verdana,sans-serif;color:#33234a;background:#fff}
+.askrow input:focus{outline:4px solid #a45cff;outline-offset:2px}
+.askrow button{border:5px solid #33234a;border-radius:20px;background:#ffd84d;
+    font:800 18px "Trebuchet MS",Verdana,sans-serif;padding:0 20px;cursor:pointer;color:#33234a}
+.gate{position:fixed;inset:0;z-index:9;background:rgba(255,228,244,.97);
+    display:grid;place-items:center;text-align:center;padding:24px}
+.gate.off{display:none}
+.gate button{border:6px solid #33234a;border-radius:30px;background:#ffd84d;cursor:pointer;
+    font:800 26px "Trebuchet MS",Verdana,sans-serif;color:#33234a;padding:22px 34px;
+    box-shadow:0 8px 0 rgba(51,35,74,.25)}
+.gate p{max-width:340px;margin:16px auto 0;font-weight:700;color:#5a3d86}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
