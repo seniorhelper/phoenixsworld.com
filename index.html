@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Phoenix's World</title>
+<link rel="stylesheet" href="css/phoenix.css">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{font:18px/1.55 "Trebuchet MS",Verdana,system-ui,sans-serif;color:#33234a;
+    background:linear-gradient(180deg,#ffe4f4 0%,#f0e6ff 38%,#e2f1ff 68%,#e4fbf1 100%);min-height:100vh}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.cloud{position:absolute;font-size:56px;opacity:.42;animation:drift linear infinite}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+.twink{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffd84d;
+    opacity:.5;animation:tw 4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.18;transform:scale(.7)}50%{opacity:.8;transform:scale(1.25)}}
+header{position:relative;z-index:1;text-align:center;padding:18px 16px 0}
+h1{margin:0;font-size:40px;line-height:1.04;letter-spacing:-.5px;
+    background:linear-gradient(90deg,#ff5fa2,#a45cff 45%,#2bb3ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 3px 0 rgba(255,255,255,.6)}
+.tag{margin:6px 0 0;font-size:16px;color:#6b5a86;font-weight:700}
+.worlds{position:relative;z-index:1;max-width:min(94vw,700px);margin:0 auto 40px;padding:0 8px}
+.worlds h2{text-align:center;font-size:26px;color:#5a3d86;margin:8px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.world{border:5px solid #33234a;border-radius:24px;padding:18px 12px;text-align:center;
+    font-weight:800;font-size:18px;box-shadow:0 6px 0 rgba(51,35,74,.18);cursor:pointer;
+    transition:transform .12s,box-shadow .12s}
+.world:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(51,35,74,.18)}
+.world span{display:block;font-size:40px;margin-bottom:6px}
+.soon{font-size:13px;color:#6b5a86;font-weight:700;margin-top:4px}
+footer{position:relative;z-index:1;text-align:center;padding:0 20px 34px;color:#6b5a86;font-size:14px}
+/* ── age bar ───────────────────────────────────────────────────────── */
+  .agebar{position:sticky;top:0;z-index:6;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(6px);border-bottom:4px solid #33234a;padding:10px 8px;
+    display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.agebar b{align-self:center;font-size:14px;color:#5a3d86;margin-right:2px}
+.agebtn{border:4px solid #33234a;border-radius:999px;background:#fff;cursor:pointer;
+    font:800 15px "Trebuchet MS",Verdana,sans-serif;color:#33234a;padding:9px 16px;min-height:46px}
+.agebtn.on{background:#ffd84d;box-shadow:0 4px 0 rgba(51,35,74,.25)}
+/* ── season panels ─────────────────────────────────────────────────── */
+  .season{position:relative;z-index:1;padding:26px 12px 34px;overflow:hidden}
+.season h2{text-align:center;font-size:30px;margin:0 0 4px;color:#33234a}
+.season p.lead{text-align:center;margin:0 auto 14px;max-width:540px;font-weight:700;color:#4b3a66}
+.scene{display:block;width:min(96vw,680px);margin:0 auto;height:auto;
+    border:5px solid #33234a;border-radius:26px;background:#fff;
+    box-shadow:0 10px 0 rgba(51,35,74,.14)}
+.win{background:linear-gradient(180deg,#dff1ff,#f4fbff)}
+.spr{background:linear-gradient(180deg,#e6ffe9,#fdfff4)}
+.sum{background:linear-gradient(180deg,#fff3cf,#e8fbff)}
+.aut{background:linear-gradient(180deg,#ffe9d0,#fff6e8)}
+.hot{cursor:pointer}
+.hot:hover .pop,.hot:focus .pop{transform:scale(1.06)}
+.hint{text-align:center;font-weight:800;color:#6b5a86;margin:12px 0 0;font-size:15px}
+/* falling bits */
+  .fall{animation:fallDown linear infinite}
+@keyframes fallDown{0%{transform:translateY(-30px) rotate(0);opacity:0}
+    10%{opacity:1}100%{transform:translateY(230px) rotate(180deg);opacity:0}}
+.sunspin{transform-box:view-box;transform-origin:120px 92px;animation:spin 26s linear infinite}
+.wave{animation:waveM 3.4s ease-in-out infinite}
+@keyframes waveM{0%,100%{transform:translateX(0)}50%{transform:translateX(-14px)}}
+.swim{animation:swimB 2.6s ease-in-out infinite}
+@keyframes swimB{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+.flutter{animation:flut 3s ease-in-out infinite}
+@keyframes flut{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(14px,-12px) rotate(8deg)}}
+/* ── word card ─────────────────────────────────────────────────────── */
+  .card{position:fixed;inset:0;z-index:20;display:none;place-items:center;padding:18px;
+    background:rgba(51,35,74,.45)}
+.card.on{display:grid}
+.cardbox{background:#fff;border:6px solid #33234a;border-radius:28px;padding:22px;
+    max-width:min(94vw,460px);text-align:center;box-shadow:0 14px 0 rgba(51,35,74,.2)}
+.cardbox .big{font-size:44px;font-weight:800;letter-spacing:2px;margin:6px 0 2px;color:#33234a}
+.spell{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 14px}
+.spell i{font-style:normal;display:grid;place-items:center;width:52px;height:58px;
+    border:4px solid #33234a;border-radius:14px;font-size:26px;font-weight:800;background:#ffd84d;
+    animation:popIn .3s ease both}
+@keyframes popIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.cardbox p{font-weight:700;color:#4b3a66;margin:0 0 16px}
+.cardbox button{border:5px solid #33234a;border-radius:20px;background:#ffd84d;cursor:pointer;
+    font:800 19px "Trebuchet MS",Verdana,sans-serif;padding:14px 26px;color:#33234a}
+/* ── games ─────────────────────────────────────────────────────────── */
+  .games{position:relative;z-index:1;max-width:min(94vw,700px);margin:10px auto 30px;padding:0 8px}
+.games h2{text-align:center;font-size:28px;color:#5a3d86;margin:10px 0 12px}
+.gbox{border:5px solid #33234a;border-radius:26px;background:#fff;padding:14px;margin-bottom:18px;
+    box-shadow:0 8px 0 rgba(51,35,74,.16)}
+.gbox h3{margin:2px 0 8px;font-size:21px;text-align:center;color:#33234a}
+.gbox .score{text-align:center;font-weight:800;color:#5a3d86;margin:8px 0 0;font-size:17px}
+#marble{width:100%;height:auto;display:block;border-radius:18px;background:linear-gradient(180deg,#eaf6ff,#f7fff0);touch-action:none}
+#apples{width:100%;height:auto;display:block;border-radius:18px;background:#fffdf2}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="sky" id="sky"></div>
+
+<div id="phoenix"></div>
+
+
+
+<div class="agebar">
+  <b>I am a…</b>
+  <button class="agebtn" data-age="l">Little kid 🧸</button>
+  <button class="agebtn on" data-age="b">Big kid ⭐</button>
+  <button class="agebtn" data-age="s">Super big kid 🚀</button>
+</div>
+
+<section class="season">
+  <h2>❄️ Winter</h2>
+  <p class="lead" id="lead-win">Tap anything in the picture and I will tell you what it is!</p>
+  <svg class="scene win" viewBox="0 0 680 300" aria-label="A winter scene you can tap">
+    <g id="snowfall"></g>
+    <rect x="0" y="246" width="680" height="54" fill="#fff"/>
+    <path d="M0 246 q90 -22 170 0 q90 -20 180 0 q80 -18 170 0 q90 -20 160 0 v54 H0 Z" fill="#f2f9ff"/>
+    <g class="hot" data-word="TREE" data-fact="An evergreen tree keeps its leaves all winter long!" tabindex="0" role="button" aria-label="Tree">
+      <rect x="96" y="196" width="22" height="56" fill="#8b5e3c" stroke="#33234a" stroke-width="5"/>
+      <path d="M107 74 L152 150 H62 Z M107 118 L166 196 H48 Z" fill="#2f9e5e" stroke="#33234a" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="107" cy="70" r="9" fill="#ffd84d" stroke="#33234a" stroke-width="4"/>
+    </g>
+    <g class="hot" data-word="SNOWMAN" data-fact="Snow is tiny ice crystals. No two snowflakes are exactly the same!" tabindex="0" role="button" aria-label="Snowman">
+      <circle cx="330" cy="232" r="36" fill="#fff" stroke="#33234a" stroke-width="5"/>
+      <circle cx="330" cy="182" r="27" fill="#fff" stroke="#33234a" stroke-width="5"/>
+      <circle cx="330" cy="140" r="20" fill="#fff" stroke="#33234a" stroke-width="5"/>
+      <circle cx="323" cy="136" r="3.4" fill="#33234a"/><circle cx="337" cy="136" r="3.4" fill="#33234a"/>
+      <path d="M330 144 l16 5 l-16 5 z" fill="#ff8a3d" stroke="#33234a" stroke-width="3"/>
+      <rect x="306" y="118" width="48" height="9" fill="#33234a"/>
+      <rect x="314" y="96" width="32" height="26" fill="#33234a"/>
+      <path d="M303 176 L262 154 M357 176 L398 154" stroke="#8b5e3c" stroke-width="6" stroke-linecap="round"/>
+    </g>
+    <g class="hot" data-word="MITTEN" data-fact="Mittens keep your fingers together so they share their warmth." tabindex="0" role="button" aria-label="Mitten">
+      <path d="M520 160 q30 0 30 30 v40 q0 22 -24 22 h-16 q-22 0 -22 -22 v-40 q0 -30 32 -30 z"
+        fill="#ff5fa2" stroke="#33234a" stroke-width="5"/>
+      <path d="M498 196 q-18 -4 -18 12 q0 14 18 12" fill="#ff5fa2" stroke="#33234a" stroke-width="5"/>
+      <rect x="486" y="238" width="66" height="16" rx="7" fill="#fff" stroke="#33234a" stroke-width="5"/>
+    </g>
+    <g class="hot" data-word="SLED" data-fact="A sled slides because snow melts a tiny bit under it and gets slippery!" tabindex="0" role="button" aria-label="Sled">
+      <rect x="586" y="212" width="72" height="14" rx="6" fill="#c0392b" stroke="#33234a" stroke-width="5"/>
+      <path d="M586 230 h72 M590 226 v10 M654 226 v10" stroke="#33234a" stroke-width="5" stroke-linecap="round"/>
+      <path d="M580 240 q40 10 84 0" stroke="#69737f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    </g>
+  </svg>
+</section>
+
+<section class="season">
+  <h2>🌷 Spring</h2>
+  <p class="lead" id="lead-spr">Everything wakes up and starts to grow.</p>
+  <svg class="scene spr" viewBox="0 0 680 300" aria-label="A spring scene you can tap">
+    <g id="raindrops"></g>
+    <rect x="0" y="252" width="680" height="48" fill="#7ad48a"/>
+    <g class="hot" data-word="FLOWER" data-fact="Flowers drink water through their stem, like a straw!" tabindex="0" role="button" aria-label="Flower">
+      <path d="M110 252 V196" stroke="#2f9e5e" stroke-width="8" stroke-linecap="round"/>
+      <path d="M110 224 q-28 -12 -34 8 q26 10 34 -8z" fill="#2f9e5e" stroke="#33234a" stroke-width="4"/>
+      <g><circle cx="110" cy="168" r="18" fill="#ffd84d" stroke="#33234a" stroke-width="5"/>
+      <circle cx="110" cy="136" r="15" fill="#ff5fa2" stroke="#33234a" stroke-width="5"/>
+      <circle cx="142" cy="168" r="15" fill="#ff5fa2" stroke="#33234a" stroke-width="5"/>
+      <circle cx="110" cy="200" r="15" fill="#ff5fa2" stroke="#33234a" stroke-width="5"/>
+      <circle cx="78" cy="168" r="15" fill="#ff5fa2" stroke="#33234a" stroke-width="5"/></g>
+    </g>
+    <g class="hot" data-word="BUTTERFLY" data-fact="A butterfly starts life as a caterpillar. It changes completely!" tabindex="0" role="button" aria-label="Butterfly">
+      <g class="flutter">
+        <ellipse cx="286" cy="126" rx="26" ry="20" fill="#a45cff" stroke="#33234a" stroke-width="5"/>
+        <ellipse cx="336" cy="126" rx="26" ry="20" fill="#a45cff" stroke="#33234a" stroke-width="5"/>
+        <ellipse cx="292" cy="160" rx="20" ry="16" fill="#c9a2ff" stroke="#33234a" stroke-width="5"/>
+        <ellipse cx="330" cy="160" rx="20" ry="16" fill="#c9a2ff" stroke="#33234a" stroke-width="5"/>
+        <rect x="306" y="112" width="10" height="62" rx="5" fill="#33234a"/>
+        <path d="M308 112 l-10 -14 M314 112 l10 -14" stroke="#33234a" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </g>
+    <g class="hot" data-word="BIRD" data-fact="Birds build nests out of twigs and grass to keep their eggs safe." tabindex="0" role="button" aria-label="Bird">
+      <ellipse cx="470" cy="150" rx="30" ry="24" fill="#2bb3ff" stroke="#33234a" stroke-width="5"/>
+      <circle cx="498" cy="134" r="17" fill="#2bb3ff" stroke="#33234a" stroke-width="5"/>
+      <circle cx="504" cy="130" r="3.4" fill="#33234a"/>
+      <path d="M514 136 l16 5 l-16 6 z" fill="#ffd84d" stroke="#33234a" stroke-width="3"/>
+      <path d="M452 152 q22 -18 42 2 q-22 14 -42 -2z" fill="#6cc9ff" stroke="#33234a" stroke-width="4"/>
+      <path d="M462 174 v14 M478 174 v14" stroke="#33234a" stroke-width="5" stroke-linecap="round"/>
+      <path d="M432 200 q40 -16 80 0 q-40 18 -80 0z" fill="#a5703f" stroke="#33234a" stroke-width="5"/>
+    </g>
+    <g class="hot" data-word="RAIN" data-fact="Rain is water from clouds. The same water goes round and round forever!" tabindex="0" role="button" aria-label="Rain cloud">
+      <g class="wave">
+        <ellipse cx="596" cy="92" rx="54" ry="30" fill="#cfe3f5" stroke="#33234a" stroke-width="5"/>
+        <ellipse cx="556" cy="102" rx="32" ry="22" fill="#cfe3f5" stroke="#33234a" stroke-width="5"/>
+      </g>
+      <path d="M566 136 l-6 18 M596 140 l-6 20 M626 136 l-6 18" stroke="#2bb3ff" stroke-width="6" stroke-linecap="round"/>
+    </g>
+  </svg>
+</section>
+
+<section class="season">
+  <h2>☀️ Summer</h2>
+  <p class="lead" id="lead-sum">Sunshine, swimming and sandy toes.</p>
+  <svg class="scene sum" viewBox="0 0 680 300" aria-label="A summer beach scene you can tap">
+    <rect x="0" y="196" width="680" height="46" fill="#4fc3f7"/>
+    <path class="wave" d="M-20 200 q40 -12 80 0 q40 12 80 0 q40 -12 80 0 q40 12 80 0 q40 -12 80 0 q40 12 80 0 q40 -12 80 0 q40 12 80 0 v12 H-20 Z" fill="#29b6f6"/>
+    <rect x="0" y="242" width="680" height="58" fill="#ffe0a3"/>
+    <g class="hot sunspin" data-word="SUN" data-fact="The Sun is a giant star. It is so big that a million Earths could fit inside!" tabindex="0" role="button" aria-label="Sun">
+      <circle cx="120" cy="92" r="40" fill="#ffd84d" stroke="#33234a" stroke-width="5"/>
+      <g stroke="#ffd84d" stroke-width="9" stroke-linecap="round">
+        <path d="M120 34 V16 M120 168 V150 M62 92 H44 M196 92 H178
+                 M79 51 L66 38 M161 133 L174 146 M79 133 L66 146 M161 51 L174 38"/></g>
+    </g>
+    <g class="hot swim" data-word="SWIM" data-fact="Always swim where a grown-up can see you. Floating works because your lungs are full of air!" tabindex="0" role="button" aria-label="Kids swimming">
+      <circle cx="300" cy="186" r="18" fill="#ffe1b8" stroke="#33234a" stroke-width="5"/>
+      <path d="M286 178 q14 -12 28 0" stroke="#8b5e3c" stroke-width="7" fill="none"/>
+      <circle cx="294" cy="188" r="2.8" fill="#33234a"/><circle cx="306" cy="188" r="2.8" fill="#33234a"/>
+      <path d="M300 194 q6 5 12 0" stroke="#33234a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M276 200 q-18 -14 -30 -4 M324 200 q18 -14 30 -4" stroke="#ffe1b8" stroke-width="11" stroke-linecap="round"/>
+      <circle cx="392" cy="190" r="16" fill="#ffe1b8" stroke="#33234a" stroke-width="5"/>
+      <path d="M379 183 q13 -11 26 0" stroke="#4a3323" stroke-width="7" fill="none"/>
+      <circle cx="387" cy="192" r="2.6" fill="#33234a"/><circle cx="398" cy="192" r="2.6" fill="#33234a"/>
+      <path d="M370 202 q-16 -12 -28 -2" stroke="#ffe1b8" stroke-width="10" stroke-linecap="round"/>
+    </g>
+    <g class="hot" data-word="BALL" data-fact="A beach ball floats because it is full of air, and air is lighter than water." tabindex="0" role="button" aria-label="Beach ball">
+      <circle cx="500" cy="214" r="30" fill="#fff" stroke="#33234a" stroke-width="5"/>
+      <path d="M500 184 a30 30 0 0 1 0 60 a16 30 0 0 1 0 -60z" fill="#ff5fa2"/>
+      <path d="M500 184 a30 30 0 0 0 0 60 a16 30 0 0 0 0 -60z" fill="#2bb3ff"/>
+      <circle cx="500" cy="214" r="30" fill="none" stroke="#33234a" stroke-width="5"/>
+    </g>
+    <g class="hot" data-word="CASTLE" data-fact="Wet sand sticks together because water pulls the grains close. Dry sand just falls apart!" tabindex="0" role="button" aria-label="Sandcastle">
+      <rect x="580" y="246" width="76" height="42" fill="#e8b96a" stroke="#33234a" stroke-width="5"/>
+      <rect x="572" y="228" width="22" height="60" fill="#e8b96a" stroke="#33234a" stroke-width="5"/>
+      <rect x="642" y="228" width="22" height="60" fill="#e8b96a" stroke="#33234a" stroke-width="5"/>
+      <path d="M583 228 l-8 -18 l8 6 l8 -6 z M653 228 l-8 -18 l8 6 l8 -6 z" fill="#e8b96a" stroke="#33234a" stroke-width="4"/>
+      <path d="M618 246 v-22 l20 8 l-20 8" fill="#ff5fa2" stroke="#33234a" stroke-width="4"/>
+    </g>
+  </svg>
+</section>
+
+<section class="season">
+  <h2>🍂 Autumn</h2>
+  <p class="lead" id="lead-aut">Leaves change color and float down.</p>
+  <svg class="scene aut" viewBox="0 0 680 300" aria-label="An autumn scene you can tap">
+    <g id="leaffall"></g>
+    <rect x="0" y="254" width="680" height="46" fill="#c9a86a"/>
+    <g class="hot" data-word="TREE" data-fact="Leaves turn red and gold when the tree stops making green food for the winter." tabindex="0" role="button" aria-label="Autumn tree">
+      <rect x="140" y="178" width="30" height="78" fill="#8b5e3c" stroke="#33234a" stroke-width="5"/>
+      <path d="M155 180 l-34 -30 M155 200 l34 -34" stroke="#8b5e3c" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="155" cy="118" r="58" fill="#ff8a3d" stroke="#33234a" stroke-width="5"/>
+      <circle cx="108" cy="146" r="34" fill="#e2562a" stroke="#33234a" stroke-width="5"/>
+      <circle cx="202" cy="146" r="34" fill="#ffc03d" stroke="#33234a" stroke-width="5"/>
+    </g>
+    <g class="hot" data-word="PUMPKIN" data-fact="A pumpkin is a fruit, not a vegetable, because it grows from a flower and has seeds!" tabindex="0" role="button" aria-label="Pumpkin">
+      <ellipse cx="336" cy="224" rx="46" ry="38" fill="#ff8a3d" stroke="#33234a" stroke-width="5"/>
+      <path d="M320 190 q-10 34 0 68 M352 190 q10 34 0 68" stroke="#c85a1e" stroke-width="5" fill="none"/>
+      <rect x="328" y="174" width="16" height="18" rx="5" fill="#2f9e5e" stroke="#33234a" stroke-width="5"/>
+      <path d="M344 178 q18 -16 26 -2" stroke="#2f9e5e" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g class="hot" data-word="ACORN" data-fact="A whole giant oak tree can grow from one little acorn. Big things start small!" tabindex="0" role="button" aria-label="Acorn">
+      <path d="M470 214 q26 0 26 22 q0 26 -26 26 q-26 0 -26 -26 q0 -22 26 -22z" fill="#d9a248" stroke="#33234a" stroke-width="5"/>
+      <path d="M442 214 q28 -14 56 0 q0 12 -28 12 q-28 0 -28 -12z" fill="#8b5e3c" stroke="#33234a" stroke-width="5"/>
+      <path d="M470 200 v-14" stroke="#8b5e3c" stroke-width="6" stroke-linecap="round"/>
+    </g>
+    <g class="hot" data-word="APPLE" data-fact="Apples float in water because one quarter of an apple is air!" tabindex="0" role="button" aria-label="Apple">
+      <path d="M596 196 q28 -10 38 10 q10 22 -6 42 q-14 18 -32 8 q-18 10 -32 -8 q-16 -20 -6 -42 q10 -20 38 -10z"
+        fill="#e2384a" stroke="#33234a" stroke-width="5"/>
+      <path d="M596 196 v-18" stroke="#8b5e3c" stroke-width="6" stroke-linecap="round"/>
+      <path d="M596 184 q20 -14 30 0 q-18 10 -30 0z" fill="#2f9e5e" stroke="#33234a" stroke-width="4"/>
+    </g>
+  </svg>
+  <p class="hint">👆 Tap any picture to learn the word!</p>
+</section>
+
+<div class="card" id="card">
+  <div class="cardbox">
+    <div class="big" id="cardWord">TREE</div>
+    <div class="spell" id="cardSpell"></div>
+    <p id="cardFact"></p>
+    <button id="cardClose">Got it! 👑</button>
+  </div>
+</div>
+
+<div class="games">
+  <h2>🎮 Play a game</h2>
+
+  <div class="gbox">
+    <h3>Marble Roll</h3>
+    <svg id="marble" viewBox="0 0 400 260" aria-label="Marble rolling game"></svg>
+    <p class="score" id="mScore">Drag the marble onto the stars!</p>
+  </div>
+
+  <div class="gbox">
+    <h3>Count the Apples</h3>
+    <svg id="apples" viewBox="0 0 400 220" aria-label="Apple counting game"></svg>
+    <p class="score" id="aScore">Tap every apple you can see!</p>
+  </div>
+</div>
+
+<div class="worlds">
+  <h2>Pick a world to explore</h2>
+  <div class="grid">
+    <div class="world p1"><span>🔤</span>Letter Land<div class="soon">A B C</div></div>
+    <div class="world p2"><span>🔢</span>Number Nook<div class="soon">1 2 3</div></div>
+    <div class="world p3"><span>🎨</span>Color Cove<div class="soon">Rainbow!</div></div>
+    <div class="world p4"><span>🛸</span>Alien World<div class="soon">Coming soon</div></div>
+    <div class="world p5"><span>🇪🇸</span>Hola World<div class="soon">Coming soon</div></div>
+    <div class="world p6"><span>💛</span>Kind Kingdom<div class="soon">Coming soon</div></div>
+  </div>
+</div>
+
+<footer>Made by a dad and his daughter. No ads, no sign-ups, nothing collected.</footer>
+
+
+
+<script>
+(function(){
+  var AGEMAP={l:'little',b:'big',s:'super'};
+
+  /* age bar keeps the princess and the lessons in step */
+  var bar=document.querySelectorAll('.agebtn');
+  function paint(a){
+    bar.forEach(function(b){ b.classList.toggle('on', b.dataset.age===a); });
+    var L={l:'Tap a picture! I will say the word with you.',
+           b:'Tap anything in the picture and I will spell it with you!',
+           s:'Tap anything and I will give you a real fact about it.'};
+    ['win','spr','sum','aut'].forEach(function(k){
+      var e=document.getElementById('lead-'+k); if(e && k==='win') e.textContent=L[a];
+    });
+  }
+  window.PWsync=paint;
+  bar.forEach(function(b){
+    b.onclick=function(){
+      window.PWage=b.dataset.age; paint(b.dataset.age);
+      if(window.PWspeak) window.PWspeak(
+        b.dataset.age==='l' ? "A little kid! We will count on our fingers and make silly noises." :
+        b.dataset.age==='s' ? "A super big kid! I will give you the tricky ones." :
+                              "A big kid! Perfect. Ask me anything.");
+    };
+  });
+  paint('b');
+
+  /* falling snow, rain and leaves */
+  function sprinkle(id, n, make){
+    var g=document.getElementById(id); if(!g) return;
+    for(var i=0;i<n;i++){
+      var e=make(Math.random()*680);
+      e.setAttribute('class','fall');
+      e.style.animationDuration=(4+Math.random()*5)+'s';
+      e.style.animationDelay=(-Math.random()*7)+'s';
+      g.appendChild(e);
+    }
+  }
+  function el(tag,attrs){
+    var e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    for(var k in attrs) e.setAttribute(k,attrs[k]); return e;
+  }
+  sprinkle('snowfall',26,function(x){ return el('circle',{cx:x,cy:0,r:3+Math.random()*4,fill:'#fff',
+    stroke:'#cfe3f5','stroke-width':1.5}); });
+  sprinkle('raindrops',22,function(x){ return el('rect',{x:x,y:0,width:3,height:14,rx:2,fill:'#7cc7f5'}); });
+  sprinkle('leaffall',18,function(x){ return el('path',{d:'M'+x+' 0 q12 8 0 20 q-12 -12 0 -20z',
+    fill:['#ff8a3d','#e2562a','#ffc03d'][Math.floor(Math.random()*3)],stroke:'#33234a','stroke-width':2}); });
+
+  /* tap a picture, get the word */
+  var card=document.getElementById('card'),
+      cw=document.getElementById('cardWord'),
+      cs=document.getElementById('cardSpell'),
+      cf=document.getElementById('cardFact');
+  function openCard(word, fact){
+    cw.textContent=word;
+    cs.innerHTML='';
+    word.split('').forEach(function(ch,i){
+      var s=document.createElement('i'); s.textContent=ch;
+      s.style.animationDelay=(i*0.07)+'s'; cs.appendChild(s);
+    });
+    var a=window.PWage||'b';
+    cf.innerHTML = a==='l'
+      ? 'Say it with me: <b>'+word+'</b>!'
+      : a==='s' ? fact
+      : '<b>'+word.split('').join(' - ')+'</b><br>'+fact;
+    card.classList.add('on');
+    if(window.PWspeak) window.PWspeak('You found the <b>'+word.toLowerCase()+'</b>! '+
+      (a==='l'?'Say it with me — '+word+'!':fact));
+  }
+  document.querySelectorAll('.hot').forEach(function(g){
+    function go(){ openCard(g.dataset.word, g.dataset.fact); }
+    g.addEventListener('click', go);
+    g.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
+  });
+  document.getElementById('cardClose').onclick=function(){ card.classList.remove('on'); };
+  card.addEventListener('click', function(e){ if(e.target===card) card.classList.remove('on'); });
+
+  /* ── Marble Roll: drag the marble onto the stars. No timer, no losing. ── */
+  (function(){
+    var svg=document.getElementById('marble'), got=0, stars=[];
+    var ball=el('circle',{cx:60,cy:200,r:22,fill:'#ff5fa2',stroke:'#33234a','stroke-width':5});
+    var shine=el('circle',{cx:52,cy:192,r:7,fill:'#fff','fill-opacity':.7});
+    function star(x,y){
+      var g=el('g',{}), p=el('path',{d:'M0 -18 L5 -6 L18 -5 L8 3 L11 16 L0 9 L-11 16 L-8 3 L-18 -5 L-5 -6 Z',
+        fill:'#ffd84d',stroke:'#33234a','stroke-width':4,'stroke-linejoin':'round'});
+      g.setAttribute('transform','translate('+x+','+y+')'); g.appendChild(p);
+      g.dataset.x=x; g.dataset.y=y; svg.appendChild(g); stars.push(g); return g;
+    }
+    function reset(){
+      stars.forEach(function(s){ s.remove(); }); stars=[]; got=0;
+      [[110,60],[210,140],[310,60],[350,190],[180,40]].forEach(function(p){ star(p[0],p[1]); });
+      document.getElementById('mScore').textContent='Drag the marble onto the stars!';
+    }
+    svg.appendChild(ball); svg.appendChild(shine); reset();
+    var drag=false;
+    function pt(e){
+      var r=svg.getBoundingClientRect(), t=e.touches?e.touches[0]:e;
+      return {x:(t.clientX-r.left)/r.width*400, y:(t.clientY-r.top)/r.height*260};
+    }
+    function move(e){
+      if(!drag) return; e.preventDefault();
+      var p=pt(e), x=Math.max(24,Math.min(376,p.x)), y=Math.max(24,Math.min(236,p.y));
+      ball.setAttribute('cx',x); ball.setAttribute('cy',y);
+      shine.setAttribute('cx',x-8); shine.setAttribute('cy',y-8);
+      stars.forEach(function(s){
+        if(s.dataset.done) return;
+        var dx=x-s.dataset.x, dy=y-s.dataset.y;
+        if(Math.sqrt(dx*dx+dy*dy)<32){
+          s.dataset.done=1; s.style.transition='transform .3s,opacity .3s';
+          s.style.opacity=0; got++;
+          document.getElementById('mScore').textContent =
+            got>=stars.length ? 'You got them ALL! ⭐ Tap the marble to play again.'
+                              : 'Stars collected: '+got+' of '+stars.length;
+        }
+      });
+    }
+    svg.addEventListener('pointerdown',function(e){
+      if(got>=stars.length){ reset(); return; }
+      drag=true; move(e);
+    });
+    svg.addEventListener('pointermove',move);
+    window.addEventListener('pointerup',function(){ drag=false; });
+  })();
+
+  /* ── Count the Apples: tap each one, then say how many. ─────────────── */
+  (function(){
+    var svg=document.getElementById('apples'), out=document.getElementById('aScore'), n=0, tapped=0;
+    function build(){
+      svg.innerHTML=''; tapped=0;
+      var a=window.PWage||'b';
+      n = a==='l' ? 3+Math.floor(Math.random()*3)
+        : a==='s' ? 8+Math.floor(Math.random()*5)
+                  : 5+Math.floor(Math.random()*4);
+      for(var i=0;i<n;i++){
+        var x=40+(i%6)*60, y=60+Math.floor(i/6)*80;
+        var g=el('g',{transform:'translate('+x+','+y+')',style:'cursor:pointer'});
+        g.appendChild(el('path',{d:'M0 -14 q20 -8 27 7 q7 16 -4 30 q-10 13 -23 6 q-13 7 -23 -6 q-11 -14 -4 -30 q7 -15 27 -7z',
+          fill:'#e2384a',stroke:'#33234a','stroke-width':4}));
+        g.appendChild(el('path',{d:'M0 -14 v-12',stroke:'#8b5e3c','stroke-width':5,'stroke-linecap':'round'}));
+        g.appendChild(el('path',{d:'M0 -24 q14 -10 21 0 q-13 7 -21 0z',fill:'#2f9e5e',stroke:'#33234a','stroke-width':3}));
+        (function(g){
+          g.addEventListener('click',function(){
+            if(g.dataset.done) return;
+            g.dataset.done=1; g.style.opacity=.35; tapped++;
+            out.textContent = tapped===n
+              ? 'There were '+n+' apples! Say it out loud: '+n+'. 🍎 Tap here for more.'
+              : 'You counted '+tapped+'…';
+            if(tapped===n && window.PWspeak)
+              window.PWspeak('You counted <b>'+n+'</b> apples! High five. Want to go again?');
+          });
+        })(g);
+        svg.appendChild(g);
+      }
+      out.textContent='Tap every apple you can see!';
+    }
+    out.addEventListener('click',build);
+    build();
+  })();
+})();
+</script>
+
+<script src="js/phoenix.js"></script>
+</body>
+</html>
