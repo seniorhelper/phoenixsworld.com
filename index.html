@@ -96,6 +96,26 @@ footer{position:relative;z-index:1;text-align:center;padding:0 20px 34px;color:#
 
 <div class="sky" id="sky"></div>
 
+<div class="skyfix" aria-hidden="true">
+  <svg class="bigsun" viewBox="0 0 260 260">
+    <g class="rays"><g stroke="#ffd84d" stroke-width="13" stroke-linecap="round" opacity=".75">
+      <path d="M130 8 V44 M130 216 V252 M8 130 H44 M216 130 H252
+               M44 44 L70 70 M190 190 L216 216 M44 216 L70 190 M190 70 L216 44"/></g></g>
+    <circle cx="130" cy="130" r="76" fill="#ffe9a8" opacity=".55"/>
+    <circle cx="130" cy="130" r="60" fill="#ffd84d" stroke="#f0b429" stroke-width="5"/>
+    <circle cx="112" cy="118" r="7" fill="#33234a"/><circle cx="150" cy="118" r="7" fill="#33234a"/>
+    <circle cx="104" cy="140" r="9" fill="#ff9ed2" opacity=".7"/>
+    <circle cx="158" cy="140" r="9" fill="#ff9ed2" opacity=".7"/>
+    <path d="M110 146 q20 20 42 0" stroke="#33234a" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="pufflane">
+    <svg class="pcloud c1" viewBox="0 0 200 90"><path d="M40 76 C16 76 8 60 16 48 C22 38 38 36 48 40 C54 18 82 8 102 20 C120 8 148 16 152 38 C176 36 190 50 186 64 C182 76 166 78 150 78 Z" fill="#fff"/></svg>
+    <svg class="pcloud c2" viewBox="0 0 200 90"><path d="M40 76 C16 76 8 60 16 48 C22 38 38 36 48 40 C54 18 82 8 102 20 C120 8 148 16 152 38 C176 36 190 50 186 64 C182 76 166 78 150 78 Z" fill="#fff"/></svg>
+    <svg class="pcloud c3" viewBox="0 0 200 90"><path d="M40 76 C16 76 8 60 16 48 C22 38 38 36 48 40 C54 18 82 8 102 20 C120 8 148 16 152 38 C176 36 190 50 186 64 C182 76 166 78 150 78 Z" fill="#fff"/></svg>
+  </div>
+</div>
+
+
 <div id="phoenix"></div>
 
 
@@ -269,6 +289,65 @@ footer{position:relative;z-index:1;text-align:center;padding:0 20px 34px;color:#
     <button id="cardClose">Got it! 👑</button>
   </div>
 </div>
+
+
+<section class="playroom">
+  <h2>🎛️ The Playroom</h2>
+  <p class="lead">Pull the levers. Flip the switches. Make a mess!</p>
+
+  <div class="toys">
+    <div class="toy">
+      <h3>Rainbow Lever</h3>
+      <svg id="lever" viewBox="0 0 200 190" aria-label="Pull the lever to add a rainbow stripe">
+        <rect x="24" y="150" width="152" height="26" rx="10" fill="#a45cff" stroke="#33234a" stroke-width="5"/>
+        <g id="leverArm"><rect x="94" y="60" width="14" height="96" rx="7" fill="#69737f" stroke="#33234a" stroke-width="5"/>
+          <circle cx="101" cy="56" r="18" fill="#ff5fa2" stroke="#33234a" stroke-width="5"/></g>
+        <g id="bow"></g>
+      </svg>
+      <p class="tip" id="leverTip">Pull it!</p>
+    </div>
+
+    <div class="toy">
+      <h3>Shape Switches</h3>
+      <svg id="switches" viewBox="0 0 200 190" aria-label="Flip a switch to grow a shape"></svg>
+      <p class="tip" id="swTip">Flip all three!</p>
+    </div>
+
+    <div class="toy">
+      <h3>Hang the Ribbons</h3>
+      <svg id="ribbons" viewBox="0 0 200 190" aria-label="Drag ribbons onto the line"></svg>
+      <p class="tip" id="ribTip">Drag a ribbon to the line!</p>
+    </div>
+
+    <div class="toy">
+      <h3>Sparkle Sprinkler</h3>
+      <svg id="sprinkle" viewBox="0 0 200 190" aria-label="Tap to sprinkle sparkles"></svg>
+      <p class="tip" id="spTip">Tap anywhere to sprinkle!</p>
+    </div>
+  </div>
+</section>
+
+<section class="learnmap">
+  <h2>📚 Places to learn</h2>
+  <p class="lead">Every room teaches something. Pick one!</p>
+  <div class="rooms">
+    <a class="room r1" href="counting-for-toddlers.html"><span>🔢</span>Counting for Toddlers<em>1 to 10</em></a>
+    <a class="room r2" href="simple-addition-for-kids.html"><span>➕</span>Simple Addition<em>adding up</em></a>
+    <a class="room r3" href="learn-colors-for-kids.html"><span>🎨</span>Learn Colors<em>rainbow time</em></a>
+    <a class="room r4" href="alphabet-for-kids.html"><span>🔤</span>The Alphabet<em>A to Z</em></a>
+    <a class="room r5" href="letter-sounds-phonics.html"><span>🗣️</span>Letter Sounds<em>phonics</em></a>
+    <a class="room r6" href="shapes-for-kids.html"><span>🔺</span>Shapes<em>circle, square</em></a>
+    <a class="room r1" href="science-for-toddlers.html"><span>🔬</span>Science for Toddlers<em>how things work</em></a>
+    <a class="room r2" href="space-facts-for-kids.html"><span>🚀</span>Space Facts<em>planets & moon</em></a>
+    <a class="room r3" href="animal-facts-for-kids.html"><span>🐾</span>Animal Facts<em>creatures</em></a>
+    <a class="room r4" href="dinosaurs-for-kids.html"><span>🦕</span>Dinosaurs<em>long ago</em></a>
+    <a class="room r5" href="weather-for-kids.html"><span>🌦️</span>Weather<em>rain & sun</em></a>
+    <a class="room r6" href="kindergarten-readiness.html"><span>🎒</span>Ready for Kindergarten<em>big school</em></a>
+    <a class="room r1" href="feelings-for-kids.html"><span>💛</span>Big Feelings<em>happy & sad</em></a>
+    <a class="room r2" href="affirmations-for-kids.html"><span>✨</span>Affirmations<em>I am amazing</em></a>
+    <a class="room r3" href="spanish-for-kids.html"><span>🇪🇸</span>Spanish for Kids<em>hola!</em></a>
+  </div>
+</section>
 
 <div class="games">
   <h2>🎮 Play a game</h2>
@@ -464,5 +543,123 @@ footer{position:relative;z-index:1;text-align:center;padding:0 20px 34px;color:#
 </script>
 
 <script src="phoenix.js"></script>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+
+  /* ── lever: pull it, a rainbow stripe appears ─────────────────────── */
+  (function(){
+    var svg=document.getElementById('lever'), arm=document.getElementById('leverArm'),
+        bow=document.getElementById('bow'), tip=document.getElementById('leverTip'),
+        cols=['#e2384a','#ff8a3d','#ffd84d','#2f9e5e','#2bb3ff','#7a3ddb'], n=0;
+    svg.addEventListener('click',function(){
+      arm.style.transition='transform .25s'; arm.style.transformOrigin='101px 156px';
+      arm.style.transform='rotate(38deg)';
+      setTimeout(function(){ arm.style.transform='rotate(0)'; },260);
+      if(n<cols.length){
+        var p=el('path',{d:'M20 150 A 80 80 0 0 1 180 150',fill:'none',stroke:cols[n],
+          'stroke-width':13,'stroke-linecap':'round',transform:'translate(0,'+(n*13)+') scale(1,'+(1-n*0.09)+')',
+          'transform-origin':'100px 150px'});
+        p.style.opacity=0; bow.appendChild(p);
+        requestAnimationFrame(function(){ p.style.transition='opacity .4s'; p.style.opacity=1; });
+        n++;
+        tip.textContent = n===cols.length ? 'A whole RAINBOW! 🌈 Pull again to reset.' : 'Stripes: '+n+' of 6';
+      } else { bow.innerHTML=''; n=0; tip.textContent='Pull it!'; }
+    });
+  })();
+
+  /* ── switches: flip to grow a shape ──────────────────────────────── */
+  (function(){
+    var svg=document.getElementById('switches'), tip=document.getElementById('swTip'),
+        made=0, defs=[['circle','#ff5fa2'],['square','#2bb3ff'],['triangle','#2f9e5e']];
+    defs.forEach(function(d,i){
+      var y=28+i*54;
+      var g=el('g',{style:'cursor:pointer'});
+      g.appendChild(el('rect',{x:16,y:y,width:62,height:32,rx:16,fill:'#d7d2e4',stroke:'#33234a','stroke-width':4}));
+      var knob=el('circle',{cx:33,cy:y+16,r:12,fill:'#fff',stroke:'#33234a','stroke-width':4});
+      g.appendChild(knob);
+      var slot=el('g',{});
+      svg.appendChild(g); svg.appendChild(slot);
+      g.addEventListener('click',function(){
+        if(g.dataset.on) return;
+        g.dataset.on=1;
+        knob.style.transition='cx .25s'; knob.setAttribute('cx',61);
+        g.firstChild.setAttribute('fill','#c9f04b');
+        var s;
+        if(d[0]==='circle') s=el('circle',{cx:140,cy:y+16,r:2,fill:d[1],stroke:'#33234a','stroke-width':4});
+        if(d[0]==='square') s=el('rect',{x:138,y:y+14,width:4,height:4,fill:d[1],stroke:'#33234a','stroke-width':4});
+        if(d[0]==='triangle') s=el('path',{d:'M140 '+(y+2)+' l14 28 h-28 z',fill:d[1],stroke:'#33234a','stroke-width':4,
+          style:'transform-origin:140px '+(y+16)+'px;transform:scale(.05)'});
+        slot.appendChild(s);
+        s.style.transition='all .5s cubic-bezier(.3,1.4,.4,1)';
+        requestAnimationFrame(function(){
+          if(d[0]==='circle') s.setAttribute('r',22);
+          if(d[0]==='square'){ s.setAttribute('x',118); s.setAttribute('y',y-4); s.setAttribute('width',44); s.setAttribute('height',44); }
+          if(d[0]==='triangle') s.style.transform='scale(1)';
+        });
+        made++;
+        tip.textContent = made===3 ? 'Circle, square and triangle! 🔺' : 'Shapes made: '+made+' of 3';
+        if(made===3 && window.PWspeak) window.PWspeak('You made all three shapes! A triangle has <b>3</b> sides and a square has <b>4</b>.');
+      });
+    });
+  })();
+
+  /* ── ribbons: drag them onto the line ────────────────────────────── */
+  (function(){
+    var svg=document.getElementById('ribbons'), tip=document.getElementById('ribTip'), hung=0;
+    svg.appendChild(el('path',{d:'M10 46 q90 22 180 0',stroke:'#8b5e3c','stroke-width':6,fill:'none','stroke-linecap':'round'}));
+    var cols=['#ff5fa2','#ffd84d','#2bb3ff','#7a3ddb'];
+    cols.forEach(function(c,i){
+      var x=30+i*46, y=140;
+      var g=el('g',{transform:'translate('+x+','+y+')',style:'cursor:grab'});
+      g.appendChild(el('path',{d:'M0 0 q-14 -12 -22 2 q-6 12 8 14 q10 2 14 -10z',fill:c,stroke:'#33234a','stroke-width':4}));
+      g.appendChild(el('path',{d:'M0 0 q14 -12 22 2 q6 12 -8 14 q-10 2 -14 -10z',fill:c,stroke:'#33234a','stroke-width':4}));
+      g.appendChild(el('circle',{cx:0,cy:4,r:6,fill:'#ffd84d',stroke:'#33234a','stroke-width':3}));
+      svg.appendChild(g);
+      var drag=false;
+      function pt(e){var r=svg.getBoundingClientRect(),t=e.touches?e.touches[0]:e;
+        return {x:(t.clientX-r.left)/r.width*200,y:(t.clientY-r.top)/r.height*190};}
+      g.addEventListener('pointerdown',function(e){ if(g.dataset.done)return; drag=true; g.setPointerCapture(e.pointerId); });
+      g.addEventListener('pointermove',function(e){
+        if(!drag)return; var p=pt(e); g.setAttribute('transform','translate('+p.x+','+p.y+')');
+      });
+      g.addEventListener('pointerup',function(e){
+        if(!drag)return; drag=false; var p=pt(e);
+        if(p.y<80){ g.dataset.done=1; g.style.cursor='default';
+          g.setAttribute('transform','translate('+Math.max(24,Math.min(176,p.x))+',54)');
+          hung++; tip.textContent = hung===4 ? 'All four ribbons hung! 🎀' : 'Ribbons hung: '+hung+' of 4';
+        } else { g.setAttribute('transform','translate('+x+','+y+')'); }
+      });
+    });
+  })();
+
+  /* ── sparkle sprinkler ───────────────────────────────────────────── */
+  (function(){
+    var svg=document.getElementById('sprinkle'), tip=document.getElementById('spTip'), n=0,
+        cols=['#ffd84d','#ff9ed2','#9ef0ff','#c9a2ff','#c9f04b'];
+    svg.addEventListener('pointerdown',function(e){
+      var r=svg.getBoundingClientRect(), t=e.touches?e.touches[0]:e,
+          x=(t.clientX-r.left)/r.width*200, y=(t.clientY-r.top)/r.height*190;
+      for(var i=0;i<7;i++){
+        var s=6+Math.random()*8, c=cols[Math.floor(Math.random()*cols.length)];
+        var p=el('path',{d:'M'+x+' '+(y-s)+' Q'+(x+s*0.3)+' '+(y-s*0.3)+' '+(x+s)+' '+y+
+          ' Q'+(x+s*0.3)+' '+(y+s*0.3)+' '+x+' '+(y+s)+' Q'+(x-s*0.3)+' '+(y+s*0.3)+' '+(x-s)+' '+y+
+          ' Q'+(x-s*0.3)+' '+(y-s*0.3)+' '+x+' '+(y-s)+'z',fill:c});
+        p.style.transition='all 1.1s ease-out'; p.style.transformOrigin=x+'px '+y+'px';
+        svg.appendChild(p);
+        (function(p){ requestAnimationFrame(function(){
+            p.style.opacity=0;
+            p.style.transform='translate('+(Math.random()*80-40)+'px,'+(-30-Math.random()*50)+'px) scale(1.6) rotate(180deg)';
+          });
+          setTimeout(function(){ p.remove(); },1200); })(p);
+      }
+      n++; tip.textContent = n>8 ? 'You are a sparkle wizard! ✨' : 'Sparkles made: '+n;
+    });
+  })();
+})();
+</script>
+
 </body>
 </html>
