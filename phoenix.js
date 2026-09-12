@@ -1,19 +1,22 @@
 /* ==========================================================================
    phoenix.js — Princess Phoenix Sparkles, guide for PhoenixsWorld.com
 
-   To put her on any page:
-       <link rel="stylesheet" href="css/phoenix.css">
+   Put her on any page with:
+       <link rel="stylesheet" href="phoenix.css">
        <div id="phoenix"></div>
-       <script src="js/phoenix.js"></script>
+       <script src="phoenix.js"></script>
 
-   She is rule-based on purpose. She can only say what is written in this
-   file, so she cannot invent a fact, make a promise, or say anything
-   unsuitable for a child. Nothing is collected, stored or sent. The age
-   register is one variable that dies when the tab closes.
+   She arrives on a slide, grows, says hello, then waves her wand and puffs
+   down to a little helper in the corner. Close her and she rides a unicorn
+   up to the clouds and stays gone for that visit.
 
-   Faces live at images/face-happy.jpg, face-talk.jpg, face-silly.jpg.
-   The clip path and rotation are tuned to those exact crops — swapping in
-   new photos means re-tracing the outline.
+   She is rule-based on purpose: she can only say what is written here, so
+   she cannot invent a fact or say anything unsuitable for a child.
+
+   PRIVACY: this file is public. Nothing in it identifies any real child —
+   no surname, no address, no family names, no exact date of birth. Nothing
+   is collected, stored or sent. The age register is one variable that dies
+   when the tab closes.
    ========================================================================== */
 (function(){
   var D = document, host = D.getElementById('phoenix');
@@ -21,67 +24,66 @@
 
   var SVG = "<svg class=\"pcat\" id=\"pcat\" viewBox=\"0 0 500 880\" aria-label=\"Princess Phoenix Sparkles, your guide\">\n  <defs>\n    <!-- an egg-shaped face mask: wide at the cheeks, narrow at the chin.\n         The photo is cropped to her face only, and the drawn hair overlaps\n         every edge of it, so there is no ring and no background. -->\n    <clipPath id=\"faceHole\">\n      <path d=\"M256 286\n               C 210 288 150 320 126 373 C 110 410 110 425 114 448\n               C 118 490 122 505 134 528 C 148 560 160 592 184 608\n               C 202 628 224 642 246 640 C 270 640 292 624 314 606\n               C 338 588 350 556 361 528 C 374 500 382 472 386 448\n               C 390 420 388 386 378 358 C 368 330 320 288 256 286 Z\"/>\n    </clipPath>\n    <linearGradient id=\"strawb\" x1=\"0\" y1=\"0\" x2=\"0.25\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#fff4d2\"/><stop offset=\"28%\" stop-color=\"#ffdf9a\"/>\n      <stop offset=\"62%\" stop-color=\"#f3c368\"/><stop offset=\"100%\" stop-color=\"#d9a248\"/></linearGradient>\n    <linearGradient id=\"strawb2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#fff8e4\"/><stop offset=\"100%\" stop-color=\"#ffdf9a\"/></linearGradient>\n    <linearGradient id=\"gown\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffb3dd\"/><stop offset=\"42%\" stop-color=\"#f778c0\"/>\n      <stop offset=\"100%\" stop-color=\"#bf3488\"/></linearGradient>\n    <linearGradient id=\"gown2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffe6f5\"/><stop offset=\"100%\" stop-color=\"#ffc2e4\"/></linearGradient>\n    <linearGradient id=\"bodice\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#a45cff\"/><stop offset=\"100%\" stop-color=\"#6b34d4\"/></linearGradient>\n    <linearGradient id=\"hatg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#cfa8ff\"/><stop offset=\"48%\" stop-color=\"#9a5cf0\"/>\n      <stop offset=\"100%\" stop-color=\"#5f2bc4\"/></linearGradient>\n    <linearGradient id=\"gold\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffe9a8\"/><stop offset=\"50%\" stop-color=\"#ffd84d\"/>\n      <stop offset=\"100%\" stop-color=\"#d79b12\"/></linearGradient>\n    <linearGradient id=\"ribbon\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ff9ed2\"/><stop offset=\"100%\" stop-color=\"#e0398f\"/></linearGradient>\n    <radialGradient id=\"glow\" cx=\"50%\" cy=\"50%\" r=\"50%\">\n      <stop offset=\"0%\" stop-color=\"rgba(255,216,77,.95)\"/>\n      <stop offset=\"100%\" stop-color=\"rgba(255,216,77,0)\"/></radialGradient>\n  </defs>\n\n  <g opacity=\".2\" fill=\"#8b6bb5\">\n    <rect x=\"26\" y=\"636\" width=\"36\" height=\"98\"/><path d=\"M22 636 h44 l-9 -20 h-26 z\"/>\n    <path d=\"M44 586 l17 28 h-34 z\"/>\n    <rect x=\"66\" y=\"664\" width=\"48\" height=\"70\"/>\n    <rect x=\"436\" y=\"644\" width=\"34\" height=\"90\"/><path d=\"M432 644 h42 l-8 -18 h-26 z\"/>\n    <path d=\"M453 600 l16 26 h-32 z\"/>\n    <rect x=\"392\" y=\"670\" width=\"44\" height=\"64\"/>\n  </g>\n\n  <ellipse cx=\"250\" cy=\"846\" rx=\"140\" ry=\"18\" fill=\"#8b6bb5\" opacity=\".22\"/>\n\n  <g class=\"p-body\">\n    <g class=\"p-tail\">\n      <path d=\"M352 740 C 424 722 452 650 420 598\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"28\" stroke-linecap=\"round\"/>\n      <path d=\"M352 740 C 424 722 452 650 420 598\" fill=\"none\" stroke=\"url(#strawb)\" stroke-width=\"18\" stroke-linecap=\"round\"/>\n      <path d=\"M410 618 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M402 652 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M386 690 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <circle cx=\"420\" cy=\"598\" r=\"9\" fill=\"#ffd0e8\" stroke=\"#33234a\" stroke-width=\"4\"/>\n    </g>\n\n    <!-- gown -->\n    <path d=\"M250 646 C 302 652 326 696 340 742 C 354 792 374 832 388 854 L 112 854\n             C 126 832 146 792 160 742 C 174 696 198 652 250 646 Z\"\n      fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"7\" stroke-linejoin=\"round\"/>\n    <path d=\"M250 696 C 284 702 302 734 312 772 C 322 808 336 836 344 852 L 156 852\n             C 164 836 178 808 188 772 C 198 734 216 702 250 696 Z\"\n      fill=\"url(#gown2)\" opacity=\".92\"/>\n    <path d=\"M160 782 q90 30 180 0\" stroke=\"#fff\" stroke-width=\"9\" fill=\"none\" opacity=\".75\"/>\n    <path d=\"M140 822 q110 36 220 0\" stroke=\"#fff\" stroke-width=\"9\" fill=\"none\" opacity=\".6\"/>\n    <path d=\"M118 852 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0\n             q16 -18 32 0 q16 -18 32 0 q16 -18 32 0\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"5\"/>\n    <circle cx=\"208\" cy=\"746\" r=\"6\" fill=\"#fff\" opacity=\".85\"/>\n    <circle cx=\"292\" cy=\"766\" r=\"5\" fill=\"#fff\" opacity=\".8\"/>\n    <circle cx=\"250\" cy=\"806\" r=\"7\" fill=\"#fff\" opacity=\".7\"/>\n    <circle cx=\"180\" cy=\"812\" r=\"5\" fill=\"#fff\" opacity=\".7\"/>\n    <circle cx=\"322\" cy=\"822\" r=\"6\" fill=\"#fff\" opacity=\".65\"/>\n\n    <path d=\"M204 626 C 220 618 280 618 296 626 L 290 682 C 266 692 234 692 210 682 Z\"\n      fill=\"url(#bodice)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n    <path d=\"M236 632 L 264 644 M236 646 L 264 658 M236 660 L 264 672\"\n      stroke=\"#ffe9a8\" stroke-width=\"4\" stroke-linecap=\"round\"/>\n    <path d=\"M250 688 l-13 22 h26 z\" fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"4\" stroke-linejoin=\"round\"/>\n    <circle cx=\"250\" cy=\"624\" r=\"11\" fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"5\"/>\n\n    <ellipse cx=\"192\" cy=\"638\" rx=\"30\" ry=\"26\" fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"6\"/>\n    <ellipse cx=\"308\" cy=\"638\" rx=\"30\" ry=\"26\" fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"6\"/>\n\n    <path d=\"M182 658 C 156 678 148 696 168 712\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n    <path d=\"M182 658 C 156 678 148 696 168 712\" fill=\"none\" stroke=\"#ffe1b8\" stroke-width=\"14\" stroke-linecap=\"round\"/>\n    <path d=\"M318 658 C 344 678 352 698 332 714\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n    <path d=\"M318 658 C 344 678 352 698 332 714\" fill=\"none\" stroke=\"#ffe1b8\" stroke-width=\"14\" stroke-linecap=\"round\"/>\n    <g>\n      <circle cx=\"334\" cy=\"718\" r=\"18\" fill=\"#ffe1b8\" stroke=\"#33234a\" stroke-width=\"5\"/>\n      <circle cx=\"334\" cy=\"722\" r=\"7\" fill=\"#ff9ed2\"/>\n      <circle cx=\"326\" cy=\"710\" r=\"3.4\" fill=\"#ff9ed2\"/>\n      <circle cx=\"334\" cy=\"707\" r=\"3.4\" fill=\"#ff9ed2\"/>\n      <circle cx=\"342\" cy=\"710\" r=\"3.4\" fill=\"#ff9ed2\"/>\n    </g>\n\n    <g class=\"p-wand\">\n      <path d=\"M152 712 L 120 608\" stroke=\"#33234a\" stroke-width=\"12\" stroke-linecap=\"round\"/>\n      <path d=\"M152 712 L 120 608\" stroke=\"#f4f4f1\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <path class=\"p-rib1\" d=\"M124 626 C 98 640 94 668 108 686\" fill=\"none\" stroke=\"#ff9ed2\"\n        stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <path class=\"p-rib2\" d=\"M128 630 C 148 648 150 674 136 692\" fill=\"none\" stroke=\"#9ef0ff\"\n        stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <circle cx=\"120\" cy=\"598\" r=\"38\" fill=\"url(#glow)\"/>\n      <g class=\"p-star\">\n        <path d=\"M120 566 L130 590 L156 592 L136 609 L142 635 L120 621 L98 635 L104 609 L84 592 L110 590 Z\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n      </g>\n      <circle cx=\"152\" cy=\"716\" r=\"18\" fill=\"#ffe1b8\" stroke=\"#33234a\" stroke-width=\"5\"/>\n      <circle cx=\"152\" cy=\"720\" r=\"7\" fill=\"#ff9ed2\"/>\n    </g>\n\n    <!-- \u2550\u2550\u2550 THE HEAD \u2014 her face at full size, framed by drawn hair \u2550\u2550\u2550 -->\n    <g class=\"p-head\">\n\n      <!-- long flowing locks, behind -->\n      <g class=\"p-lockL\">\n        <path d=\"M152 352 C 48 424 30 616 74 726 C 86 640 72 528 112 462\n                 C 84 552 92 648 122 716 C 124 598 128 456 178 400 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M150 372 C 74 444 62 606 100 704 C 108 622 100 520 134 456\n                 C 114 540 120 630 146 694 C 146 584 150 458 182 406 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\" opacity=\".96\"/>\n        <path d=\"M108 452 C 84 524 88 606 108 666\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"6\" opacity=\".5\"/>\n        <path d=\"M132 470 C 114 532 118 596 134 648\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"4\" opacity=\".35\"/>\n      </g>\n      <g class=\"p-lockR\">\n        <path d=\"M350 352 C 454 424 472 616 428 726 C 416 640 430 528 390 462\n                 C 418 552 410 648 380 716 C 378 598 374 456 324 400 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M352 372 C 428 444 440 606 402 704 C 394 622 402 520 368 456\n                 C 388 540 382 630 356 694 C 356 584 352 458 320 406 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\" opacity=\".96\"/>\n        <path d=\"M394 452 C 418 524 414 606 394 666\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"6\" opacity=\".5\"/>\n        <path d=\"M370 470 C 388 532 384 596 368 648\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"4\" opacity=\".35\"/>\n      </g>\n\n      <!-- cat ears, tucked closer to her head -->\n      <g class=\"p-earL\">\n        <path d=\"M146 320 L 120 214 L 214 276 Z\" fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M152 304 L 140 244 L 190 276 Z\" fill=\"#ff9ed2\"/>\n      </g>\n      <g class=\"p-earR\">\n        <path d=\"M356 320 L 382 214 L 288 276 Z\" fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M350 304 L 362 244 L 312 276 Z\" fill=\"#ff9ed2\"/>\n      </g>\n\n      <!-- her face, clipped to the traced outline -->\n      <g clip-path=\"url(#faceHole)\">\n        <image id=\"face\" x=\"87\" y=\"225\" width=\"360\" height=\"432\"\n          transform=\"rotate(4 262 463)\"\n          preserveAspectRatio=\"xMidYMid meet\" href=\"images/face-happy.jpg\"/>\n      </g>\n\n      <!-- hair laid over the top and sides, following the same outline -->\n      <path d=\"M256 268 C 168 266 120 310 106 380 C 100 414 100 434 104 458\n               C 110 400 132 352 178 326 C 214 304 300 306 336 332\n               C 382 358 396 406 400 458 C 404 432 404 408 400 380\n               C 386 308 344 268 256 268 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n      <path d=\"M174 328 C 214 348 276 352 330 332 C 308 370 224 378 174 328 Z\"\n        fill=\"url(#strawb2)\" opacity=\".92\"/>\n      <path d=\"M150 330 C 186 300 320 300 356 332 C 320 314 186 314 150 330 Z\"\n        fill=\"#fff8e4\" opacity=\".55\"/>\n      <path d=\"M198 316 C 228 334 276 336 312 322\" fill=\"none\" stroke=\"#ffe3bd\" stroke-width=\"5\" opacity=\".6\"/>\n      <path d=\"M120 444 C 114 384 138 334 178 318 C 148 350 130 396 130 452\n               C 130 502 138 546 150 574 C 126 536 118 492 120 444 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n      <path d=\"M382 444 C 388 384 364 334 324 318 C 354 350 372 396 372 452\n               C 372 502 364 546 352 574 C 376 536 384 492 382 444 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n\n      <!-- ribbons, moved out to the hair so they stop covering her cheeks -->\n      <g class=\"p-bowL\">\n        <path d=\"M124 506 C 100 486 88 506 98 524 C 108 540 124 528 124 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <path d=\"M124 506 C 148 486 160 506 150 524 C 140 540 124 528 124 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <circle cx=\"124\" cy=\"510\" r=\"9\" fill=\"#ffd84d\" stroke=\"#33234a\" stroke-width=\"4\"/>\n        <path d=\"M116 524 C 108 546 112 566 102 580\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n        <path d=\"M132 524 C 140 546 138 568 148 582\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      </g>\n      <g class=\"p-bowR\">\n        <path d=\"M378 506 C 354 486 342 506 352 524 C 362 540 378 528 378 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <path d=\"M378 506 C 402 486 414 506 404 524 C 394 540 378 528 378 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <circle cx=\"378\" cy=\"510\" r=\"9\" fill=\"#ffd84d\" stroke=\"#33234a\" stroke-width=\"4\"/>\n        <path d=\"M370 524 C 362 546 366 566 356 580\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n        <path d=\"M386 524 C 394 546 392 568 402 582\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      </g>\n\n      <!-- whiskers, clear of her face -->\n      <path d=\"M112 470 L 58 456 M110 496 L 52 496 M112 522 L 58 538\"\n        stroke=\"#33234a\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n      <path d=\"M390 470 L 444 456 M392 496 L 450 496 M390 522 L 444 538\"\n        stroke=\"#33234a\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n\n      <!-- \u2500\u2500 A PROPER CROWN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->\n      <g class=\"p-crown\" transform=\"translate(0,-30) rotate(-7 250 268)\">\n        <!-- five points, each tipped with a pearl -->\n        <path d=\"M148 300 L 160 216 L 198 262 L 222 186 L 250 246 L 278 186\n                 L 302 262 L 340 216 L 352 300 Z\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"7\" stroke-linejoin=\"round\"/>\n        <path d=\"M162 268 C 200 284 300 284 338 268\" fill=\"none\" stroke=\"#fff6d0\"\n          stroke-width=\"5\" opacity=\".65\"/>\n        <!-- jewelled band -->\n        <rect x=\"142\" y=\"292\" width=\"216\" height=\"34\" rx=\"14\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"7\"/>\n        <ellipse cx=\"250\" cy=\"309\" rx=\"17\" ry=\"14\" fill=\"#ff5fa2\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"250\" cy=\"304\" r=\"4\" fill=\"#fff\" opacity=\".85\"/>\n        <ellipse cx=\"196\" cy=\"309\" rx=\"12\" ry=\"10\" fill=\"#2bb3ff\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n        <ellipse cx=\"304\" cy=\"309\" rx=\"12\" ry=\"10\" fill=\"#8cff9e\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n        <circle cx=\"166\" cy=\"309\" r=\"6\" fill=\"#c9a2ff\" stroke=\"#33234a\" stroke-width=\"3.5\"/>\n        <circle cx=\"334\" cy=\"309\" r=\"6\" fill=\"#c9a2ff\" stroke=\"#33234a\" stroke-width=\"3.5\"/>\n        <!-- pearls on the points -->\n        <circle cx=\"160\" cy=\"212\" r=\"10\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"222\" cy=\"182\" r=\"11\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"278\" cy=\"182\" r=\"11\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"340\" cy=\"212\" r=\"10\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"250\" cy=\"240\" r=\"9\" fill=\"#ff9ed2\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n      </g>\n    </g>\n  </g>\n\n  <g id=\"fairy\"></g>\n</svg>";
 
+  var UNICORN = '<svg viewBox="0 0 320 240" aria-hidden="true">'
+  + '<defs><linearGradient id="uniM" x1="0" y1="0" x2="1" y2="1">'
+  + '<stop offset="0%" stop-color="#ff9ed2"/><stop offset="34%" stop-color="#c9a2ff"/>'
+  + '<stop offset="68%" stop-color="#9ef0ff"/><stop offset="100%" stop-color="#c9f0a2"/>'
+  + '</linearGradient></defs>'
+  + '<path d="M74 168 q-10 30 4 46 M118 176 q-4 30 6 44 M198 176 q6 30 -2 44 M236 166 q12 28 2 46"'
+  + ' stroke="#33234a" stroke-width="13" fill="none" stroke-linecap="round"/>'
+  + '<path d="M64 132 q-10 -34 26 -40 l120 0 q44 0 48 40 q4 36 -34 40 l-120 0 q-34 -4 -40 -40z"'
+  + ' fill="#fff" stroke="#33234a" stroke-width="7" stroke-linejoin="round"/>'
+  + '<path d="M228 112 q30 -16 34 -44 q2 -20 -14 -24 q-20 -4 -26 16 q-6 22 -18 30"'
+  + ' fill="#fff" stroke="#33234a" stroke-width="7" stroke-linejoin="round"/>'
+  + '<path d="M246 52 l10 -34 l14 32 z" fill="#ffd84d" stroke="#33234a" stroke-width="5" stroke-linejoin="round"/>'
+  + '<circle cx="252" cy="72" r="4.5" fill="#33234a"/>'
+  + '<path d="M214 78 q28 -22 46 -6 q-14 30 -46 26z" fill="url(#uniM)" stroke="#33234a" stroke-width="5"/>'
+  + '<path d="M92 96 q46 -26 96 -8 q34 12 30 44 q-58 10 -96 -6 q-34 -14 -30 -30z"'
+  + ' fill="url(#uniM)" stroke="#33234a" stroke-width="5"/>'
+  + '<path d="M62 128 q-34 6 -44 34 q28 8 46 -12z" fill="url(#uniM)" stroke="#33234a" stroke-width="5"/>'
+  + '</svg>';
+
   host.innerHTML =
-      '<div class="gate" id="gate"><div>'
-    +   '<button id="start">Tap to meet the Princess!</button>'
-    +   '<p>A place to play and learn. No signing up, ever.</p>'
-    + '</div></div>'
-    + '<div class="stage">' + SVG + '</div>'
+      '<div class="stage" id="stage">'
+    +   '<div class="poof" id="poof"></div>'
+    +   '<div class="slide" id="slide"><svg viewBox="0 0 300 200" aria-hidden="true">'
+    +     '<path d="M18 26 L250 178" stroke="#c9a2ff" stroke-width="16" stroke-linecap="round"/>'
+    +     '<path d="M18 26 L250 178" stroke="#ffd0e8" stroke-width="8" stroke-linecap="round"/>'
+    +   '</svg></div>'
+    +   SVG
+    +   '<div class="uni" id="uni">' + UNICORN + '</div>'
+    + '</div>'
     + '<div class="say" id="say">Loading…</div>'
     + '<div class="picks" id="picks"></div>'
     + '<div class="askrow">'
     +   '<input id="ask" type="text" placeholder="Ask me anything!" autocomplete="off">'
     +   '<button id="send">Go!</button>'
-    + '</div>';
+    + '</div>'
+    + '<button class="closeme" id="closeme" aria-label="Say goodbye to the princess">&times;</button>';
+
+  var reopen = D.createElement('button');
+  reopen.className = 'reopen'; reopen.id = 'reopen';
+  reopen.innerHTML = '👑 Talk to Princess Phoenix Sparkles';
+  D.body.appendChild(reopen);
+
+  var face  = D.getElementById('face'),
+      pcat  = D.getElementById('pcat'),
+      say   = D.getElementById('say'),
+      picks = D.getElementById('picks'),
+      ask   = D.getElementById('ask'),
+      stage = D.getElementById('stage'),
+      poof  = D.getElementById('poof'),
+      uni   = D.getElementById('uni');
 
   var FACES = { happy:'images/face-happy.jpg', talk:'images/face-talk.jpg', silly:'images/face-silly.jpg' };
-  var face = document.getElementById('face'),
-      pcat = document.getElementById('pcat'),
-      say  = document.getElementById('say'),
-      picks= document.getElementById('picks'),
-      ask  = document.getElementById('ask'),
-      gate = document.getElementById('gate');
 
-  (function(){
-    var g=document.getElementById('fairy'), cols=['#ffd84d','#9ef0ff','#ff9ed2','#ffffff','#c9a2ff'], i;
-    for(i=0;i<13;i++){
-      var x = 70 + Math.random()*360, y = 70 + Math.random()*130,
-          s = 5 + Math.random()*8, c = cols[i%cols.length],
-          p = document.createElementNS('http://www.w3.org/2000/svg','path');
-      p.setAttribute('d','M'+x+' '+(y-s)+' Q'+(x+s*0.3)+' '+(y-s*0.3)+' '+(x+s)+' '+y+
-                        ' Q'+(x+s*0.3)+' '+(y+s*0.3)+' '+x+' '+(y+s)+
-                        ' Q'+(x-s*0.3)+' '+(y+s*0.3)+' '+(x-s)+' '+y+
-                        ' Q'+(x-s*0.3)+' '+(y-s*0.3)+' '+x+' '+(y-s)+' Z');
-      p.setAttribute('fill',c); p.setAttribute('class','fl');
-      p.style.transformOrigin = x+'px '+y+'px';
-      p.style.animationDuration = (3.4+Math.random()*3)+'s';
-      p.style.animationDelay = (-Math.random()*5)+'s';
-      g.appendChild(p);
-    }
-  })();
-
-  (function(){
-    var sky=document.getElementById('sky'), i, e;
-    for(i=0;i<4;i++){ e=document.createElement('div'); e.className='cloud'; e.textContent='☁️';
-      e.style.top=(4+i*13)+'%'; e.style.animationDuration=(34+i*11)+'s';
-      e.style.animationDelay=(-i*9)+'s'; sky.appendChild(e); }
-    for(i=0;i<14;i++){ e=document.createElement('div'); e.className='twink';
-      e.style.left=(Math.random()*96)+'%'; e.style.top=(Math.random()*70)+'%';
-      e.style.animationDelay=(Math.random()*4)+'s'; sky.appendChild(e); }
-  })();
-
-  /* ── Age register. We never ask a child for personal information — no
-        birthday, no number, nothing stored or sent. Three buttons, one
-        variable, gone when the tab closes. It only changes how she talks. */
-  window.PWage = 'b';   /* l = little, b = big, s = super big */
-
-  function say3(e){                       /* pick the right register */
+  window.PWage = 'b';
+  function say3(e){
     if (window.PWage==='l' && e.rl) return pick(e.rl);
     if (window.PWage==='s' && e.rs) return pick(e.rs);
     return pick(e.r);
   }
 
-  /* ── The affirmations. Call and response, one line at a time. ───────── */
   var CREED = [
     "I am <b>amazing</b>.",
     "I can do <b>anything</b> I set my mind to.",
@@ -96,11 +98,10 @@
   function creedStep(){
     creedAt++;
     if (creedAt === 0)
-      return "Stand up tall like a royal! Put your hands on your hips. Now <b>repeat after me</b>…<br><br>" + CREED[0];
-    if (creedAt < CREED.length)
-      return "Yes! Say it loud…<br><br>" + CREED[creedAt];
+      return "Stand up tall like a royal! Hands on hips. Now <b>repeat after me</b>…<br><br>" + CREED[0];
+    if (creedAt < CREED.length) return "Yes! Say it loud…<br><br>" + CREED[creedAt];
     creedAt = -1;
-    return "And you <i>meant</i> every word. I felt it from here. That is my favourite thing we do. 👑";
+    return "And you <i>meant</i> every word. I felt it from here. 👑";
   }
 
   var KB = [
@@ -242,6 +243,115 @@
      "Bye for now, friend! Go be amazing. Eat something green for me and listen to your grown-ups. 👑"]}
   ];
 
+  /* ── Toddler and little-kid speech. Five-year-olds type by sound, so the
+        normalizer turns what they meant into something matchable before
+        anything else runs. ─────────────────────────────────────────────── */
+  var KIDSPEAK = {
+    ya:'yes', yah:'yes', yeah:'yes', yep:'yes', yup:'yes', yea:'yes', mhm:'yes',
+    'uh huh':'yes', 'uhhuh':'yes', ok:'yes', okie:'yes', okey:'yes', kk:'yes',
+    'nuh uh':'no', 'nuhuh':'no', nah:'no', nope:'no', nu:'no',
+    wanna:'want to', gonna:'going to', gotta:'got to', hafta:'have to',
+    dunno:'i do not know', idk:'i do not know', lemme:'let me', gimme:'give me',
+    cuz:'because', bc:'because', howcum:'how come',
+    wat:'what', wut:'what', whut:'what', wha:'what', wher:'where', wen:'when',
+    y:'why', wy:'why', hoo:'who', hau:'how',
+    pwease:'please', pls:'please', plz:'please', pleeease:'please',
+    tank:'thank', tanks:'thanks', tank_you:'thank you', fank:'thank',
+    luv:'love', lub:'love', wuv:'love', lyk:'like', liek:'like',
+    mommy:'mom', mummy:'mom', mama:'mom', momma:'mom',
+    daddy:'dad', dada:'dad', papa:'dad',
+    bruther:'brother', brudder:'brother', bubba:'brother',
+    sistr:'sister', sissy:'sister',
+    kitty:'cat', kitteh:'cat', kitties:'cats', cate:'cat',
+    doggy:'dog', doggie:'dog', puppy:'dog', puppie:'dog',
+    birfday:'birthday', birfdae:'birthday', bday:'birthday',
+    skool:'school', scool:'school', preskool:'preschool',
+    favrit:'favorite', favourite:'favorite', fav:'favorite', faverite:'favorite',
+    sparkel:'sparkle', sparkley:'sparkle', sparkly:'sparkle',
+    rainbo:'rainbow', raibow:'rainbow', raninbow:'rainbow',
+    prinsess:'princess', princes:'princess', prinses:'princess',
+    playin:'playing', doin:'doing', goin:'going', havin:'having',
+    nite:'night', lite:'light', rite:'right', wite:'white',
+    sum:'some', thay:'they', wus:'was', wuz:'was', iz:'is', da:'the', teh:'the',
+    im:'i am', ur:'your', u:'you', r:'are', n:'and', b:'be', c:'see',
+    hi_hi:'hi', heyy:'hey', helo:'hello', hewwo:'hello', hiya:'hi'
+  };
+  function kidspeak(t){
+    t = ' ' + t + ' ';
+    t = t.replace(/ uh huh /g,' yes ').replace(/ nuh uh /g,' no ')
+         .replace(/ thank you /g,' thanks ');
+    var out = t.split(' ').map(function(w){
+      if (!w) return w;
+      var base = w.replace(/(.)\1{2,}/g, '$1$1');      /* pleeeease -> pleease */
+      return KIDSPEAK[base] || KIDSPEAK[w] || w;
+    }).join(' ');
+    return out;
+  }
+
+  /* ── Phoenix. She is the reason this whole place exists. Nothing in here
+        identifies her: no surname, no town, no family names, no exact date.
+        This file is public, so it only holds the fun parts. ────────────── */
+  KB.push(
+   {id:'phoenix', w:3, k:'phoenix,my name is phoenix,im phoenix,i am phoenix,this is phoenix', r:[
+     "PHOENIX! Oh my sparkles, it is YOU! You are my very favourite person in the whole kingdom. I made this whole world just for you. What shall we play first?",
+     "Phoenix is here! Everybody curtsey! 👑 I have been waiting all day to talk to you. Tell me something good."]},
+   {id:'myname', k:'my name is,i am called,call me,this is me,name is', r:[
+     "What a brilliant name! It is lovely to meet you properly. I am Princess Phoenix Sparkles, and you are officially invited to everything."]},
+   {id:'bday', k:'birthday,turning five,i am five,im 5,i am 4,october,my party,getting older,how old am i', r:[
+     "A birthday coming up?! That is the most exciting news. Turning <b>five</b> is a very big deal — five means you can count on one whole hand. I shall bake an imaginary cake immediately. 🎂"]},
+   {id:'cats', w:2.6, k:'cat,cats,kitty,kitten,meow,my cat', r:[
+     "CATS. My favourite subject. Did you know a cat can jump about <b>six times</b> its own body length? And they purr when they are happy — sometimes when they are poorly too, because purring helps them feel better.",
+     "Meow! Cats have whiskers to measure whether a gap is wide enough to squeeze through. Little built-in measuring sticks!"]},
+   {id:'rainbow', w:2.6, k:'rainbow,rainbows,colours in the sky', r:[
+     "A <b>rainbow</b> happens when sunshine goes through raindrops and splits into all its colours. The colours are always in the same order: red, orange, yellow, green, blue, indigo, violet. Sunshine was hiding them the whole time!"]},
+   {id:'sparkles', w:2.6, k:'sparkle,sparkles,glitter,shiny,sparkly', r:[
+     "Sparkles are simply light bouncing off in lots of little directions at once. Which means whenever you sparkle, you are basically doing science. ✨"]},
+   {id:'pink', k:'pink,my favorite color is pink,i like pink', r:[
+     "<b>Bright pink</b> is a top-tier choice and I will not hear otherwise. Fun bit: pink is made by mixing red with white. You can make it yourself with paint!"]},
+   {id:'dresses', k:'dress,dresses,twirl,girly,fancy,pretty clothes,princess dress', r:[
+     "A dress that <b>twirls</b> is the best kind of dress. Go and do one twirl right now and come back and tell me how it went. I shall wait."]},
+   {id:'brother', k:'brother,my brother,big brother,little brother,sibling,sister', r:[
+     "Brothers are wonderful and also sometimes annoying, and both things can be true on the same day! What is the best thing you two do together?"]},
+   {id:'family', k:'mom,dad,mum,parents,my family,grown up,grandma,grandpa', r:[
+     "Families are the best team you will ever be on. What is your favourite thing you all do together?",
+     "Tell your grown-up one thing you love about them today. Watch their face. It is like a magic trick that works every time."]},
+   {id:'camping', k:'camping,tent,campfire,marshmallow,woods,sleeping bag,smores', r:[
+     "CAMPING! Sleeping in a tent, the fire crackling, everything smelling like woodsmoke. Next time you go, look straight up at night — away from town you can see hundreds more stars."]},
+   {id:'airplane', k:'airplane,plane,flying,flight,trip,vacation,airport,kentucky', r:[
+     "A trip on an <b>airplane</b>! Here is a good bit: planes stay up because their wings make the air move faster over the top than underneath, and that lifts the whole thing. Ask for a window seat and watch the world get tiny."]},
+   {id:'preschool', k:'preschool,school,kindergarten,teacher,my class,my friends at school', r:[
+     "Preschool now and <b>kindergarten</b> next year — that is a huge step and you are going to be brilliant at it. What is the best thing you did at school today?"]},
+   {id:'outmywindow', k:'where i live,my house,my town,outside my window,my street', r:[
+     "Wherever you live, there is something worth spotting outside your window. Go and look and tell me the first thing you see — I want to guess whether it is a tree, a car or a bird."]},
+
+   /* ── conversation. She asks, then keeps hold of the thread. ────────── */
+   {id:'fun', w:2.4, k:'what do you like to do,for fun,what should we do,what do you do,hobby', r:[
+     "Ooh, my favourites are painting, twirling, and learning something brand new before breakfast. What about YOU — are you an art person, an outside person, or a building person?"]},
+   {id:'myday', k:'my day,today i,guess what,i did,we went,i got', r:[
+     "Tell me EVERYTHING. I love a good story. What was the very best part?",
+     "Ooh, go on! Was it the sort of day that needs a snack afterwards, or the sort that needs a nap?"]},
+   {id:'park', w:2.4, k:'park,playground,swing,slide,monkey bars,outside,play outside', r:[
+     "The park! Swings are my favourite because for one second at the top you are actually flying. Which do you go to first — swings, slide, or straight up the climbing frame?"]},
+   {id:'artchat', w:2.4, k:'art,draw,drawing,paint,painting,color in,coloring,craft,make something', r:[
+     "Painting is my number one. Rule of the kingdom: there is <b>no wrong way</b> to make art. A purple sky is allowed. A cat with wings is encouraged. What are you making?"]},
+   {id:'favthing', k:'favorite,favourite,best thing,what do you love,i love', r:[
+     "Lovely question. Mine are cats, rainbows, and the exact moment you understand something you did not understand a minute ago. What is yours?"]},
+   {id:'yes', k:'yes,yeah,i do,me too,i did', r:[
+     "YES! I knew it. Tell me more — I am completely gripped.",
+     "Ooh good. Go on then, what happened next?"]},
+   {id:'no', k:'no,not really,i dont,nope', r:[
+     "That is completely fine! Not everybody likes everything, and that is what makes people interesting. What DO you like?"]},
+   {id:'silly', k:'poop,pee,bum,fart,burp,toot,silly word,haha,lol,hehe', r:[
+     "Hee hee! Right, we have both had our giggle. 😹 Now — quick, what rhymes with <b>cat</b>? I will start: hat, bat, mat…",
+     "You are being <i>extremely</i> silly and honestly I respect it. Now say the silliest word you can invent. Make it up completely!"]},
+   {id:'dontknow', k:'i do not know,i dunno,no idea,not sure,hmm', r:[
+     "That is a perfectly good answer! Nobody knows everything — that is why learning is a thing. Want me to pick something for us instead?"]},
+   {id:'again', k:'again,more,another one,keep going,one more', r:[
+     "Again it is! I could do this all day. ✨"]},
+   {id:'guess', k:'guess,guess what,i have a secret,know what', r:[
+     "Ooh! Is it… a rainbow? A cat? A snack? No — tell me, tell me, I am terrible at waiting!"]}
+  );
+
   var MISS = [
     "Ooh, I do not know that one <i>yet</i>! I am still learning too. Try me on <b>animals</b>, <b>space</b>, <b>colors</b>, <b>counting</b>, or say <b>joke</b>!",
     "Hmm! My kitty brain is small but growing every day. Ask me about <b>vegetables</b>, <b>the park</b>, <b>art</b>, or tell me how you are feeling.",
@@ -281,38 +391,21 @@
     },190);
   }
 
+
   function chips(list){
     picks.innerHTML='';
     list.forEach(function(c,i){
-      var b=document.createElement('button');
+      var b=D.createElement('button');
       b.className='pick p'+((i%6)+1);
-      b.innerHTML=c.label;
-      b.onclick=c.go;
+      b.innerHTML=c.label; b.onclick=c.go;
       picks.appendChild(b);
     });
   }
-
   var MAIN=['Tell me a joke','Repeat after me!','Let us count','Colors!','I feel sad','Play a game',
-            'Tell me about space','Why vegetables?'];
+            'Tell me about cats','Why vegetables?'];
   function mainChips(){
-    chips(MAIN.map(function(t){
-      return {label:t, go:function(){ speak(answer(t)); }};
-    }));
+    chips(MAIN.map(function(t){ return {label:t, go:function(){ speak(answer(t)); }}; }));
   }
-
-  /* the age question, asked without ever asking for personal information */
-  function askAge(){
-    speak("First things first! Are you a <b>little kid</b>, a <b>big kid</b>, or a <b>super big kid</b>? Tap one so I know how to play with you!");
-    chips([
-      {label:'Little kid 🧸', go:function(){ setAge('l'); mainChips();
-        speak("A little kid! My favourite. We will count on our fingers and make LOTS of silly noises. Ready?"); }},
-      {label:'Big kid ⭐', go:function(){ setAge('b'); mainChips();
-        speak("A big kid! Perfect. I can teach you real things and tell you my best jokes. What shall we do first?"); }},
-      {label:'Super big kid 🚀', go:function(){ setAge('s'); mainChips();
-        speak("A super big kid! Excellent. I will give you the tricky questions — times tables, riddles, real science. Try me."); }}
-    ]);
-  }
-
   function setAge(a){ window.PWage=a; if(window.PWsync) window.PWsync(a); }
   window.PWspeak = function(t){ speak(t); };
 
@@ -320,25 +413,68 @@
     var v=ask.value.trim(); if(!v) return;
     ask.value=''; ask.blur(); speak(answer(v));
   }
-  document.getElementById('send').onclick=send;
+  D.getElementById('send').onclick=send;
   ask.addEventListener('keydown',function(e){ if(e.key==='Enter') send(); });
 
-  document.querySelectorAll('.world').forEach(function(w){
-    w.onclick=function(){
-      var n=w.textContent.replace(/Coming soon|A B C|1 2 3|Rainbow!/,'').trim();
-      speak("<b>"+n+"</b> is still being built! My dad-in-charge is working on it. Pick another for now?");
-    };
-  });
-
-  document.getElementById('start').onclick=function(){
-    gate.classList.add('off');
-    askAge();
-  };
   pcat.addEventListener('click',function(){
+    if (host.classList.contains('mini')) { host.classList.remove('shy'); return; }
     face.setAttribute('href',FACES.silly);
     speak("You booped me! Boop you back. <b>Blep!</b>");
     setTimeout(function(){ face.setAttribute('href',FACES.happy); },1400);
   });
-  mainChips();
 
+  /* ── arrival: down the slide small, grow, say hello, then poof to the
+        corner as a little helper ───────────────────────────────────────── */
+  function puff(){
+    poof.innerHTML='';
+    for (var i=0;i<14;i++){
+      var p=D.createElement('b');
+      p.style.setProperty('--tx',(Math.random()*260-130)+'px');
+      p.style.setProperty('--ty',(Math.random()*220-140)+'px');
+      p.style.animationDelay=(Math.random()*0.25)+'s';
+      p.style.width=p.style.height=(26+Math.random()*46)+'px';
+      poof.appendChild(p);
+    }
+    poof.classList.add('go');
+    setTimeout(function(){ poof.classList.remove('go'); poof.innerHTML=''; }, 1400);
+  }
+
+  function toCorner(){
+    if (host.classList.contains('mini')) return;
+    speak("Watch this! ✨");
+    pcat.classList.add('casting');
+    setTimeout(puff, 620);
+    setTimeout(function(){
+      host.classList.add('mini');
+      pcat.classList.remove('casting');
+      speak("I am here to help you! What do you want to learn about?");
+      mainChips();
+    }, 1000);
+  }
+
+  function goodbye(){
+    if (host.classList.contains('gone')) return;
+    say.innerHTML = "Bye for now! Go be amazing. 👑";
+    host.classList.add('riding');
+    setTimeout(function(){
+      host.classList.add('gone');
+      host.classList.remove('riding');
+      reopen.classList.add('on');
+    }, 3400);
+  }
+  D.getElementById('closeme').onclick=goodbye;
+  reopen.onclick=function(){
+    host.classList.remove('gone');
+    reopen.classList.remove('on');
+    speak("You came back! Brilliant. What shall we learn?");
+    mainChips();
+  };
+
+  mainChips();
+  speak("Welcome to <b>Phoenix's World</b>, where <i>kids are the boss</i>! 😋<br>We can learn and have fun all day. And all night!");
+  host.classList.add('arriving');
+  setTimeout(function(){ host.classList.remove('arriving'); }, 2600);
+  setTimeout(toCorner, 7200);
+
+  window.PWprincess = { toCorner:toCorner, goodbye:goodbye, setAge:setAge, speak:speak, ask:answer };
 })();
