@@ -81,12 +81,62 @@ body{font:18px/1.55 "Trebuchet MS",Verdana,system-ui,sans-serif;color:#2b1b45;ba
   font:800 14px "Trebuchet MS",Verdana,sans-serif;padding:9px 15px;min-height:46px}
 .lv.on{background:#c9f04b}
 
+
+  /* magic buttons */
+  .magicbar{position:relative;z-index:2;text-align:center;padding:16px 10px 6px}
+  .magicbar h2{font-size:clamp(20px,4.6vw,28px);margin:0 0 10px;color:#5a3d86}
+  .magicrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .magic{border:5px solid #2b1b45;border-radius:999px;cursor:pointer;min-height:56px;
+    font:800 16px "Trebuchet MS",Verdana,sans-serif;color:#2b1b45;padding:12px 18px;
+    box-shadow:0 6px 0 rgba(43,27,69,.28);transition:transform .1s}
+  .magic:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(43,27,69,.28)}
+  .m0{background:#ff6ec7}.m1{background:#ffd400}.m2{background:#00e5ff}
+  .m3{background:#00ff9d}.m4{background:#b14bff}
+
+  /* rainbow river */
+  .river{position:relative;z-index:1;line-height:0;overflow:hidden}
+  .river svg{width:200%;height:clamp(60px,10vw,120px);display:block;animation:flow 14s linear infinite}
+  @keyframes flow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* full-screen effects */
+  #fxlayer{position:fixed;inset:0;z-index:2147481000;pointer-events:none;overflow:hidden}
+  .fxspark{position:absolute;border-radius:50%;animation:fxout ease-out forwards;
+    box-shadow:0 0 18px currentColor}
+  @keyframes fxout{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+    15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.5) rotate(220deg)}}
+  .fxblob{position:absolute;border-radius:58% 42% 50% 50% / 46% 54% 46% 54%;opacity:0;
+    animation:fxblob ease-out forwards}
+  @keyframes fxblob{0%{opacity:0;transform:scale(.2)}18%{opacity:.85}100%{opacity:0;transform:scale(1.5)}}
+  .fxconf{position:absolute;top:-40px;border-radius:3px;animation:fxfall linear forwards}
+  @keyframes fxfall{0%{opacity:0;transform:translateY(0) rotate(0)}
+    10%{opacity:1}100%{opacity:.9;transform:translateY(105vh) rotate(760deg)}}
+  .fxbow{position:absolute;left:-20vw;top:10vh;width:140vw;height:70vh;opacity:0;
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;animation:fxbow 2.6s ease-out forwards;
+    background:
+      radial-gradient(ellipse at 50% 100%,transparent 58%,#b14bff 58%,#b14bff 62%,transparent 62%),
+      radial-gradient(ellipse at 50% 100%,transparent 62%,#00e5ff 62%,#00e5ff 66%,transparent 66%),
+      radial-gradient(ellipse at 50% 100%,transparent 66%,#00ff9d 66%,#00ff9d 70%,transparent 70%),
+      radial-gradient(ellipse at 50% 100%,transparent 70%,#ffd400 70%,#ffd400 74%,transparent 74%),
+      radial-gradient(ellipse at 50% 100%,transparent 74%,#ff7a00 74%,#ff7a00 78%,transparent 78%),
+      radial-gradient(ellipse at 50% 100%,transparent 78%,#ff2d95 78%,#ff2d95 82%,transparent 82%)}
+  @keyframes fxbow{0%{opacity:0;transform:scale(.4)}30%{opacity:.95}
+    75%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(1.08)}}
+
+  /* drawing pad */
+  .panel.wide{grid-column:1/-1}
+  #pad{width:100%;height:auto;aspect-ratio:8/5;display:block;border:5px solid #2b1b45;
+    border-radius:18px;background:#fff;touch-action:none;cursor:crosshair}
+  .stamps{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .stamp{font-size:26px;line-height:1;border:4px solid #2b1b45;border-radius:14px;background:#fff;
+    cursor:pointer;padding:6px 9px;min-height:46px}
+  .stamp.on{background:#ffd400;transform:scale(1.1)}
+
 footer{position:relative;z-index:1;text-align:center;padding:18px 16px 40px;color:#6b5a86;
   font-size:14px;background:#fff7fd;border-top:6px solid #2b1b45}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
-<body>
+<body data-pw="home">
 
 <div class="bgshapes" id="bgshapes" aria-hidden="true"></div>
 
@@ -94,6 +144,24 @@ footer{position:relative;z-index:1;text-align:center;padding:18px 16px 40px;colo
   <h1>Welcome to Phoenix's World!</h1>
   <p>Where kids make rulz 😋</p>
 </header>
+
+
+<!-- ══════════ MAGIC BUTTONS ══════════ -->
+<section class="magicbar">
+  <h2>🪄 Press a magic button!</h2>
+  <div class="magicrow" id="magicBtns"></div>
+</section>
+
+<!-- ══════════ RAINBOW RIVER ══════════ -->
+<div class="river" aria-hidden="true">
+  <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+    <path d="M0 26 Q150 0 300 26 T600 26 T900 26 T1200 26 V46 Q1050 72 900 46 T600 46 T300 46 T0 46 Z" fill="#ff2d95"/>
+    <path d="M0 46 Q150 20 300 46 T600 46 T900 46 T1200 46 V66 Q1050 92 900 66 T600 66 T300 66 T0 66 Z" fill="#ff7a00"/>
+    <path d="M0 66 Q150 40 300 66 T600 66 T900 66 T1200 66 V86 Q1050 112 900 86 T600 86 T300 86 T0 86 Z" fill="#ffd400"/>
+    <path d="M0 86 Q150 60 300 86 T600 86 T900 86 T1200 86 V106 Q1050 132 900 106 T600 106 T300 106 T0 106 Z" fill="#00ff9d"/>
+    <path d="M0 106 Q150 80 300 106 T600 106 T900 106 T1200 106 V126 Q1050 152 900 126 T600 126 T300 126 T0 126 Z" fill="#00e5ff"/>
+  </svg>
+</div>
 
 <nav class="nav">
   <h2>🎨 Drag these anywhere you like!</h2>
@@ -172,6 +240,37 @@ footer{position:relative;z-index:1;text-align:center;padding:18px 16px 40px;colo
   <p class="sub" style="text-align:center;font-weight:800;color:#5a3d86">Paint, build, roll and spell. Nothing here can go wrong.</p>
 
   <div class="grid">
+
+
+    <div class="panel wide">
+      <h3>✏️ Draw Anything!</h3>
+      <canvas id="pad" aria-label="Draw with your finger"></canvas>
+      <div class="swatches" id="padCols"></div>
+      <div class="stamps" id="padStamps"></div>
+      <div class="row">
+        <button class="btn" id="padClear">🧽 Clear</button>
+        <button class="btn" id="padSave">💾 Save my picture</button>
+      </div>
+      <p class="note" id="padTip">Draw with your finger! Pick a colour or a sticker.</p>
+    </div>
+
+    <div class="panel">
+      <h3>✨ Sparkle Catch</h3>
+      <svg id="catch" viewBox="0 0 400 300" aria-label="Catch the falling sparkles"></svg>
+      <p class="note" id="catchTip">Move the basket and catch the right colour!</p>
+    </div>
+
+    <div class="panel">
+      <h3>🧠 Memory Match</h3>
+      <svg id="memory" viewBox="0 0 400 300" aria-label="Find the matching pairs"></svg>
+      <p class="note" id="memTip">Find the matching pairs!</p>
+    </div>
+
+    <div class="panel">
+      <h3>🥛 Chocolate Milk</h3>
+      <svg id="milk" viewBox="0 0 300 300" aria-label="Tap the glass to take a sip"></svg>
+      <p class="note" id="milkTip">Tap the glass to take a sip!</p>
+    </div>
 
     <div class="panel">
       <h3>🎨 Splat Wall</h3>
