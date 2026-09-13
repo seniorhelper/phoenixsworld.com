@@ -1,0 +1,177 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PHOENIX'S WORLD — park.js
+   THE PARK. A full-color band with growing grass, a swing set, a
+   slide, a seesaw, a sandbox, a pond, a leaf pile with a rake, and a
+   signpost with paths to the other worlds.
+
+   Pick a doll from the toy box and drag it anywhere. Drop it:
+     · on a SWING  → it sits and swings
+     · at the top of the SLIDE → it slides down and lands
+     · on either end of the SEESAW → it tilts; two dolls → it rocks
+     · in the SANDBOX → it digs, sand flies
+     · in the POND → SPLASH, ripples, it climbs out dripping
+     · by the RAKE → it picks up the rake and rakes leaves into the pile
+     · anywhere else → it stands there, breathes, and talks when tapped
+   Two dolls on the same thing interact. Dolls remember where you put
+   them for the whole visit. Mounts itself above #shelf.
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+var P=window.PW; if(!P) return;
+var E=P.E,H=P.H,$=P.$,rnd=P.rnd,ri=P.ri,pick=P.pick,clear=P.clear,SND=P.SND,say=P.say;
+var D=document, W=1200, Hh=620;
+
+H('style',{html:
+'.park-wrap{background:#8fe08f;padding-bottom:0!important}'+
+'.park-wrap .panel-lead{color:var(--ink)}'+
+'.park{max-width:1200px;margin:22px auto 0;position:relative}'+
+'.park svg{width:100%;height:auto;display:block;touch-action:none;overflow:visible}'+
+'.park .doll{cursor:grab}.park .doll.held{cursor:grabbing}'+
+'.park .breathe{transform-box:fill-box;transform-origin:50% 100%;animation:pkb 3.4s ease-in-out infinite}@keyframes pkb{0%,100%{transform:scale(1)}50%{transform:scale(1.03,1.06)}}'+
+'.park .swingA{transform-box:fill-box;transform-origin:50% 0;animation:pks 2.6s ease-in-out infinite}@keyframes pks{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(16deg)}}'+
+'.park .swingB{transform-box:fill-box;transform-origin:50% 0;animation:pks 2.6s ease-in-out -1.3s infinite}'+
+'.park .rock{transform-box:fill-box;transform-origin:50% 100%;animation:pkr 1.6s ease-in-out infinite}@keyframes pkr{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}'+
+'.park .dig{animation:pkdig .5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes pkdig{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(8deg) translateY(-6px)}}'+
+'.park .rakeArm{transform-box:fill-box;transform-origin:0 0;animation:pkrake .7s ease-in-out infinite}@keyframes pkrake{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}'+
+'.park .grass{transform-box:fill-box;transform-origin:50% 100%;animation:pkgrow 2.4s cubic-bezier(.3,1.5,.5,1) both,pksway 3s ease-in-out 2.4s infinite}'+
+'@keyframes pkgrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}@keyframes pksway{0%,100%{transform:skewX(-4deg)}50%{transform:skewX(4deg)}}'+
+'.park .cloud{animation:pkcloud 60s linear infinite}@keyframes pkcloud{from{transform:translateX(-260px)}to{transform:translateX(1460px)}}'+
+'.park .spin{transform-box:fill-box;transform-origin:center;animation:pkspin 30s linear infinite}@keyframes pkspin{to{transform:rotate(360deg)}}'+
+'.park .ripple{animation:pkrip 1.4s ease-out forwards;transform-box:fill-box;transform-origin:center}@keyframes pkrip{from{transform:scale(.2);opacity:.9}to{transform:scale(2.4);opacity:0}}'+
+'.park .butterfly{animation:pkfly 14s ease-in-out infinite}@keyframes pkfly{0%,100%{transform:translate(0,0)}25%{transform:translate(220px,-60px)}50%{transform:translate(480px,10px)}75%{transform:translate(260px,-90px)}}'+
+'.park .wing{transform-box:fill-box;transform-origin:50% 100%;animation:pkwing .3s ease-in-out infinite alternate}@keyframes pkwing{from{transform:scaleX(1)}to{transform:scaleX(.3)}}'+
+'.park .sign{cursor:pointer}.park .sign:hover rect{filter:brightness(1.1)}'+
+'.dollbox{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px auto 0;padding:14px;max-width:1200px;border:6px solid var(--ink);border-radius:26px 26px 0 0;background:#c9884a;box-shadow:inset 0 6px 0 rgb(255 255 255/.3)}'+
+'.dollbtn{width:84px;height:110px;border:5px solid var(--ink);border-radius:18px;background:#fff;cursor:pointer;padding:4px;box-shadow:0 6px 0 rgb(var(--ink-rgb)/.3);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font:700 12px/1.1 "Fredoka",sans-serif;color:var(--ink)}'+
+'.dollbtn svg{width:64px;height:76px;overflow:visible}.dollbtn:active{transform:translateY(5px);box-shadow:0 1px 0 rgb(var(--ink-rgb)/.3)}'+
+'.dollbtn[aria-pressed="true"]{background:#ffe08a;box-shadow:0 0 0 4px var(--sherbet),0 6px 0 rgb(var(--ink-rgb)/.3)}'+
+'.park-say{position:absolute;padding:8px 13px;border:4px solid var(--ink);border-radius:16px;background:#fff;font:800 13px/1.3 "Nunito",sans-serif;color:var(--ink);pointer-events:none;box-shadow:0 4px 0 rgb(var(--ink-rgb)/.22);white-space:nowrap;transform:translate(-50%,-100%);animation:pkpop .3s cubic-bezier(.3,1.6,.5,1);z-index:3}'+
+'@keyframes pkpop{from{transform:translate(-50%,-100%) scale(.5);opacity:0}to{transform:translate(-50%,-100%) scale(1);opacity:1}}'+
+'body.calm .park .swingA,body.calm .park .swingB,body.calm .park .cloud,body.calm .park .butterfly,body.calm .park .grass{animation:none!important}'
+},D.head);
+
+/* ─────────── DOLLS (each a compact SVG group centered at 0,0, feet at y=60) ─────────── */
+var DOLLS={
+ phoenix:{name:'Phoenix',lines:['This is MY park. Well, ours.','Push me higher!','Wheeee!','Race you to the slide!'],
+  svg:'<path d="M20 10 q20 -6 16 -26" fill="none" stroke="#33234a" stroke-width="8" stroke-linecap="round"/><path d="M20 10 q20 -6 16 -26" fill="none" stroke="#f3c368" stroke-width="5" stroke-linecap="round"/><path d="M-18 6 q-4 30 4 52 q14 4 28 0 q8 -22 4 -52z" fill="#f778c0" stroke="#33234a" stroke-width="4"/><ellipse cx="-8" cy="60" rx="8" ry="4" fill="#ff5fa2" stroke="#33234a" stroke-width="3"/><ellipse cx="8" cy="60" rx="8" ry="4" fill="#ff5fa2" stroke="#33234a" stroke-width="3"/><path d="M-22 -24 L-26 -46 L-8 -34z M22 -24 L26 -46 L8 -34z" fill="#f3c368" stroke="#33234a" stroke-width="3.5" stroke-linejoin="round"/><circle cx="0" cy="-14" r="24" fill="#ffe1b8" stroke="#33234a" stroke-width="4"/><path d="M-24 -20 q6 -22 24 -20 q18 -2 24 20 q-8 -8 -24 -8 q-16 0 -24 8z" fill="#f3c368" stroke="#33234a" stroke-width="3"/><path d="M-14 -40 l5 -12 4 10 5 -14 5 14 4 -10 5 12z" fill="#ffd84d" stroke="#d79b12" stroke-width="2.5" stroke-linejoin="round"/><circle cx="-8" cy="-14" r="3" fill="#33234a"/><circle cx="8" cy="-14" r="3" fill="#33234a"/><path d="M-6 -4 q6 5 12 0" stroke="#33234a" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="-14" cy="-6" r="4" fill="#ff9ed2" opacity=".6"/><circle cx="14" cy="-6" r="4" fill="#ff9ed2" opacity=".6"/>'},
+ kitty:{name:'Marshmallow',lines:['Purrrr.','Meow! Push me!','I love the slide.','Is it nap time yet?'],
+  svg:'<path d="M20 30 q22 -4 18 -30" fill="none" stroke="#201540" stroke-width="10" stroke-linecap="round"/><path d="M20 30 q22 -4 18 -30" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><ellipse cx="0" cy="32" rx="24" ry="22" fill="#fff" stroke="#201540" stroke-width="4"/><ellipse cx="-10" cy="58" rx="9" ry="5" fill="#fff" stroke="#201540" stroke-width="3"/><ellipse cx="10" cy="58" rx="9" ry="5" fill="#fff" stroke="#201540" stroke-width="3"/><path d="M-20 -14 L-26 -40 L-6 -26z M20 -14 L26 -40 L6 -26z" fill="#fff" stroke="#201540" stroke-width="4" stroke-linejoin="round"/><path d="M-17 -18 L-20 -32 L-9 -24z M17 -18 L20 -32 L9 -24z" fill="#ffb6ce"/><circle cx="0" cy="-2" r="24" fill="#fff" stroke="#201540" stroke-width="4"/><path d="M-12 -24 l4 -8 4 6 4 -8 4 8 4 -6 4 8z" fill="#ffd84d" stroke="#c9a01a" stroke-width="2"/><circle cx="-9" cy="-4" r="5" fill="#17c7e8" stroke="#201540" stroke-width="2"/><circle cx="9" cy="-4" r="5" fill="#8b3dff" stroke="#201540" stroke-width="2"/><path d="M-3 6 L3 6 L0 10z" fill="#ff8fb8"/><path d="M0 10 q-5 5 -9 1 M0 10 q5 5 9 1" stroke="#201540" stroke-width="2" fill="none"/><path d="M-24 2 h-10 M-24 8 h-10 M24 2 h10 M24 8 h10" stroke="#201540" stroke-width="2"/>'},
+ bear:{name:'Buttons',lines:['Bear hug!','Rrrumble. That means fun.','Sandbox. Now.','I am a very good digger.'],
+  svg:'<ellipse cx="0" cy="30" rx="26" ry="24" fill="#c9884a" stroke="#201540" stroke-width="4"/><ellipse cx="0" cy="36" rx="14" ry="14" fill="#f0cfa8"/><ellipse cx="-12" cy="58" rx="10" ry="5" fill="#c9884a" stroke="#201540" stroke-width="3"/><ellipse cx="12" cy="58" rx="10" ry="5" fill="#c9884a" stroke="#201540" stroke-width="3"/><ellipse cx="-22" cy="22" rx="8" ry="13" fill="#c9884a" stroke="#201540" stroke-width="3" transform="rotate(22 -22 22)"/><ellipse cx="22" cy="22" rx="8" ry="13" fill="#c9884a" stroke="#201540" stroke-width="3" transform="rotate(-22 22 22)"/><circle cx="-18" cy="-24" r="9" fill="#c9884a" stroke="#201540" stroke-width="4"/><circle cx="18" cy="-24" r="9" fill="#c9884a" stroke="#201540" stroke-width="4"/><circle cx="0" cy="-8" r="24" fill="#c9884a" stroke="#201540" stroke-width="4"/><ellipse cx="0" cy="0" rx="12" ry="9" fill="#f0cfa8"/><circle cx="-8" cy="-12" r="3" fill="#201540"/><circle cx="8" cy="-12" r="3" fill="#201540"/><ellipse cx="0" cy="-2" rx="4" ry="3" fill="#201540"/><path d="M0 1 v3 M0 4 q-4 4 -7 1 M0 4 q4 4 7 1" stroke="#201540" stroke-width="2" fill="none"/>'},
+ bunny:{name:'Snowdrop',lines:['Boing!','Hop hop hop!','Swing me SO high!','My ears are tickly.'],
+  svg:'<ellipse cx="-8" cy="-46" rx="6" ry="20" fill="#fff" stroke="#201540" stroke-width="3.5" transform="rotate(-10 -8 -46)"/><ellipse cx="8" cy="-46" rx="6" ry="20" fill="#fff" stroke="#201540" stroke-width="3.5" transform="rotate(10 8 -46)"/><ellipse cx="-8" cy="-46" rx="3" ry="13" fill="#ffb6ce" transform="rotate(-10 -8 -46)"/><ellipse cx="8" cy="-46" rx="3" ry="13" fill="#ffb6ce" transform="rotate(10 8 -46)"/><ellipse cx="0" cy="32" rx="24" ry="22" fill="#fff" stroke="#201540" stroke-width="4"/><ellipse cx="-12" cy="58" rx="10" ry="5" fill="#fff" stroke="#201540" stroke-width="3"/><ellipse cx="12" cy="58" rx="10" ry="5" fill="#fff" stroke="#201540" stroke-width="3"/><circle cx="0" cy="-6" r="23" fill="#fff" stroke="#201540" stroke-width="4"/><circle cx="-8" cy="-10" r="4.5" fill="#fff" stroke="#201540" stroke-width="2"/><circle cx="8" cy="-10" r="4.5" fill="#fff" stroke="#201540" stroke-width="2"/><circle cx="-7" cy="-10" r="2.2" fill="#201540"/><circle cx="9" cy="-10" r="2.2" fill="#201540"/><path d="M0 0 l3 3 -3 3 -3 -3z" fill="#ff8fb8"/><path d="M0 6 q-4 3 -6 0 M0 6 q4 3 6 0" stroke="#201540" stroke-width="2" fill="none"/><path d="M-14 8 q14 8 28 0" stroke="#8b3dff" stroke-width="5" fill="none" stroke-linecap="round"/>'},
+ dino:{name:'Pickle',lines:['RAWR! (that means hi)','Dinos love slides.','I dig with my TAIL.','Splash time!'],
+  svg:'<path d="M-24 34 q-22 -4 -26 -26" fill="none" stroke="#201540" stroke-width="12" stroke-linecap="round"/><path d="M-24 34 q-22 -4 -26 -26" fill="none" stroke="#3fe0a4" stroke-width="7" stroke-linecap="round"/><path d="M4 -34 l8 -12 6 12z M16 -20 l8 -10 6 12z" fill="#18a877" stroke="#201540" stroke-width="3"/><ellipse cx="0" cy="26" rx="28" ry="24" fill="#3fe0a4" stroke="#201540" stroke-width="4"/><ellipse cx="2" cy="32" rx="14" ry="14" fill="#c9fbe4"/><ellipse cx="-12" cy="56" rx="10" ry="6" fill="#3fe0a4" stroke="#201540" stroke-width="3"/><ellipse cx="12" cy="56" rx="10" ry="6" fill="#3fe0a4" stroke="#201540" stroke-width="3"/><circle cx="-4" cy="-12" r="23" fill="#3fe0a4" stroke="#201540" stroke-width="4"/><circle cx="-12" cy="-16" r="5" fill="#fff" stroke="#201540" stroke-width="2"/><circle cx="4" cy="-16" r="5" fill="#fff" stroke="#201540" stroke-width="2"/><circle cx="-11" cy="-16" r="2.4" fill="#201540"/><circle cx="5" cy="-16" r="2.4" fill="#201540"/><path d="M-16 -2 q10 8 20 0" stroke="#201540" stroke-width="2.5" fill="none"/>'},
+ kevin:{name:'Kevin',lines:['Glitter breath, ready!','I am a very gentle dragon.','Watch me on the seesaw!','Sparkle sparkle.'],
+  svg:'<path d="M-24 30 q-20 -4 -24 -24" fill="none" stroke="#ff4d9d" stroke-width="9" stroke-linecap="round"/><path d="M-10 -10 q-16 -22 -30 -12 q6 14 22 16z M10 -10 q16 -22 30 -12 q-6 14 -22 16z" fill="#c94dff" stroke="#201540" stroke-width="3"/><ellipse cx="0" cy="26" rx="28" ry="24" fill="#ff8ad1" stroke="#201540" stroke-width="4"/><ellipse cx="0" cy="32" rx="16" ry="15" fill="#ffd0e8"/><path d="M-14 -34 l4 -10 4 10 M-2 -36 l4 -12 4 12 M10 -34 l4 -10 4 10" fill="#ffc53d" stroke="#201540" stroke-width="2.5"/><circle cx="0" cy="-12" r="22" fill="#ff8ad1" stroke="#201540" stroke-width="4"/><circle cx="-8" cy="-14" r="5" fill="#3fe0a4" stroke="#201540" stroke-width="2"/><circle cx="8" cy="-14" r="5" fill="#3fe0a4" stroke="#201540" stroke-width="2"/><path d="M-6 -2 q6 6 12 0" stroke="#201540" stroke-width="2.5" fill="none"/><ellipse cx="-12" cy="58" rx="9" ry="5" fill="#ff8ad1" stroke="#201540" stroke-width="3"/><ellipse cx="12" cy="58" rx="9" ry="5" fill="#ff8ad1" stroke="#201540" stroke-width="3"/>'},
+ wormy:{name:'Wormy',lines:['I read about swings. Now I am ON one.','Fascinating.','Worms can go on slides. It is allowed.','Glasses on. Ready.'],
+  svg:'<g transform="translate(-30,40)">'+[0,1,2,3,4].map(function(i){ return '<circle cx="'+(i*15)+'" cy="'+(i%2?-4:0)+'" r="'+(11-i*.6)+'" fill="'+['#ff4d9d','#ff8a3d','#ffc53d','#3fe0a4','#17c7e8'][i]+'" stroke="#201540" stroke-width="3"/>'; }).join('')+'<circle cx="-4" cy="-9" r="6" fill="#fff" stroke="#201540" stroke-width="3"/><circle cx="7" cy="-9" r="6" fill="#fff" stroke="#201540" stroke-width="3"/><circle cx="-3" cy="-9" r="2.5" fill="#201540"/><circle cx="8" cy="-9" r="2.5" fill="#201540"/><path d="M-10 -9 h-4 M13 -9 h4" stroke="#201540" stroke-width="2"/><path d="M-1 1 q6 4 10 0" stroke="#201540" stroke-width="2" fill="none"/></g>'}
+};
+
+/* ─────────── THE BAND ─────────── */
+var band=H('section',{'class':'band park-wrap',id:'park'});
+band.innerHTML='<h2 class="outlined">The Park</h2><p class="panel-lead">Pick a doll from the toy box, then drag it onto the swing, the slide, the seesaw, the sandbox, the pond, or the rake. Watch what happens.</p>'+
+ '<div class="park" id="parkBox"><svg id="parkSvg" viewBox="0 0 1200 620" role="img" aria-label="A playground. Drag the dolls onto things."></svg></div><div class="dollbox" id="dollBox"></div>';
+var shelf=$('shelf'); shelf.parentNode.insertBefore(band,shelf);
+var bmk=D.querySelector('.bookmarks'); if(bmk){ var a=H('a',{'class':'bm b5',href:'#park',html:'<i>🛝</i>Park'}); bmk.insertBefore(a,bmk.children[3]); }
+var svg=$('parkSvg'), box=$('parkBox');
+
+/* sky, sun, clouds */
+var defs=E('defs',null,svg); var sky=E('linearGradient',{id:'pkSky',x1:0,y1:0,x2:0,y2:1},defs); E('stop',{offset:0,'stop-color':'#7fd0ff'},sky); E('stop',{offset:1,'stop-color':'#dff6ff'},sky);
+var gr=E('linearGradient',{id:'pkGr',x1:0,y1:0,x2:0,y2:1},defs); E('stop',{offset:0,'stop-color':'#9be87a'},gr); E('stop',{offset:1,'stop-color':'#4fbb63'},gr);
+E('rect',{width:W,height:Hh,fill:'url(#pkSky)',rx:26},svg);
+var sunG=E('g',{'class':'spin'},svg); for(var i=0;i<12;i++){ var a=i*30*Math.PI/180; E('path',{d:'M'+(1080+Math.cos(a)*60)+' '+(90+Math.sin(a)*60)+' L'+(1080+Math.cos(a)*84)+' '+(90+Math.sin(a)*84),stroke:'#ffd84d','stroke-width':10,'stroke-linecap':'round'},sunG); }
+E('circle',{cx:1080,cy:90,r:48,fill:'#ffd84d',stroke:'#e8a800','stroke-width':5},svg); E('circle',{cx:1066,cy:82,r:5,fill:'#7a5a00'},svg); E('circle',{cx:1094,cy:82,r:5,fill:'#7a5a00'},svg); E('path',{d:'M1064 100 q16 14 32 0',stroke:'#7a5a00','stroke-width':5,fill:'none','stroke-linecap':'round'},svg);
+[[0,70,1],[400,40,.8],[800,90,1.2]].forEach(function(c,i){ var g=E('g',{'class':'cloud',style:'animation-delay:-'+(i*20)+'s'},svg); E('path',{d:'M'+c[0]+' '+c[1]+' a34 34 0 0 1 66 -12 30 30 0 0 1 46 34 h-120 a26 26 0 0 1 8 -22z',fill:'#fff',transform:'scale('+c[2]+')'},g); });
+/* hills + ground */
+E('path',{d:'M0 330 q200 -90 420 -30 t400 -20 q200 -40 380 30 V620 H0z',fill:'#b5f0a0'},svg);
+E('path',{d:'M0 400 q300 -60 600 0 t600 -10 V620 H0z',fill:'url(#pkGr)'},svg);
+E('path',{d:'M0 560 q300 -30 600 0 t600 -6 V620 H0z',fill:'#3fa855'},svg);
+/* winding path */
+E('path',{d:'M-20 610 C 200 560 260 480 420 470 S 700 520 860 470 S 1120 420 1240 440',stroke:'#e8c98a','stroke-width':46,fill:'none','stroke-linecap':'round'},svg);
+E('path',{d:'M-20 610 C 200 560 260 480 420 470 S 700 520 860 470 S 1120 420 1240 440',stroke:'#f6dfab','stroke-width':30,fill:'none','stroke-linecap':'round','stroke-dasharray':'2 34'},svg);
+/* growing grass */
+for(var g2=0;g2<90;g2++){ var gx=rnd(0,W), gy=rnd(400,600), gh=rnd(14,38); E('path',{'class':'grass',style:'animation-delay:'+rnd(0,1.8)+'s, '+rnd(2.4,4.2)+'s',d:'M'+gx+' '+gy+' q-6 -'+gh*.5+' 0 -'+gh+' q6 '+gh*.5+' 0 '+gh,fill:pick(['#3fa855','#2fb05a','#6bd07a'])},svg); }
+/* trees */
+function tree(x,y,s){ var g=E('g',{transform:'translate('+x+','+y+') scale('+s+')'},svg); E('path',{d:'M0 0 q4 -60 0 -110',stroke:'#8a5a33','stroke-width':26,fill:'none','stroke-linecap':'round'},g); E('circle',{cx:-44,cy:-120,r:46,fill:'#3fa855'},g); E('circle',{cx:44,cy:-116,r:48,fill:'#4fbb63'},g); E('circle',{cx:0,cy:-160,r:52,fill:'#6bc972'},g); [[-30,-140],[30,-130],[0,-175],[-10,-105]].forEach(function(p){ E('circle',{cx:p[0],cy:p[1],r:7,fill:pick(['#ff4d9d','#ffd84d','#fff'])},g); }); }
+tree(70,420,1); tree(1140,430,.9);
+/* butterfly */
+var bf=E('g',{'class':'butterfly',transform:'translate(300,250)'},svg); E('path',{'class':'wing',d:'M0 0 q-22 -30 -30 -6 q-4 24 30 12z',fill:'#ff4d9d',stroke:'#201540','stroke-width':2},bf); E('path',{'class':'wing',d:'M0 0 q22 -30 30 -6 q4 24 -30 12z',fill:'#c94dff',stroke:'#201540','stroke-width':2},bf); E('ellipse',{rx:3,ry:9,fill:'#201540'},bf);
+
+/* ─────────── PLAYGROUND PIECES ─────────── */
+var zones=[];
+/* SWING SET */
+var sw=E('g',{transform:'translate(230,250)'},svg);
+E('path',{d:'M-90 250 L-30 0 L30 0 L90 250 M-190 250 L-130 0 L-70 0 L-10 250 M-130 0 H30',stroke:'#e8577f','stroke-width':14,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},sw);
+E('path',{d:'M-130 0 H30',stroke:'#c41f6c','stroke-width':6},sw);
+function swing(x,cls){ var g=E('g',{'class':cls,transform:'translate('+x+',0)'},sw); E('path',{d:'M-20 0 V150 M20 0 V150',stroke:'#8a5a33','stroke-width':5},g); E('rect',{x:-30,y:148,width:60,height:14,rx:5,fill:'#8b3dff',stroke:'#201540','stroke-width':4},g); var seat=E('g',{transform:'translate(0,150)'},g); return {g:g,seat:seat,x:230+x,y:250+150,busy:null}; }
+var swA=swing(-100,'swingA'), swB=swing(-20,'swingB');
+zones.push({kind:'swing',x:swA.x,y:swA.y,r:60,o:swA},{kind:'swing',x:swB.x,y:swB.y,r:60,o:swB});
+/* SLIDE */
+var sl=E('g',{transform:'translate(560,240)'},svg);
+E('path',{d:'M-40 0 V240 M40 0 V240 M-40 40 H40 M-40 100 H40 M-40 160 H40',stroke:'#ffc53d','stroke-width':12,'stroke-linecap':'round'},sl);
+E('rect',{x:-56,y:-14,width:112,height:26,rx:8,fill:'#ff8a3d',stroke:'#201540','stroke-width':5},sl);
+E('path',{id:'slidePath',d:'M40 0 C 120 20, 170 120, 260 220',stroke:'#17c7e8','stroke-width':46,fill:'none','stroke-linecap':'round'},sl);
+E('path',{d:'M40 0 C 120 20, 170 120, 260 220',stroke:'#a3ecfa','stroke-width':22,fill:'none','stroke-linecap':'round'},sl);
+E('path',{d:'M-22 -10 q8 -30 30 -30 q10 0 12 10',stroke:'#e0844a','stroke-width':6,fill:'none'},sl);
+zones.push({kind:'slide',x:560,y:230,r:70,path:'M600 240 C 680 260, 730 360, 820 460'});
+/* SEESAW */
+var ss=E('g',{transform:'translate(880,500)'},svg);
+E('path',{d:'M-30 0 L0 -40 L30 0z',fill:'#ff4d9d',stroke:'#201540','stroke-width':5,'stroke-linejoin':'round'},ss);
+var plank=E('g',{transform:'translate(0,-40)'},ss); E('rect',{x:-130,y:-8,width:260,height:16,rx:8,fill:'#ffc53d',stroke:'#201540','stroke-width':5},plank); E('rect',{x:-130,y:-30,width:16,height:24,rx:5,fill:'#8b3dff',stroke:'#201540','stroke-width':4},plank); E('rect',{x:114,y:-30,width:16,height:24,rx:5,fill:'#8b3dff',stroke:'#201540','stroke-width':4},plank);
+var seesaw={plank:plank,L:null,R:null,seatL:E('g',{transform:'translate(-105,-8)'},plank),seatR:E('g',{transform:'translate(105,-8)'},plank)};
+zones.push({kind:'seesawL',x:775,y:452,r:55},{kind:'seesawR',x:985,y:452,r:55});
+/* SANDBOX */
+var sb=E('g',{transform:'translate(1050,560)'},svg); E('rect',{x:-110,y:-40,width:220,height:70,rx:14,fill:'#c9a26a',stroke:'#201540','stroke-width':5},sb); E('ellipse',{cx:0,cy:-6,rx:96,ry:26,fill:'#f6dfab'},sb); E('path',{d:'M-60 -14 q10 -20 20 0',stroke:'#ffc53d','stroke-width':8,fill:'none','stroke-linecap':'round'},sb); E('circle',{cx:50,cy:-12,r:9,fill:'#ff4d9d',stroke:'#201540','stroke-width':3},sb);
+var sandFx=E('g',null,sb); zones.push({kind:'sand',x:1050,y:550,r:100});
+/* POND */
+var pd=E('g',{transform:'translate(390,560)'},svg); E('ellipse',{rx:120,ry:40,fill:'#4fb8ff',stroke:'#2a7fc4','stroke-width':5},pd); E('ellipse',{cx:-30,cy:-8,rx:40,ry:10,fill:'#fff',opacity:.35},pd); E('g',{transform:'translate(70,-10)'},pd).innerHTML='<ellipse rx="16" ry="10" fill="#ffd84d" stroke="#201540" stroke-width="3"/><circle cx="12" cy="-10" r="8" fill="#ffd84d" stroke="#201540" stroke-width="3"/><path d="M20 -8 l8 3 -8 3z" fill="#ff8a3d"/><circle cx="14" cy="-12" r="2" fill="#201540"/>';
+var pondFx=E('g',null,pd); zones.push({kind:'pond',x:390,y:560,r:110});
+/* LEAF PILE + RAKE */
+var lp=E('g',{transform:'translate(700,590)'},svg); var pileG=E('g',null,lp); var leaves=[];
+function drawPile(n){ clear(pileG); if(!n) return; var w=30+n*5, h=10+n*3.5; E('path',{d:'M'+(-w)+' 0 q'+(w*.5)+' -'+(h*1.5)+' '+w+' 0 q'+(w*.5)+' -'+(h*1.4)+' '+w+' 0z',fill:'#e06a2a',stroke:'#a13c12','stroke-width':3},pileG); for(var i=0;i<n;i++){ E('path',{d:'M0 0 q-8 -6 -8 -1 q0 7 8 8 q8 -1 8 -8 q0 -5 -8 1z',fill:pick(['#e06a2a','#d4541f','#f0a13a','#c2431a']),stroke:'#8a3f14','stroke-width':1.4,transform:'translate('+(-w+((i*37)%(w*2)))+','+(-((i*23)%Math.max(6,h)))+') rotate('+((i*47)%360)+')'},pileG); } }
+var loose=E('g',null,svg); for(var L=0;L<12;L++){ var lx=rnd(640,780), ly=rnd(540,600); var lg=E('path',{d:'M0 0 q-9 -7 -9 -1 q0 8 9 9 q9 -1 9 -9 q0 -6 -9 1z',fill:pick(['#e06a2a','#d4541f','#f0a13a']),stroke:'#8a3f14','stroke-width':1.5,transform:'translate('+lx+','+ly+') rotate('+ri(0,359)+')'},loose); leaves.push(lg); }
+var rake=E('g',{transform:'translate(640,520)'},svg); E('path',{d:'M0 0 L36 -60',stroke:'#b07b3e','stroke-width':6,'stroke-linecap':'round'},rake); E('path',{d:'M-16 6 L16 -6',stroke:'#6f7a86','stroke-width':6,'stroke-linecap':'round'},rake); E('path',{d:'M-16 6 l-3 10 M-6 2 l-2 10 M4 -2 l0 10 M14 -6 l2 10',stroke:'#8d98a5','stroke-width':4,'stroke-linecap':'round'},rake);
+zones.push({kind:'rake',x:660,y:540,r:70});
+/* SIGNPOST: paths to worlds */
+var sp=E('g',{transform:'translate(1000,300)'},svg); E('rect',{x:-8,y:0,width:16,height:150,fill:'#8a5a33',stroke:'#201540','stroke-width':4},sp);
+[['🚀 Space Adventure','/space-adventure/','#8b3dff',-10,1],['🌊 Water Park','/day-at-water-park/','#17c7e8',26,-1],['🐠 Fish Tank','#tank','#3fe0a4',62,1],['🕹️ Arcade','#arcade','#ff4d9d',98,-1]].forEach(function(s){ var g=E('g',{'class':'sign',transform:'translate(0,'+s[3]+')'},sp); var dir=s[4]; E('path',{d:dir>0?'M-6 0 h130 l18 14 -18 14 h-130z':'M6 0 h-130 l-18 14 18 14 h130z',fill:s[2],stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},g); var t=E('text',{x:dir>0?60:-60,y:19,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':14,'font-weight':700,fill:'#fff',stroke:'#201540','stroke-width':3,'paint-order':'stroke'},g); t.textContent=s[0]; g.addEventListener('click',function(){ SND.whoosh(); say(s[0].replace(/^\S+ /,'')); if(s[1][0]==='#') location.hash=s[1]; else setTimeout(function(){ location.href=s[1]; },400); }); });
+var bench=E('g',{transform:'translate(150,600)'},svg); E('rect',{x:-60,y:-30,width:120,height:14,rx:5,fill:'#c98a4a',stroke:'#201540','stroke-width':4},bench); E('rect',{x:-60,y:-52,width:120,height:12,rx:5,fill:'#c98a4a',stroke:'#201540','stroke-width':4},bench); E('path',{d:'M-50 -16 v16 M50 -16 v16',stroke:'#201540','stroke-width':6},bench);
+
+/* ─────────── DOLL ENGINE ─────────── */
+var dollLayer=E('g',null,svg), dolls=[], cur=null, sayT={};
+function speakAt(d,line){ var r=svg.getBoundingClientRect(), b=box.getBoundingClientRect(); var sx=r.left-b.left+(d.x/W)*r.width, sy=r.top-b.top+((d.y-70)/Hh)*r.height; var el=H('div',{'class':'park-say',text:line},box); el.style.left=sx+'px'; el.style.top=sy+'px'; say(line); setTimeout(function(){ el.remove(); },2600); }
+function pt(e){ var r=svg.getBoundingClientRect(); return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*Hh/r.height}; }
+function makeDoll(key){ var def=DOLLS[key]; var g=E('g',{'class':'doll'},dollLayer); var body=E('g',{'class':'breathe'},g); body.innerHTML=def.svg; var d={key:key,def:def,g:g,body:body,x:rnd(300,900),y:470,state:'stand',home:g}; place(d); dolls.push(d);
+  var down=false,moved=false,sx=0,sy=0;
+  g.addEventListener('pointerdown',function(e){ down=true; moved=false; var p=pt(e); sx=p.x; sy=p.y; detach(d); g.classList.add('held'); dollLayer.appendChild(g); try{svg.setPointerCapture(e.pointerId);}catch(x){} e.preventDefault(); e.stopPropagation(); });
+  svg.addEventListener('pointermove',function(e){ if(!down) return; var p=pt(e); if(!moved&&Math.hypot(p.x-sx,p.y-sy)>6){ moved=true; SND.tap(); } if(moved){ d.x=Math.max(30,Math.min(W-30,p.x)); d.y=Math.max(80,Math.min(Hh-20,p.y)); place(d); e.preventDefault(); } });
+  function up(){ if(!down) return; down=false; g.classList.remove('held'); if(moved) drop(d); else { speakAt(d,pick(def.lines)); SND.pop(); } }
+  svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+  return d; }
+function place(d){ d.g.setAttribute('transform','translate('+d.x.toFixed(1)+','+d.y.toFixed(1)+') scale(.9)'); }
+function detach(d){ if(d.state==='swing'&&d.zone){ d.zone.o.busy=null; } if(d.state==='seesawL'){ seesaw.L=null; } if(d.state==='seesawR'){ seesaw.R=null; } if(d.state==='rake'){ d.body.querySelectorAll('.rakeTool').forEach(function(x){ x.remove(); }); }
+  if(d.g.parentNode!==dollLayer){ dollLayer.appendChild(d.g); } d.body.className.baseVal='breathe'; d.state='stand'; d.zone=null; d.g.setAttribute('transform','translate('+d.x+','+d.y+') scale(.9)'); tiltSeesaw(); }
+function drop(d){ var z=null; zones.forEach(function(zz){ if(Math.hypot(d.x-zz.x,d.y-zz.y)<zz.r) z=zz; });
+  if(!z){ d.y=Math.max(d.y,440); place(d); speakAt(d,pick(['Okay, I will stand here.','Nice spot.','What is next?'])); return; }
+  if(z.kind==='swing'){ if(z.o.busy){ speakAt(d,'That swing is taken! Try the other one.'); return; } z.o.busy=d; d.state='swing'; d.zone=z; z.o.seat.appendChild(d.g); d.g.setAttribute('transform','translate(0,-58) scale(.9)'); SND.boing(); speakAt({x:z.x,y:z.y-60},pick(['Wheeee!','Higher! HIGHER!','I can see the whole park!'])); return; }
+  if(z.kind==='slide'){ d.state='slide'; d.body.className.baseVal=''; var pth=E('path',{d:z.path,fill:'none',stroke:'none'},svg); var len=pth.getTotalLength(), t0=Date.now(); SND.whoosh(); speakAt(d,'Here I gooooo!');
+    (function run(){ var k=Math.min(1,(Date.now()-t0)/1400); var e=k*k; var p=pth.getPointAtLength(e*len); d.x=p.x; d.y=p.y-30; d.g.setAttribute('transform','translate('+d.x.toFixed(1)+','+d.y.toFixed(1)+') scale(.9) rotate('+(e*20)+')'); if(k<1) requestAnimationFrame(run); else { pth.remove(); d.x+=40; d.y=470; d.state='stand'; d.body.className.baseVal='breathe'; place(d); SND.boing(); P.sparkleAt(svg.getBoundingClientRect().left+d.x*svg.getBoundingClientRect().width/W,svg.getBoundingClientRect().top+d.y*svg.getBoundingClientRect().height/Hh,12); speakAt(d,pick(['AGAIN!','That was fast!','My tummy went whoosh.'])); } })(); return; }
+  if(z.kind==='seesawL'||z.kind==='seesawR'){ var side=z.kind==='seesawL'?'L':'R'; if(seesaw[side]){ speakAt(d,'Somebody is already on that end!'); return; } seesaw[side]=d; d.state=z.kind; (side==='L'?seesaw.seatL:seesaw.seatR).appendChild(d.g); d.g.setAttribute('transform','translate(0,-56) scale(.9)'); tiltSeesaw(); SND.tap(); speakAt({x:z.x,y:z.y-60},seesaw.L&&seesaw.R?'Two friends! Up and down, up and down!':'I need a friend on the other end!'); return; }
+  if(z.kind==='sand'){ d.state='sand'; d.body.className.baseVal='dig'; d.y=540; place(d); speakAt(d,pick(['Digging! Maybe there is treasure.','Sand castle time.','I found a rock. It is a good rock.'])); var n=0; var t=setInterval(function(){ if(d.state!=='sand'||n++>40){ clearInterval(t); return; } var s=E('circle',{cx:d.x-1050+rnd(-20,20),cy:-20,r:rnd(2,5),fill:'#f6dfab'},sandFx); s.style.transition='transform .6s ease-out,opacity .6s'; requestAnimationFrame(function(){ s.style.transform='translate('+rnd(-50,50)+'px,-'+rnd(20,50)+'px)'; s.style.opacity='0'; }); setTimeout(function(){ s.remove(); },700); if(n%6===0) SND.noise(0.08,0.04,1400); },160); return; }
+  if(z.kind==='pond'){ d.state='pond'; d.body.className.baseVal=''; SND.whoosh(); d.g.style.transition='transform .35s cubic-bezier(.5,0,.9,.6)'; d.g.setAttribute('transform','translate('+d.x+','+(d.y+40)+') scale(.9)');
+    setTimeout(function(){ SND.pop(); SND.noise(0.3,0.09,2200); for(var i=0;i<3;i++){ var rp=E('ellipse',{'class':'ripple',cx:d.x-390,cy:0,rx:40,ry:14,fill:'none',stroke:'#fff','stroke-width':4,style:'animation-delay:'+(i*.25)+'s'},pondFx); setTimeout(function(x){ return function(){ x.remove(); }; }(rp),1800); } for(var k=0;k<14;k++){ var dr=E('circle',{cx:d.x-390+rnd(-30,30),cy:0,r:rnd(3,7),fill:'#a3ecfa'},pondFx); dr.style.transition='transform .7s ease-out,opacity .7s'; (function(dr){ requestAnimationFrame(function(){ dr.style.transform='translate('+rnd(-60,60)+'px,-'+rnd(40,110)+'px)'; dr.style.opacity='0'; }); })(dr); setTimeout(function(x){ return function(){ x.remove(); }; }(dr),800); }
+      speakAt(d,pick(['SPLASH!','Cold! Cold cold cold!','I am a fish now.']));
+      setTimeout(function(){ d.g.style.transition='transform .6s cubic-bezier(.3,1.5,.5,1)'; d.x=390+130; d.y=470; d.state='stand'; d.body.className.baseVal='breathe'; place(d); setTimeout(function(){ d.g.style.transition=''; },650); speakAt(d,'Drip. Drip. Worth it.'); },1500); },350); return; }
+  if(z.kind==='rake'){ d.state='rake'; d.x=690; d.y=470; place(d); var rk=E('g',{'class':'rakeTool rakeArm',transform:'translate(14,-10)'},d.body); rk.innerHTML='<path d="M0 0 L40 44" stroke="#b07b3e" stroke-width="5" stroke-linecap="round"/><path d="M28 50 L52 38" stroke="#6f7a86" stroke-width="5" stroke-linecap="round"/><path d="M28 50 l-2 8 M36 46 l0 8 M44 42 l2 8 M52 38 l3 8" stroke="#8d98a5" stroke-width="3.5" stroke-linecap="round"/>'; rake.style.opacity='0';
+    speakAt(d,pick(['Raking! Leaves go in the pile.','This is real work.','Almost done…'])); var count=0; var t=setInterval(function(){ if(d.state!=='rake'||!leaves.length){ clearInterval(t); rake.style.opacity='1'; if(!leaves.length&&d.state==='rake'){ speakAt(d,'ALL DONE! Now somebody jump in it!'); SND.win(); P.confetti(40); } return; } var lf=leaves.shift(); lf.style.transition='transform .6s ease-in'; lf.style.transform='translate(0,0)'; var m=lf.getAttribute('transform'); lf.setAttribute('transform','translate(700,586) rotate('+ri(0,359)+')'); setTimeout(function(){ lf.remove(); },650); count++; drawPile(count); SND.tone(200+count*12,0.08,'triangle',0.05); },550); return; }
+}
+function tiltSeesaw(){ var t=seesaw.L&&seesaw.R?null:seesaw.L?-12:seesaw.R?12:0; seesaw.plank.className.baseVal=t===null?'rock':''; seesaw.plank.style.transition='transform .5s cubic-bezier(.3,1.4,.5,1)'; seesaw.plank.style.transformBox='fill-box'; seesaw.plank.style.transformOrigin='50% 100%'; seesaw.plank.style.transform=t===null?'':'rotate('+t+'deg)'; if(t===null) SND.boing(); }
+/* jump-in-the-pile: tap the pile with a doll standing nearby */
+pileG.addEventListener('click',function(){ var near=dolls.filter(function(d){ return d.state==='stand'&&Math.abs(d.x-700)<140; })[0]; if(!near||!pileG.childNodes.length){ return; } near.g.style.transition='transform .6s cubic-bezier(.3,.6,.6,1)'; near.g.setAttribute('transform','translate(700,420) scale(.9)'); setTimeout(function(){ near.g.style.transition='transform .3s ease-in'; near.g.setAttribute('transform','translate(700,500) scale(.9)'); SND.win(); P.confetti(50); var n=pileG.childNodes.length; drawPile(0); for(var i=0;i<12;i++){ var lx=rnd(600,800),ly=rnd(540,600); var lg=E('path',{d:'M0 0 q-9 -7 -9 -1 q0 8 9 9 q9 -1 9 -9 q0 -6 -9 1z',fill:pick(['#e06a2a','#d4541f','#f0a13a']),stroke:'#8a3f14','stroke-width':1.5,transform:'translate(700,560)'},loose); lg.style.transition='transform 1s ease-out'; (function(lg,lx,ly){ requestAnimationFrame(function(){ lg.setAttribute('transform','translate('+lx+','+ly+') rotate('+ri(0,359)+')'); }); })(lg,lx,ly); leaves.push(lg); } speakAt({x:700,y:480},'WHEEEE! Rake them up again!'); near.x=700; near.y=480; setTimeout(function(){ near.g.style.transition=''; place(near); },700); },650); });
+/* the toy box */
+Object.keys(DOLLS).forEach(function(k){ var b=H('button',{type:'button','class':'dollbtn','aria-pressed':'false','aria-label':'Put '+DOLLS[k].name+' in the park'},$('dollBox')); b.innerHTML='<svg viewBox="-40 -60 80 130"><g>'+DOLLS[k].svg+'</g></svg>'+DOLLS[k].name;
+  b.addEventListener('click',function(){ var existing=dolls.filter(function(d){ return d.key===k; })[0]; if(existing){ detach(existing); existing.x=rnd(300,900); existing.y=470; place(existing); existing.g.classList.add('held'); setTimeout(function(){ existing.g.classList.remove('held'); },300); speakAt(existing,'I am back!'); return; } var d=makeDoll(k); b.setAttribute('aria-pressed','true'); SND.pop(); speakAt(d,pick(['Hi! Drag me somewhere!','Put me on the swing!','I want to go down the slide!'])); }); });
+/* start with Phoenix already in the park */
+setTimeout(function(){ var d=makeDoll('phoenix'); $('dollBox').firstChild.setAttribute('aria-pressed','true'); },800);
+})();
