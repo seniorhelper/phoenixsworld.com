@@ -36,7 +36,7 @@
 /* ══════════════════════════════════════════════════════════════════
    PHOENIX'S WORLD — THE ADVENTURE PAD  (Drop 1 of 3)
 
-   Home is a world map. Every world is a full-bleed colour band with
+   Home is a world map. Every world is a full-bleed color band with
    its own skin. A sticky bookmark bar lets a child who cannot read
    jump between worlds by icon. Every touchable thing is a physical
    toy: ink outline, hard offset shadow, gloss, presses down.
@@ -136,11 +136,11 @@ button.toy:active,a.toy:active,.toy.pressed{transform:translateY(var(--lift));bo
 
 /* ══ OVERLAY LAYERS ══ */
 #sky,#weather,#drops,#decor{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-#decor{z-index:8}#sky{z-index:12}#weather{z-index:2000}#drops{z-index:2100}
+#decor{z-index:8}#sky{z-index:1990}#weather{z-index:2000}#drops{z-index:2100}
 #drops>*{pointer-events:auto}
-.sky-body{position:absolute;right:3vw;top:4vh;width:min(30vw,260px);opacity:0;transform:scale(.3) rotate(-18deg);
+.sky-body{position:absolute;left:50%;top:6vh;margin-left:calc(min(76vw,560px)/-2);width:min(76vw,560px);opacity:0;transform:scale(.2) rotate(-25deg);
   transition:opacity .9s,transform .9s cubic-bezier(.3,1.5,.5,1);filter:drop-shadow(0 10px 0 rgb(var(--ink-rgb)/.18))}
-.sky-body.on{opacity:1;transform:scale(1) rotate(0)}
+.sky-body.on{opacity:1;transform:scale(1) rotate(0);transition:opacity .5s,transform .9s cubic-bezier(.2,1.7,.4,1)}
 .sky-body svg{width:100%;height:auto;display:block}
 #sunBody.on .sunrays{animation:spin 42s linear infinite;transform-origin:150px 150px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -204,7 +204,7 @@ body.dark .panel{box-shadow:0 0 0 6px #ffe08a,0 0 80px 30px rgb(255 224 138/.55)
 .pointer{width:52px;margin:18px auto 0;animation:bobhand 1.6s ease-in-out infinite}
 @keyframes bobhand{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 
-/* handwritten title — every letter its own marker colour, its own tilt */
+/* handwritten title — every letter its own marker color, its own tilt */
 .scrawl{font-family:"Schoolbell","Comic Sans MS",cursive;font-weight:400;letter-spacing:.04em;font-size:clamp(44px,9.4vw,96px);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .scrawl .ch,.scrawl2 .ch{display:inline-block;position:relative;line-height:1;text-shadow:3px 3px 0 rgb(32 21 64/.18);transition:transform .2s}
 .scrawl .ch:hover{transform:scale(1.2) rotate(0deg)!important}
@@ -215,6 +215,15 @@ body.dark .panel{box-shadow:0 0 0 6px #ffe08a,0 0 80px 30px rgb(255 224 138/.55)
 .kitty .paw{transform-box:fill-box;transform-origin:100% 100%;animation:pawwave 2.2s ease-in-out infinite}
 @keyframes pawwave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-30deg)}80%{transform:rotate(10deg)}90%{transform:rotate(-24deg)}}
 body.calm .kitty .paw{animation:none}
+/* skins reach the painted scenes too */
+[data-theme="space"] .scene-bg{filter:hue-rotate(210deg) saturate(.75) brightness(.55)}
+[data-theme="space"] .band{background:#0f0b2b!important;color:#f2ecff}[data-theme="space"] .band-stripe{background:repeating-linear-gradient(90deg,#3b1a7a 0 40px,#8b3dff 40px 80px,#17c7e8 80px 120px,#1a1440 120px 160px)}
+[data-theme="space"] .bookmarks{background:#000}[data-theme="space"] .toybox,[data-theme="space"] .globe-card,[data-theme="space"] .season{color:var(--ink)}
+[data-theme="jungle"] .scene-bg{filter:hue-rotate(-40deg) saturate(1.3) brightness(.95)}
+[data-theme="jungle"] .band{background:#dff5c8!important}[data-theme="jungle"] .band-stripe{background:repeating-linear-gradient(90deg,#3fe0a4 0 40px,#18a877 40px 80px,#ffc53d 80px 120px,#ff8a3d 120px 160px)}
+[data-theme="ocean"] .scene-bg{filter:hue-rotate(160deg) saturate(1.1)}
+[data-theme="ocean"] .band{background:#cfefff!important}[data-theme="ocean"] .band-stripe{background:repeating-linear-gradient(90deg,#17c7e8 0 40px,#0b8fa9 40px 80px,#a3ecfa 80px 120px,#3fe0a4 120px 160px)}
+[data-theme="jungle"] .panel,[data-theme="ocean"] .panel,[data-theme="space"] .panel{background:linear-gradient(180deg,var(--skin-accent),var(--skin-accent-deep))}
 /* ══ BANDS ══ */
 .band{position:relative;z-index:20;padding:44px 14px 54px;border-bottom:6px solid var(--ink)}
 .band h2{text-align:center;font-size:clamp(30px,6.4vw,58px);margin-bottom:8px}
@@ -368,6 +377,12 @@ body.calm .kitty .paw{animation:none}
 @keyframes portalbreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 @media(max-width:760px){.portal{width:86px;height:86px}}
 
+.wall{position:relative;z-index:20;min-height:clamp(220px,34vw,420px);border-bottom:6px solid var(--ink);overflow:hidden;display:flex;align-items:flex-end}
+.wall svg{height:100%;width:auto;max-width:none;display:block;overflow:visible}
+.wall .wtxt{position:absolute;left:5%;top:16%;font:700 clamp(22px,4vw,44px)/1.1 "Fredoka",sans-serif;color:#fff;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;max-width:44%;text-shadow:0 5px 0 rgb(var(--ink-rgb)/.3)}
+.wall.r .wtxt{left:auto;right:5%;text-align:right}.wall.r{justify-content:flex-start}.wall{justify-content:flex-end}
+.wall .wobj{position:absolute;bottom:0;height:100%;width:100%;pointer-events:none}
+@keyframes wsnore{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes wtail{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(8deg)}}
 /* ══ STUFFIES ══ */
 .shelf-wrap{background:linear-gradient(180deg,#fff3e2,#ffe4f2)}
 .shelf{max-width:1000px;margin:26px auto 0;padding:20px 18px 0;border:6px solid var(--ink);border-radius:var(--r-slab);
@@ -535,7 +550,7 @@ body.calm{--wobble:0deg}
 
 <section class="hero">
   <h1 class="scrawl" aria-label="Phoenix's World"><span id="scrawlTitle"></span>
-    <span class="wave kitty" aria-hidden="true"><svg viewBox="-70 -90 140 150">
+    <span class="wave kitty" aria-hidden="true"><svg viewBox="-100 -95 200 160" style="overflow:visible">
       <path d="M40 30 q38 -6 30 -46" fill="none" stroke="#201540" stroke-width="16" stroke-linecap="round"/><path d="M40 30 q38 -6 30 -46" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>
       <ellipse cx="0" cy="22" rx="40" ry="32" fill="#fff" stroke="#201540" stroke-width="6"/><ellipse cx="14" cy="26" rx="14" ry="18" fill="#201540"/>
       <path d="M-36 -34 L-46 -74 L-12 -52 Z" fill="#201540" stroke="#201540" stroke-width="6" stroke-linejoin="round"/><path d="M36 -34 L46 -74 L12 -52 Z" fill="#fff" stroke="#201540" stroke-width="6" stroke-linejoin="round"/>
@@ -624,13 +639,13 @@ body.calm{--wobble:0deg}
           <span class="switch-cap" style="max-width:120px">Sparkle power: <b id="dialOut">1</b> of 8</span></div>
         <div class="slider-box"><label for="wobbleRange">Wobble the whole room — slide right to make everything wiggle</label>
           <input type="range" id="wobbleRange" min="0" max="100" value="0" aria-describedby="wobbleOut"><span class="slider-out" id="wobbleOut">Wobble is off</span></div>
-        <div class="slider-box"><label>Paint the whole page a new colour</label>
+        <div class="slider-box"><label>Paint the whole page a new color</label>
           <div class="bay-row" id="paintBay" style="justify-content:flex-start"></div><span class="slider-out" id="paintOut">Right now: strawberry milk</span></div>
       </div></div>
     <div class="bay"><h3>The Big Red Button</h3>
       <div class="bay-row">
         <button class="toy btn huge t-pink gloss" id="bigRed" type="button">🎉 Do EVERYTHING at once</button>
-        <button class="toy btn t-white" id="tidyUp" type="button">🧹 Tidy the whole world up</button></div></div>
+        <button class="toy btn t-white" id="tidyUp" type="button">🧹 Clean up the whole world</button></div></div>
   </div>
 </section>
 
@@ -649,6 +664,14 @@ body.calm{--wobble:0deg}
   </div>
 </section>
 
+<section class="wall" style="background:#ff8ad1" aria-label="A giant sleeping kitty against a pink wall"><span class="wtxt">Shhh. Marshmallow is napping on the wall.</span>
+  <svg viewBox="0 0 700 420" style="animation:wsnore 4s ease-in-out infinite"><path d="M560 300 q120 -40 90 -160" fill="none" stroke="#201540" stroke-width="44" stroke-linecap="round" style="transform-box:fill-box;transform-origin:0 100%;animation:wtail 3s ease-in-out infinite"/><path d="M560 300 q120 -40 90 -160" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" style="transform-box:fill-box;transform-origin:0 100%;animation:wtail 3s ease-in-out infinite"/>
+    <ellipse cx="380" cy="330" rx="230" ry="110" fill="#fff" stroke="#201540" stroke-width="12"/><ellipse cx="240" cy="380" rx="70" ry="34" fill="#fff" stroke="#201540" stroke-width="10"/><ellipse cx="520" cy="384" rx="70" ry="34" fill="#fff" stroke="#201540" stroke-width="10"/>
+    <path d="M110 170 L80 40 L220 110 Z M330 170 L360 40 L220 110 Z" fill="#fff" stroke="#201540" stroke-width="12" stroke-linejoin="round"/><path d="M130 160 L110 80 L200 120 Z M310 160 L330 80 L240 120 Z" fill="#ffb6ce"/>
+    <circle cx="220" cy="230" r="140" fill="#fff" stroke="#201540" stroke-width="12"/><path d="M110 110 l30 -60 30 46 30 -70 30 70 30 -46 30 60z" fill="#ffd84d" stroke="#c9a01a" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M150 220 q30 -28 60 0 M250 220 q30 -28 60 0" stroke="#201540" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M200 262 L240 262 L220 282 Z" fill="#ff8fb8" stroke="#201540" stroke-width="7"/><path d="M220 282 q-20 22 -46 8 M220 282 q20 22 46 8" stroke="#201540" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <circle cx="120" cy="270" r="26" fill="#ff8fb8" opacity=".6"/><circle cx="320" cy="270" r="26" fill="#ff8fb8" opacity=".6"/><path d="M80 240 h-60 M80 262 h-64 M360 240 h60 M360 262 h64" stroke="#201540" stroke-width="8" stroke-linecap="round"/>
+    <text x="400" y="120" font-family="Fredoka,sans-serif" font-size="64" font-weight="700" fill="#fff" stroke="#201540" stroke-width="6" paint-order="stroke" style="animation:wsnore 2.6s ease-in-out infinite">z</text><text x="460" y="70" font-family="Fredoka,sans-serif" font-size="44" font-weight="700" fill="#fff" stroke="#201540" stroke-width="5" paint-order="stroke" style="animation:wsnore 2.6s ease-in-out .6s infinite">z</text></svg></section>
 <!-- ══ THE ARCADE ══ -->
 <section class="band arcade-wrap" id="arcade">
   <div class="scene-bg" aria-hidden="true"><svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
@@ -722,6 +745,16 @@ body.calm{--wobble:0deg}
   </div>
 </section>
 
+<section class="wall r" style="background:#ffc53d" aria-label="A giant bear against a yellow wall with toys"><span class="wtxt">Buttons has been waiting for you.</span>
+  <svg viewBox="0 0 700 420"><ellipse cx="330" cy="340" rx="200" ry="90" fill="#c9884a" stroke="#201540" stroke-width="12"/><ellipse cx="330" cy="352" rx="110" ry="60" fill="#f0cfa8"/>
+    <ellipse cx="150" cy="300" rx="60" ry="100" fill="#c9884a" stroke="#201540" stroke-width="10" transform="rotate(24 150 300)"/><ellipse cx="510" cy="300" rx="60" ry="100" fill="#c9884a" stroke="#201540" stroke-width="10" transform="rotate(-24 510 300)"/>
+    <ellipse cx="220" cy="400" rx="80" ry="40" fill="#c9884a" stroke="#201540" stroke-width="10"/><ellipse cx="440" cy="400" rx="80" ry="40" fill="#c9884a" stroke="#201540" stroke-width="10"/><ellipse cx="220" cy="404" rx="44" ry="20" fill="#f0cfa8"/><ellipse cx="440" cy="404" rx="44" ry="20" fill="#f0cfa8"/>
+    <circle cx="200" cy="90" r="60" fill="#c9884a" stroke="#201540" stroke-width="12"/><circle cx="460" cy="90" r="60" fill="#c9884a" stroke="#201540" stroke-width="12"/><circle cx="200" cy="90" r="30" fill="#f0cfa8"/><circle cx="460" cy="90" r="30" fill="#f0cfa8"/>
+    <circle cx="330" cy="170" r="150" fill="#c9884a" stroke="#201540" stroke-width="12"/><ellipse cx="330" cy="230" rx="80" ry="60" fill="#f0cfa8"/>
+    <circle cx="275" cy="140" r="18" fill="#201540"/><circle cx="385" cy="140" r="18" fill="#201540"/><circle cx="268" cy="132" r="6" fill="#fff"/><circle cx="378" cy="132" r="6" fill="#fff"/><ellipse cx="330" cy="212" rx="28" ry="20" fill="#201540"/><path d="M330 232 v20 M330 252 q-24 22 -46 4 M330 252 q24 22 46 4" stroke="#201540" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <path d="M240 270 q90 50 180 0" stroke="#17c7e8" stroke-width="28" fill="none" stroke-linecap="round"/><circle cx="330" cy="300" r="18" fill="#ffc53d" stroke="#201540" stroke-width="8"/>
+    <g transform="translate(600,360)"><circle r="40" fill="#ff4d9d" stroke="#201540" stroke-width="9"/><path d="M0 -40 a40 40 0 0 1 0 80 a22 40 0 0 1 0 -80z" fill="#17c7e8"/><circle r="40" fill="none" stroke="#201540" stroke-width="9"/></g>
+    <g transform="translate(60,370)"><rect x="-36" y="-36" width="72" height="72" rx="14" fill="#8b3dff" stroke="#201540" stroke-width="9"/><text y="16" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="48" font-weight="700" fill="#fff">P</text></g></svg></section>
 <!-- ══ SEASONS (Drop 2 mounts here) ══ -->
 <section class="band seasons-wrap" id="seasons">
   <h2 class="outlined">The Four Seasons</h2>
@@ -758,6 +791,13 @@ body.calm{--wobble:0deg}
 <!-- Princess Phoenix Sparkles lands here -->
 <div id="phoenix"></div>
 
+<section class="wall" style="background:#3fe0a4" aria-label="A giant bunny against a green wall"><span class="wtxt">Snowdrop says: pick a world!</span>
+  <svg viewBox="0 0 700 420"><ellipse cx="260" cy="60" rx="36" ry="110" fill="#fff" stroke="#201540" stroke-width="12" transform="rotate(-12 260 60)"/><ellipse cx="380" cy="60" rx="36" ry="110" fill="#fff" stroke="#201540" stroke-width="12" transform="rotate(12 380 60)"/><ellipse cx="260" cy="60" rx="18" ry="80" fill="#ffb6ce" transform="rotate(-12 260 60)"/><ellipse cx="380" cy="60" rx="18" ry="80" fill="#ffb6ce" transform="rotate(12 380 60)"/>
+    <ellipse cx="320" cy="340" rx="190" ry="100" fill="#fff" stroke="#201540" stroke-width="12"/><ellipse cx="320" cy="360" rx="100" ry="60" fill="#fdf0f6"/><ellipse cx="210" cy="410" rx="80" ry="34" fill="#fff" stroke="#201540" stroke-width="10"/><ellipse cx="430" cy="410" rx="80" ry="34" fill="#fff" stroke="#201540" stroke-width="10"/>
+    <circle cx="320" cy="200" r="130" fill="#fff" stroke="#201540" stroke-width="12"/><circle cx="270" cy="180" r="26" fill="#fff" stroke="#201540" stroke-width="10"/><circle cx="370" cy="180" r="26" fill="#fff" stroke="#201540" stroke-width="10"/><circle cx="274" cy="182" r="13" fill="#201540"/><circle cx="374" cy="182" r="13" fill="#201540"/>
+    <path d="M320 240 l20 16 -20 16 -20 -16z" fill="#ff8fb8" stroke="#201540" stroke-width="8"/><path d="M320 272 v18 M320 290 q-22 20 -40 4 M320 290 q22 20 40 4" stroke="#201540" stroke-width="10" fill="none" stroke-linecap="round"/><rect x="306" y="296" width="28" height="22" rx="5" fill="#fff" stroke="#201540" stroke-width="6"/>
+    <circle cx="240" cy="250" r="26" fill="#ff8fb8" opacity=".5"/><circle cx="400" cy="250" r="26" fill="#ff8fb8" opacity=".5"/><path d="M200 220 h-60 M440 220 h60" stroke="#201540" stroke-width="8" stroke-linecap="round"/>
+    <path d="M250 300 q70 36 140 0" stroke="#8b3dff" stroke-width="26" fill="none" stroke-linecap="round"/></svg></section>
 <!-- ══ WORLDS ══ -->
 <section class="band worlds-wrap" id="worlds">
   <h2 class="outlined">Pick a world</h2>
@@ -940,6 +980,11 @@ SND.tada = function(){ [523,659,784,1046,1318].forEach(function(f,i){ SND.tone(f
 SND.drum = function(){ this.slide(180,52,0.2,'sine',0.16); this.noise(0.07,0.05,2600); };
 SND.bell = function(){ [1046,1567,2093].forEach(function(f,i){ SND.tone(f,0.9,'sine',0.06,i*0.02); }); };
 
+/* ── REAL SOUND FILES: put mp3s in /sounds/ named meow.mp3, woof.mp3, moo.mp3, quack.mp3, roar.mp3, laugh.mp3,
+   boing.mp3, tada.mp3, drum.mp3, bell.mp3, pop.mp3, ding.mp3, win.mp3, whoosh.mp3, purr.mp3 — they play instead of
+   the synth version automatically. Missing files fall back to synth, silently. CC0 sounds: pixabay.com/sound-effects */
+(function(){ var FILE={}; ['meow','woof','moo','quack','roar','laugh','boing','tada','drum','bell','pop','ding','win','whoosh','purr'].forEach(function(n){ var synth=SND[n]; if(!synth) return;
+  SND[n]=function(){ if(!SND.on) return; if(FILE[n]===false) return synth.apply(SND,arguments); try{ var a=new Audio('/sounds/'+n+'.mp3'); a.volume=0.65; var p=a.play(); if(p&&p.then) p.then(function(){ FILE[n]=true; }).catch(function(){ FILE[n]=false; synth.apply(SND,arguments); }); }catch(e){ FILE[n]=false; synth.apply(SND,arguments); } }; }); })();
 /* speech, used sparingly and only for short friendly lines */
 var voices=[];
 function loadVoices(){ try{ voices = window.speechSynthesis.getVoices()||[]; }catch(e){} }
@@ -1059,7 +1104,7 @@ function setSky(which, on){
       // the sun and the moon cannot both be out
       $('moonBody').classList.remove('on');
       var mb = D.querySelector('[data-sky="moon"]'); if(mb) mb.setAttribute('aria-pressed','false');
-      SND.tada(); screenSay('The sun came out and it is VERY happy to see you. ☀️');
+      SND.tada(); screenSay('THE SUN! Look up — it is huge and it is smiling at you. ☀️'); setTimeout(function(){ if(P&&P.sparkleAt) P.sparkleAt(window.innerWidth/2,window.innerHeight*0.3,40,['#ffd84d','#fff','#ff8a3d']); },300);
       say('Good morning!');
     } else {
       $('sunBody').classList.remove('on');
@@ -1400,7 +1445,7 @@ DROPS.forEach(function(d){
 });
 H('button',{type:'button','class':'toy btn t-white',text:'🧺 Put them away'},$('dropBay'))
   .addEventListener('click', function(){
-    clear(dropLayer); SND.tap(); screenSay('All tidied up.');
+    clear(dropLayer); SND.tap(); screenSay('All cleaned up.');
   });
 
 /* ── The lever ── */
@@ -1482,7 +1527,7 @@ $('tidyUp').addEventListener('click', function(){
   D.documentElement.style.setProperty('--wobble','0deg');
   wobOut.textContent = 'Wobble is off';
   starsOn = false;
-  SND.whoosh(); screenSay('All tidy. Ready to start again!');
+  SND.whoosh(); screenSay('All clean. Ready to start again!');
 });
 
 /* ─────────────────── SOUND & CALM TOGGLES ─────────────────── */
@@ -2081,12 +2126,12 @@ $('tidyUp').addEventListener('click', function(){
       E('circle',{cx:0,cy:-4,r:9,fill:'#ff4d9d',stroke:'#201540','stroke-width':3},hook);
       var hitBox=E('rect',{x:0,y:0,width:960,height:600,fill:'transparent',style:'cursor:grab'},svg);
       var FC=['#ff8a3d','#ffc53d','#3fe0a4','#ff4d9d','#c94dff','#17c7e8'];
-      function spawn(){ var g=E('g',null,svg), c=pick(FC), dir=Math.random()<.5?1:-1;
+      function spawn(){ var g=E('g',null,svg), c=pick(FC), dir=Math.random()<.5?1:-1; var big=Math.random(); var sz=big<.05?2.6:big<.22?1.7:1; if(sz>1) c=sz>2?'#ffd84d':'#c94dff';
         E('path',{d:'M-30 0 L-58 -20 L-52 0 L-58 20 Z',fill:c,stroke:'#201540','stroke-width':3,'stroke-linejoin':'round'},g);
         E('ellipse',{rx:36,ry:22,fill:c,stroke:'#201540','stroke-width':3},g);
         E('circle',{cx:18,cy:-4,r:6,fill:'#fff',stroke:'#201540','stroke-width':2},g); E('circle',{cx:20,cy:-4,r:2.6,fill:'#201540'},g);
-        var f={el:g,x:dir>0?-80:1040,y:rnd(280,560),vx:dir*rnd(0.8,2),dir:dir,c:c,bite:0}; fishes.push(f); place(f); }
-      function place(f){ f.el.setAttribute('transform','translate('+f.x.toFixed(1)+','+f.y.toFixed(1)+') scale('+(f.dir>0?1:-1)+',1)'); }
+        var f={el:g,x:dir>0?-80:1040,y:rnd(280,560),vx:dir*rnd(0.8,2)/Math.sqrt(sz),dir:dir,c:c,bite:0,sz:sz}; if(sz>2){ E('path',{d:'M-10 -22 l6 -14 6 14 M4 -22 l6 -14 6 14',fill:'#ffc53d',stroke:'#201540','stroke-width':3},g); } fishes.push(f); place(f); }
+      function place(f){ f.el.setAttribute('transform','translate('+f.x.toFixed(1)+','+f.y.toFixed(1)+') scale('+(f.dir>0?f.sz:-f.sz)+','+f.sz+')'); }
       for(var i=0;i<5;i++){ spawn(); fishes[i].x=rnd(60,900); }
       function setHook(x,y){ hookX=Math.max(40,Math.min(920,x)); hookY=Math.max(90,Math.min(570,y));
         hook.setAttribute('transform','translate('+hookX+','+hookY+')');
@@ -2099,7 +2144,7 @@ $('tidyUp').addEventListener('click', function(){
         fishes.forEach(function(f,i){ if(f===biting) return;
           f.x+=f.vx; if(f.x<-100){ f.x=1040; f.dir=-1; f.vx=-Math.abs(f.vx);} if(f.x>1060){ f.x=-80; f.dir=1; f.vx=Math.abs(f.vx);}
           f.y+=Math.sin(Date.now()/600+i)*0.4; place(f);
-          if(!biting && hookY>230 && Math.abs(f.x-hookX)<40 && Math.abs(f.y-hookY-10)<34){ f.bite++; if(f.bite>28) bite(f); } else f.bite=0;
+          if(!biting && hookY>230 && Math.abs(f.x-hookX)<40*f.sz && Math.abs(f.y-hookY-10)<34*f.sz){ f.bite++; if(f.bite>(f.sz>1?40:28)) bite(f); } else f.bite=0;
         });
         raf=requestAnimationFrame(step);
       }
@@ -2107,7 +2152,7 @@ $('tidyUp').addEventListener('click', function(){
         var y0=f.y, t0=Date.now();
         (function reel(){ var k=Math.min(1,(Date.now()-t0)/1300); var y=y0+(90-y0)*k; f.y=y; f.x=hookX; place(f); setHook(hookX,y+10);
           if(k<1) requestAnimationFrame(reel); else { SND.win(); P.sparkleAt(screen.getBoundingClientRect().left+screen.offsetWidth*hookX/960, screen.getBoundingClientRect().top+40, 16);
-            var l=LINES[(caught-1)%LINES.length]; say(l); show('You caught one!', l, '🎣 Keep fishing');
+            var l=f.sz>2?'A LEGENDARY GOLDEN FISH! Nobody has ever caught one. You are patient AND lucky.':f.sz>1?'WHOA! You caught a BIG one! Look at the size of it! That took real patience.':LINES[(caught-1)%LINES.length]; say(l); if(f.sz>1){ SND.tada(); P.confetti(f.sz>2?150:60); } show(f.sz>2?'LEGENDARY!':f.sz>1?'A BIG ONE!':'You caught one!', l, '🎣 Keep fishing');
             startBtn.onclick=function(){ hide(); f.el.remove(); fishes.splice(fishes.indexOf(f),1); biting=null; spawn(); setHook(480,120); running=true; step(); };
             running=false; } })();
       }
@@ -2116,7 +2161,7 @@ $('tidyUp').addEventListener('click', function(){
     }};
 
   /* ── Cartridge 3: RAINBOW PIANO ── */
-  var piano = { name:'Rainbow Piano', pic:'🎹', tone:'t-sun', intro:'Tap the colours to play. Pick a song and the piano plays it for you.',
+  var piano = { name:'Rainbow Piano', pic:'🎹', tone:'t-sun', intro:'Tap the colors to play. Pick a song and the piano plays it for you.',
     start:function(){
       var svg=mount('svg'), FR=[261.63,293.66,329.63,349.23,392,440,493.88,523.25], NM=['C','D','E','F','G','A','B','C'],
           KC=['#ff4d9d','#ff8a3d','#ffc53d','#3fe0a4','#17c7e8','#7f9cff','#8b3dff','#ff8ad1'], keys=[], timer=null;
@@ -2146,7 +2191,7 @@ $('tidyUp').addEventListener('click', function(){
           timer=setInterval(function(){ if(k>=seq.length){ stop(); hud('Your turn!','Piano'); return; } var v=seq[k++]; if(v>=0&&v<8) play(v); else if(v>=8) SND.tone(P.SCALE[v],0.5,'triangle',0.13); },400); });
       });
       H('button',{type:'button','class':'toy btn small t-white',text:'⏹ Stop'},controls).addEventListener('click',stop);
-      hud('Tap a colour','Piano');
+      hud('Tap a color','Piano');
       return stop;
     }};
 
@@ -2166,7 +2211,7 @@ $('tidyUp').addEventListener('click', function(){
       svg.addEventListener('pointermove',function(e){ if(!on) return; var p=pt(e,svg); if(Math.random()<.5) sp(p.x,p.y); e.preventDefault(); });
       svg.addEventListener('pointerup',function(){ on=false; }); svg.addEventListener('pointercancel',function(){ on=false; });
       controls.innerHTML='';
-      COLS.forEach(function(c,i){ var b=H('button',{type:'button','class':'swatch','aria-pressed':i===0?'true':'false','aria-label':'Paint colour '+(i+1)},controls);
+      COLS.forEach(function(c,i){ var b=H('button',{type:'button','class':'swatch','aria-pressed':i===0?'true':'false','aria-label':'Paint color '+(i+1)},controls);
         b.style.background=c; b.addEventListener('click',function(){ col=c; controls.querySelectorAll('.swatch').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); SND.tap(); }); });
       H('button',{type:'button','class':'toy btn small t-white',text:'🧽 Wash it off'},controls).addEventListener('click',function(){ reset(); SND.whoosh(); });
       return function(){};
