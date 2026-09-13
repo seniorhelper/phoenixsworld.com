@@ -86,13 +86,7 @@
 #phoenix.arriving .slide{animation:slideIn 2.6s ease-out both}
 @keyframes slideIn{0%{opacity:0}18%{opacity:.85}72%{opacity:.85}100%{opacity:0}}
 #phoenix.arriving .pcat{animation:comeDown 2.6s cubic-bezier(.3,.5,.3,1) both}
-@keyframes comeDown{
-  0%{opacity:0;transform:translate(-52%,-58%) scale(.16) rotate(-16deg)}
-  14%{opacity:1}
-  52%{transform:translate(-12%,-8%) scale(.34) rotate(6deg)}
-  74%{transform:translate(0,4%) scale(.9) rotate(-3deg)}
-  88%{transform:translate(0,-1%) scale(1.06) rotate(1deg)}
-  100%{opacity:1;transform:translate(0,0) scale(1) rotate(0)}}
+
 
 /* the wand-wave that shrinks her */
 .pcat.casting .p-wand{animation:castWand .62s ease-in-out 2!important}
@@ -103,14 +97,12 @@
 .poof b{position:absolute;left:0;top:0;border-radius:50%;background:#fff;opacity:0;
   box-shadow:0 0 20px rgba(255,255,255,.9);animation:puffOut 1.2s ease-out both}
 .poof.go b{animation-play-state:running}
-@keyframes puffOut{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
-  22%{opacity:.95}100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(1.5)}}
+
 
 /* ── corner helper mode ─────────────────────────────────────────────── */
 #phoenix.mini{position:fixed;right:14px;bottom:14px;left:auto;width:auto;z-index:2147482000;
   display:flex;flex-direction:column;align-items:flex-end;gap:8px;max-width:min(92vw,360px)}
-#phoenix.mini .stage{width:118px}
-#phoenix.mini .pcat{width:118px;transition:width .5s ease}
+#phoenix.mini .pcat{width:214px;transition:width .5s ease}
 #phoenix.mini .say{order:-1;font-size:16px;padding:14px 16px;margin:0;max-width:min(88vw,320px);
   box-shadow:0 8px 0 rgba(51,35,74,.14)}
 #phoenix.mini .say:after,#phoenix.mini .say:before{display:none}
@@ -131,17 +123,8 @@
 .uni{position:absolute;left:50%;bottom:-18%;width:150px;margin-left:-75px;opacity:0;
   pointer-events:none;z-index:-1}
 .uni svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 14px rgba(120,80,160,.3))}
-#phoenix.riding .uni{animation:uniRide 3.4s cubic-bezier(.35,.05,.4,1) both}
-@keyframes uniRide{
-  0%{opacity:0;transform:translate(-150%,40px) scale(.7)}
-  16%{opacity:1;transform:translate(-10%,10px) scale(.95)}
-  34%{opacity:1;transform:translate(0,0) scale(1)}
-  100%{opacity:0;transform:translate(220%,-420px) scale(.5)}}
-#phoenix.riding .pcat{animation:uniUp 3.4s cubic-bezier(.35,.05,.4,1) both}
-@keyframes uniUp{
-  0%,30%{transform:translate(0,0) rotate(0)}
-  40%{transform:translate(6px,-26px) rotate(-4deg)}
-  100%{opacity:0;transform:translate(230px,-440px) rotate(10deg) scale(.5)}}
+
+
 #phoenix.riding .say,#phoenix.riding .picks,#phoenix.riding .askrow,#phoenix.riding .closeme{
   opacity:0;transition:opacity .4s}
 #phoenix.gone{display:none}
@@ -156,21 +139,16 @@
 
 @media(max-width:640px){
   #phoenix.mini{right:8px;bottom:8px;max-width:94vw}
-  #phoenix.mini .stage,#phoenix.mini .pcat{width:96px}
   #phoenix.mini .say{font-size:15px;max-width:80vw}
   .reopen{font-size:13px;padding:10px 14px}
 }
 
 
 /* ══ bigger, wobblier corner princess ══════════════════════════════════ */
-#phoenix.mini .stage{width:178px}
-#phoenix.mini .pcat{width:178px}
 #phoenix.mini .p-head{animation:bobBig 2.6s ease-in-out infinite}
-@keyframes bobBig{0%,100%{transform:translateY(0) rotate(-5deg)}
-  50%{transform:translateY(-14px) rotate(5deg)}}
+
 #phoenix.mini .say{font-size:17px;max-width:min(90vw,340px)}
 @media(max-width:640px){
-  #phoenix.mini .stage,#phoenix.mini .pcat{width:132px}
   #phoenix.mini .say{font-size:15.5px;max-width:82vw}
 }
 
@@ -193,7 +171,6 @@
 
 /* ══ v3: bigger corner princess, higher arrival, rainbow slide, long flight ══ */
 #phoenix.mini .stage{width:214px}
-#phoenix.mini .pcat{width:214px}
 #phoenix.mini .p-head{animation:bobBig 2.4s ease-in-out infinite}
 @keyframes bobBig{0%,100%{transform:translateY(0) rotate(-6deg)}
   50%{transform:translateY(-16px) rotate(6deg)}}
@@ -223,31 +200,8 @@
 /* ── the 20-second unicorn flight, with flips ── */
 .uni{width:230px;margin-left:-115px;bottom:-14%}
 @media(max-width:640px){.uni{width:180px;margin-left:-90px}}
-#phoenix.riding .uni{animation:uniRide 19.5s cubic-bezier(.4,.1,.5,.9) both}
-@keyframes uniRide{
-  0%{opacity:0;transform:translate(-190%,30px) scale(.6) rotate(0)}
-  8%{opacity:1;transform:translate(-20%,6px) scale(1) rotate(0)}
-  14%{transform:translate(0,0) scale(1) rotate(0)}
-  24%{transform:translate(-46vw,-24vh) scale(.9) rotate(-8deg)}
-  34%{transform:translate(-30vw,-40vh) scale(.85) rotate(-368deg)}
-  46%{transform:translate(22vw,-30vh) scale(.9) rotate(-380deg)}
-  56%{transform:translate(40vw,-46vh) scale(.8) rotate(-740deg)}
-  68%{transform:translate(-10vw,-56vh) scale(.72) rotate(-752deg)}
-  80%{transform:translate(-38vw,-66vh) scale(.6) rotate(-1110deg)}
-  92%{opacity:1;transform:translate(24vw,-80vh) scale(.42) rotate(-1120deg)}
-  100%{opacity:0;transform:translate(60vw,-98vh) scale(.2) rotate(-1130deg)}}
-#phoenix.riding .pcat{animation:uniUp 19.5s cubic-bezier(.4,.1,.5,.9) both}
-@keyframes uniUp{
-  0%,10%{transform:translate(0,0) rotate(0) scale(1)}
-  14%{transform:translate(4px,-28px) rotate(-3deg) scale(.96)}
-  24%{transform:translate(-46vw,-26vh) rotate(-8deg) scale(.88)}
-  34%{transform:translate(-30vw,-42vh) rotate(-368deg) scale(.82)}
-  46%{transform:translate(22vw,-32vh) rotate(-380deg) scale(.86)}
-  56%{transform:translate(40vw,-48vh) rotate(-740deg) scale(.76)}
-  68%{transform:translate(-10vw,-58vh) rotate(-752deg) scale(.68)}
-  80%{transform:translate(-38vw,-68vh) rotate(-1110deg) scale(.56)}
-  92%{opacity:1;transform:translate(24vw,-82vh) rotate(-1120deg) scale(.4)}
-  100%{opacity:0;transform:translate(60vw,-100vh) rotate(-1130deg) scale(.18)}}
+
+
 
 
 /* ══════ v4: she arrives centre-screen, then rides a rainbow slide down ══════
@@ -290,3 +244,51 @@
 /* the goodbye ride also takes over the screen */
 #phoenix.big.riding{place-items:center}
 #phoenix.big.riding .say{bottom:auto;top:8vh}
+
+
+/* ══════ v5: guaranteed centre-screen arrival, magic smoke, longer flight ══════ */
+#phoenix.big{position:fixed!important;inset:0!important;z-index:2147482000!important;
+  display:grid!important;place-items:center!important;margin:0!important;padding:0!important}
+#phoenix.big .stage{width:min(90vw,440px)!important;margin:0!important}
+@media(max-width:640px){#phoenix.big .stage{width:92vw!important}}
+
+/* coloured sparks that fly out with the smoke */
+.poofspark{position:absolute;left:0;top:0;border-radius:50%;opacity:0;
+  animation:sparkFly ease-out both;box-shadow:0 0 22px currentColor}
+@keyframes sparkFly{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}
+  14%{opacity:1}
+  100%{opacity:0;transform:translate(calc(-50% + var(--sx)),calc(-50% + var(--sy))) scale(1.6) rotate(300deg)}}
+
+/* the flight: 22 seconds, four flips, a proper tour of the screen */
+.uni{width:280px;margin-left:-140px}
+@media(max-width:640px){.uni{width:215px;margin-left:-107px}}
+#phoenix.riding .uni{animation:uniRide 22.5s cubic-bezier(.42,.05,.5,.95) both}
+#phoenix.riding .pcat{animation:uniUp 22.5s cubic-bezier(.42,.05,.5,.95) both}
+@keyframes uniRide{
+  0%{opacity:0;transform:translate(-210%,40px) scale(.5) rotate(0)}
+  7%{opacity:1;transform:translate(-30%,10px) scale(1) rotate(0)}
+  13%{transform:translate(0,0) scale(1) rotate(0)}
+  22%{transform:translate(-40vw,-18vh) scale(.95) rotate(-6deg)}
+  30%{transform:translate(-22vw,-34vh) scale(.9) rotate(-366deg)}
+  40%{transform:translate(26vw,-22vh) scale(.95) rotate(-374deg)}
+  49%{transform:translate(42vw,-40vh) scale(.85) rotate(-734deg)}
+  60%{transform:translate(-4vw,-52vh) scale(.8) rotate(-746deg)}
+  70%{transform:translate(-40vw,-40vh) scale(.78) rotate(-1102deg)}
+  80%{transform:translate(-12vw,-64vh) scale(.66) rotate(-1112deg)}
+  90%{transform:translate(32vw,-58vh) scale(.54) rotate(-1470deg)}
+  96%{opacity:1;transform:translate(10vw,-84vh) scale(.34) rotate(-1478deg)}
+  100%{opacity:0;transform:translate(58vw,-104vh) scale(.14) rotate(-1484deg)}}
+@keyframes uniUp{
+  0%,9%{transform:translate(0,0) rotate(0) scale(1)}
+  13%{transform:translate(4px,-30px) rotate(-3deg) scale(.97)}
+  22%{transform:translate(-40vw,-20vh) rotate(-6deg) scale(.9)}
+  30%{transform:translate(-22vw,-36vh) rotate(-366deg) scale(.85)}
+  40%{transform:translate(26vw,-24vh) rotate(-374deg) scale(.9)}
+  49%{transform:translate(42vw,-42vh) rotate(-734deg) scale(.8)}
+  60%{transform:translate(-4vw,-54vh) rotate(-746deg) scale(.75)}
+  70%{transform:translate(-40vw,-42vh) rotate(-1102deg) scale(.72)}
+  80%{transform:translate(-12vw,-66vh) rotate(-1112deg) scale(.6)}
+  90%{transform:translate(32vw,-60vh) rotate(-1470deg) scale(.48)}
+  96%{opacity:1;transform:translate(10vw,-86vh) rotate(-1478deg) scale(.3)}
+  100%{opacity:0;transform:translate(58vw,-106vh) rotate(-1484deg) scale(.12)}}
