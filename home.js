@@ -1164,3 +1164,171 @@
     draw();
   })();
 })();
+
+
+/* ==========================================================================
+   THE CONTROL PANEL — levers, switches, dials and big red buttons, sitting
+   right at the top so a phone shows them straight away. Every control does
+   something instantly, which is the whole point: cause and effect is the
+   first thing a small child learns from a screen.
+   ========================================================================== */
+(function(){
+  var NS='http://www.w3.org/2000/svg', D=document;
+  function el(t,a,p){var e=D.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function pick(a){return a[Math.floor(Math.random()*a.length)];}
+  function say(t){if(window.PWspeak)window.PWspeak(t);}
+  var FX = window.PWfx || {};
+
+  var svg = D.getElementById('panel');
+  if (!svg) return;
+  var tip = D.getElementById('panelTip');
+
+  /* backing board */
+  /* gradients built with real DOM calls — innerHTML on an SVG node is not
+     reliable, and if it silently failed the whole board went black */
+  (function(){
+    var defs = el('defs',{},svg);
+    function grad(id, stops){
+      var g = el('linearGradient',{id:id,x1:0,y1:0,x2:0,y2:1},defs);
+      stops.forEach(function(s){ el('stop',{offset:s[0],'stop-color':s[1]},g); });
+    }
+    grad('board',[['0%','#3b2a63'],['100%','#241640']]);
+    grad('chrome',[['0%','#fdfdff'],['52%','#c6ccd8'],['100%','#7d8696']]);
+  })();
+  el('rect',{x:0,y:0,width:760,height:300,rx:26,fill:'url(#board)'},svg);
+  el('rect',{x:12,y:12,width:736,height:276,rx:20,fill:'none',stroke:'#5a4590','stroke-width':4},svg);
+  /* rivets */
+  [[28,28],[732,28],[28,272],[732,272]].forEach(function(p){
+    el('circle',{cx:p[0],cy:p[1],r:7,fill:'url(#chrome)',stroke:'#1b1030','stroke-width':3},svg);
+  });
+
+  function label(x,y,t,c){
+    var g=el('text',{x:x,y:y,'text-anchor':'middle','font-family':'Trebuchet MS,Verdana,sans-serif',
+      'font-size':15,'font-weight':800,fill:c||'#ffd400'},svg);
+    g.textContent=t; return g;
+  }
+
+  /* ── 1. THE BIG LEVER: pull it down for fireworks ─────────────────── */
+  (function(){
+    var g=el('g',{style:'cursor:pointer'},svg);
+    el('rect',{x:52,y:190,width:120,height:26,rx:12,fill:'#1b1030',stroke:'#5a4590','stroke-width':4},g);
+    var arm=el('g',{},g);
+    el('rect',{x:104,y:86,width:16,height:112,rx:8,fill:'url(#chrome)',stroke:'#1b1030','stroke-width':4},arm);
+    el('circle',{cx:112,cy:82,r:24,fill:'#ff2d95',stroke:'#1b1030','stroke-width':5},arm);
+    el('circle',{cx:104,cy:74,r:7,fill:'#fff','fill-opacity':.6},arm);
+    arm.style.transformOrigin='112px 200px';
+    arm.style.transformBox='fill-box';
+    label(112,246,'FIREWORKS');
+    var down=false;
+    g.addEventListener('click',function(){
+      down=!down;
+      arm.style.transition='transform .3s cubic-bezier(.3,1.4,.4,1)';
+      arm.style.transform=down?'rotate(42deg)':'rotate(0deg)';
+      if(FX.fireworks)FX.fireworks(); else say('Boom!');
+      tip.textContent='KABOOM! 🎆';
+    });
+  })();
+
+  /* ── 2. THREE TOGGLE SWITCHES: each one changes the sky ───────────── */
+  (function(){
+    var MODES=[['☀️','Sunny','#ffe9a8'],['🌈','Rainbow','#ffd0e8'],['🌙','Night','#2b2060']];
+    MODES.forEach(function(m,i){
+      var x=232+i*74, on=false;
+      var g=el('g',{style:'cursor:pointer'},svg);
+      el('rect',{x:x-26,y:96,width:52,height:104,rx:26,fill:'#1b1030',stroke:'#5a4590','stroke-width':4},g);
+      var knob=el('circle',{cx:x,cy:172,r:20,fill:'url(#chrome)',stroke:'#1b1030','stroke-width':4},g);
+      var glow=el('circle',{cx:x,cy:124,r:9,fill:'#3a2a60'},g);
+      var t=el('text',{x:x,y:232,'text-anchor':'middle','font-size':22},svg);
+      t.textContent=m[0];
+      label(x,256,m[1],'#c9a2ff');
+      g.addEventListener('click',function(){
+        on=!on;
+        knob.style.transition='cy .25s'; knob.setAttribute('cy',on?124:172);
+        glow.setAttribute('fill',on?'#00ff9d':'#3a2a60');
+        if(on){
+          D.body.style.transition='filter .6s';
+          D.body.style.filter = m[1]==='Night' ? 'brightness(.75) saturate(1.3) hue-rotate(200deg)'
+                              : m[1]==='Rainbow' ? 'saturate(1.7) hue-rotate(18deg)'
+                              : 'brightness(1.12) saturate(1.2)';
+          tip.textContent=m[1]+' mode! Flip it back when you are done.';
+          say(m[1]==='Night'
+            ? 'Night mode! 🌙 It gets dark because our whole planet has spun away from the Sun.'
+            : m[1]==='Rainbow' ? 'Everything is extra rainbow now! 🌈'
+            : 'Sunshine everywhere! ☀️');
+        } else {
+          D.body.style.filter='';
+          tip.textContent='Back to normal!';
+        }
+      });
+    });
+  })();
+
+  /* ── 3. THE SPARKLE DIAL: turn it up ──────────────────────────────── */
+  (function(){
+    var cx=470,cy=150,steps=0;
+    var g=el('g',{style:'cursor:pointer'},svg);
+    el('circle',{cx:cx,cy:cy,r:52,fill:'#1b1030',stroke:'#5a4590','stroke-width':4},g);
+    el('circle',{cx:cx,cy:cy,r:40,fill:'url(#chrome)',stroke:'#1b1030','stroke-width':4},g);
+    var mark=el('rect',{x:cx-4,y:cy-38,width:8,height:22,rx:4,fill:'#ff2d95'},g);
+    mark.style.transformOrigin=cx+'px '+cy+'px';
+    for(var i=0;i<8;i++){
+      var a=(Math.PI*2/8)*i-Math.PI/2;
+      el('circle',{cx:cx+Math.cos(a)*60,cy:cy+Math.sin(a)*60,r:4,
+        fill:i===0?'#00ff9d':'#5a4590'},g);
+    }
+    label(cx,236,'SPARKLES');
+    g.addEventListener('click',function(){
+      steps=(steps+1)%8;
+      mark.style.transition='transform .28s cubic-bezier(.3,1.4,.4,1)';
+      mark.style.transform='rotate('+(steps*45)+'deg)';
+      var n=8+steps*10;
+      if(FX.sparkles)FX.sparkles(n);
+      tip.textContent='Sparkle power: '+(steps+1)+' of 8 ✨';
+      if(steps===7)say('Sparkle power at MAXIMUM! ✨ You have excellent taste in dials.');
+    });
+  })();
+
+  /* ── 4. TWO BIG BUTTONS: confetti and paint ───────────────────────── */
+  (function(){
+    [[600,'#ff2d95','CONFETTI',function(){ if(FX.confetti)FX.confetti(); tip.textContent='PARTY! 🎉'; }],
+     [690,'#00e5ff','SPLAT',   function(){ if(FX.splash)FX.splash();   tip.textContent='SPLAT! 🎨'; }]
+    ].forEach(function(b){
+      var x=b[0], g=el('g',{style:'cursor:pointer'},svg);
+      el('circle',{cx:x,cy:150,r:36,fill:'#1b1030',stroke:'#5a4590','stroke-width':4},g);
+      var top=el('circle',{cx:x,cy:144,r:30,fill:b[1],stroke:'#1b1030','stroke-width':5},g);
+      el('circle',{cx:x-10,cy:134,r:8,fill:'#fff','fill-opacity':.45},g);
+      label(x,214,b[2],'#ffd400');
+      g.addEventListener('click',function(){
+        top.style.transition='cy .1s'; top.setAttribute('cy',152);
+        setTimeout(function(){ top.setAttribute('cy',144); },130);
+        b[3]();
+      });
+    });
+  })();
+
+  /* ── 5. A SLIDER that makes the whole page wobble ─────────────────── */
+  (function(){
+    var g=el('g',{},svg), x0=52, x1=172, y=270;
+    el('rect',{x:x0,y:y-5,width:x1-x0,height:10,rx:5,fill:'#1b1030',stroke:'#5a4590','stroke-width':3},g);
+    var knob=el('circle',{cx:x0+12,cy:y,r:14,fill:'#ffd400',stroke:'#1b1030','stroke-width':4,
+      style:'cursor:grab'},g);
+    knob.style.touchAction='none';
+    var drag=false;
+    function set(px){
+      var x=Math.max(x0+12,Math.min(x1-12,px));
+      knob.setAttribute('cx',x);
+      var amt=(x-x0-12)/(x1-x0-24);
+      D.documentElement.style.setProperty('--wob',(amt*2.2).toFixed(2)+'deg');
+      D.body.classList.toggle('wobbly',amt>0.06);
+      tip.textContent = amt>0.06 ? 'Wobble power: '+Math.round(amt*100)+'%!' : 'Wobble off.';
+    }
+    knob.addEventListener('pointerdown',function(e){e.preventDefault();drag=true;knob.setPointerCapture(e.pointerId);});
+    knob.addEventListener('pointermove',function(e){
+      if(!drag)return; e.preventDefault();
+      var r=svg.getBoundingClientRect();
+      set((e.clientX-r.left)/r.width*760);
+    });
+    knob.addEventListener('pointerup',function(){drag=false;});
+  })();
+})();
