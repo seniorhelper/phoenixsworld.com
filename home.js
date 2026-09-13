@@ -1,0 +1,800 @@
+/* ==========================================================================
+   home.js — everything you can touch on the Phoenix's World homepage.
+
+   All artwork is drawn here as original SVG. No fail states anywhere: nothing
+   can be lost, no timers, no scores that go down. Every draggable sets
+   touch-action:none and uses pointer capture so a phone never scrolls the
+   page while a child is dragging something.
+   ========================================================================== */
+(function(){
+  var NS = 'http://www.w3.org/2000/svg', D = document;
+
+  function el(t, a, p){
+    var e = D.createElementNS(NS, t);
+    for (var k in a) e.setAttribute(k, a[k]);
+    if (p) p.appendChild(e);
+    return e;
+  }
+  function rnd(a, b){ return a + Math.random() * (b - a); }
+  function pickOne(a){ return a[Math.floor(Math.random() * a.length)]; }
+  function say(t){ if (window.PWspeak) window.PWspeak(t); }
+
+  /* turn any SVG element into something a finger can drag without the page
+     running away underneath it */
+  function draggable(node, svg, vbW, vbH, onDrop, onMove){
+    var dragging = false, ox = 0, oy = 0;
+    node.style.touchAction = 'none';
+    node.style.cursor = 'grab';
+    function pt(e){
+      var r = svg.getBoundingClientRect();
+      return { x:(e.clientX - r.left) / r.width * vbW, y:(e.clientY - r.top) / r.height * vbH };
+    }
+    node.addEventListener('pointerdown', function(e){
+      if (node.dataset.locked) return;
+      e.preventDefault();
+      dragging = true;
+      node.setPointerCapture(e.pointerId);
+      node.style.cursor = 'grabbing';
+      var p = pt(e), cur = (node.getAttribute('transform') || '').match(/translate\(([-\d.]+)[ ,]([-\d.]+)\)/);
+      ox = p.x - (cur ? +cur[1] : 0);
+      oy = p.y - (cur ? +cur[2] : 0);
+    });
+    node.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      e.preventDefault();
+      var p = pt(e), x = p.x - ox, y = p.y - oy;
+      node.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+      if (onMove) onMove(x, y);
+    });
+    function end(e){
+      if (!dragging) return;
+      dragging = false;
+      node.style.cursor = 'grab';
+      var m = (node.getAttribute('transform') || '').match(/translate\(([-\d.]+)[ ,]([-\d.]+)\)/);
+      if (onDrop && m) onDrop(+m[1], +m[2]);
+    }
+    node.addEventListener('pointerup', end);
+    node.addEventListener('pointercancel', end);
+  }
+
+  /* ════════ tumbling background shapes ════════ */
+  (function(){
+    var box = D.getElementById('bgshapes');
+    var cols = ['#ff5fa2','#ffd84d','#4fc3f7','#5ed17a','#a45cff','#ffa63d'];
+    var kinds = ['circle','square','triangle','blob'];
+    for (var i = 0; i < 14; i++){
+      var s = D.createElement('i'), size = rnd(70, 210), c = pickOne(cols), k = pickOne(kinds);
+      s.style.left = rnd(-6, 96) + 'vw';
+      s.style.top  = rnd(-5, 95) + 'vh';
+      s.style.width = s.style.height = size + 'px';
+      s.style.animationDuration = rnd(16, 40) + 's';
+      s.style.animationDelay = (-rnd(0, 20)) + 's';
+      s.style.background = c;
+      if (k === 'circle') s.style.borderRadius = '50%';
+      if (k === 'square') s.style.borderRadius = '22%';
+      if (k === 'blob')   s.style.borderRadius = '60% 40% 55% 45% / 45% 55% 45% 55%';
+      if (k === 'triangle'){
+        s.style.background = 'transparent';
+        s.style.borderLeft = (size/2) + 'px solid transparent';
+        s.style.borderRight = (size/2) + 'px solid transparent';
+        s.style.borderBottom = size + 'px solid ' + c;
+        s.style.width = s.style.height = '0';
+      }
+      box.appendChild(s);
+    }
+  })();
+
+  /* ════════ the nav blocks are real links in the HTML, so search engines
+        and screen readers see them. This only adds the dragging. ════════ */
+  (function(){
+    var grid = D.getElementById('navgrid');
+    if (!grid) return;
+    [].slice.call(grid.querySelectorAll('.nb')).forEach(function(a){
+      var moved = false, sx = 0, sy = 0;
+      a.addEventListener('pointerdown', function(e){
+        moved = false; sx = e.clientX; sy = e.clientY;
+        a.setPointerCapture(e.pointerId);
+      });
+      a.addEventListener('pointermove', function(e){
+        if (!a.hasPointerCapture || !a.hasPointerCapture(e.pointerId)) return;
+        var dx = e.clientX - sx, dy = e.clientY - sy;
+        if (Math.abs(dx) + Math.abs(dy) > 10){
+          moved = true;
+          a.classList.add('dragging');
+          a.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.1) rotate(-3deg)';
+        }
+      });
+      a.addEventListener('pointerup', function(e){
+        a.classList.remove('dragging');
+        if (moved){
+          var after = null, kids = [].slice.call(grid.children);
+          for (var i = 0; i < kids.length; i++){
+            var r = kids[i].getBoundingClientRect();
+            if (e.clientY < r.bottom - 8 && e.clientX < r.left + r.width / 2){ after = kids[i]; break; }
+          }
+          a.style.transform = '';
+          grid.insertBefore(a, after);
+        }
+      });
+      a.addEventListener('click', function(e){ if (moved) e.preventDefault(); });
+    });
+  })();
+
+  /* ════════════════════ SPRING ════════════════════ */
+  (function(){
+    var svg = D.getElementById('springScene'), note = D.getElementById('springNote'),
+        planted = 0, raining = false;
+    el('rect', {x:0, y:0, width:760, height:300, fill:'#dff6ff'}, svg);
+    el('path', {d:'M0 236 q120 -22 190 0 q110 -20 200 0 q120 -18 200 0 q90 -12 170 0 v64 H0 Z',
+      fill:'#6ed17a'}, svg);
+    el('rect', {x:0, y:270, width:760, height:30, fill:'#4fb863'}, svg);
+    var rainG = el('g', {}, svg);
+    var flowers = el('g', {}, svg);
+
+    /* a friendly bee that loops the garden */
+    var bee = el('g', {}, svg);
+    el('ellipse', {cx:0, cy:0, rx:16, ry:12, fill:'#ffd84d', stroke:'#2b1b45','stroke-width':4}, bee);
+    el('path', {d:'M-6 -11 v22 M4 -11 v22', stroke:'#2b1b45','stroke-width':4}, bee);
+    el('ellipse', {cx:-4, cy:-14, rx:11, ry:7, fill:'#fff','fill-opacity':.8, stroke:'#2b1b45','stroke-width':3}, bee);
+    el('circle', {cx:14, cy:-3, r:3, fill:'#2b1b45'}, bee);
+    var t = 0;
+    setInterval(function(){
+      t += 0.02;
+      bee.setAttribute('transform', 'translate(' + (380 + Math.sin(t) * 300) + ',' +
+        (80 + Math.sin(t * 2.3) * 36) + ') scale(' + (Math.cos(t) > 0 ? 1 : -1) + ',1)');
+    }, 30);
+
+    function flower(x, y){
+      var g = el('g', {transform:'translate(' + x + ',' + y + ') scale(0.02)',
+        style:'transition:transform .6s cubic-bezier(.3,1.5,.4,1)'}, flowers);
+      var c = pickOne(['#ff5fa2','#ffd84d','#a45cff','#ff8a3d','#fff']);
+      el('path', {d:'M0 0 V-46', stroke:'#2f9e5e','stroke-width':7,'stroke-linecap':'round'}, g);
+      el('path', {d:'M0 -20 q-22 -10 -28 6 q20 9 28 -6z', fill:'#2f9e5e', stroke:'#2b1b45','stroke-width':3}, g);
+      [[0,-70],[22,-52],[-22,-52],[13,-26],[-13,-26]].forEach(function(p){
+        el('circle', {cx:p[0], cy:p[1], r:13, fill:c, stroke:'#2b1b45','stroke-width':4}, g);
+      });
+      el('circle', {cx:0, cy:-48, r:11, fill:'#ffd84d', stroke:'#2b1b45','stroke-width':4}, g);
+      setTimeout(function(){ g.setAttribute('transform', 'translate(' + x + ',' + y + ') scale(1)'); }, 30);
+      planted++;
+      note.textContent = planted >= 12 ? 'What a garden! 🌸 ' + planted + ' flowers!' : 'Flowers planted: ' + planted;
+      if (planted === 5) say('Five flowers! Count them with me: 1, 2, 3, 4, 5.');
+    }
+    svg.addEventListener('pointerdown', function(e){
+      var r = svg.getBoundingClientRect(),
+          x = (e.clientX - r.left) / r.width * 760, y = (e.clientY - r.top) / r.height * 300;
+      if (y > 215) flower(x, Math.min(288, y));
+    });
+    D.getElementById('growAll').onclick = function(){
+      for (var i = 0; i < 8; i++) (function(i){ setTimeout(function(){
+        flower(60 + i * 88 + rnd(-14, 14), rnd(240, 286)); }, i * 110); })(i);
+      say('A whole garden! Flowers drink water through their stem like a straw.');
+    };
+    D.getElementById('rainBtn').onclick = function(){
+      if (raining) return;
+      raining = true;
+      for (var i = 0; i < 40; i++){
+        var d = el('rect', {x:rnd(0,760), y:rnd(-260,0), width:4, height:16, rx:2, fill:'#5bc6f5'}, rainG);
+        d.style.transition = 'transform 1.6s linear, opacity 1.6s linear';
+        (function(d){ setTimeout(function(){
+          d.style.transform = 'translateY(340px)'; d.style.opacity = 0;
+          setTimeout(function(){ d.remove(); }, 1700); }, rnd(0, 900)); })(d);
+      }
+      setTimeout(function(){ raining = false; }, 2600);
+      note.textContent = 'Rain helps the flowers grow!';
+      say('Rain is water that floated up into the clouds and got too heavy to stay!');
+    };
+  })();
+
+  /* ════════════════════ SUMMER ════════════════════ */
+  (function(){
+    var svg = D.getElementById('summerScene'), note = D.getElementById('summerNote'), castles = 0;
+    el('rect', {x:0, y:0, width:760, height:300, fill:'#bdefff'}, svg);
+    var sun = el('g', {transform:'translate(96,72)'}, svg);
+    var rays = el('g', {stroke:'#ffd84d','stroke-width':11,'stroke-linecap':'round', opacity:.85}, sun);
+    el('path', {d:'M0 -66 V-44 M0 66 V44 M-66 0 H-44 M66 0 H44 M-47 -47 L-32 -32 M47 47 L32 32 M-47 47 L-32 32 M47 -47 L32 -32'}, rays);
+    el('circle', {r:42, fill:'#ffd84d', stroke:'#f0b429','stroke-width':5}, sun);
+    el('circle', {cx:-14, cy:-8, r:5, fill:'#2b1b45'}, sun);
+    el('circle', {cx:14, cy:-8, r:5, fill:'#2b1b45'}, sun);
+    el('path', {d:'M-15 8 q15 16 30 0', stroke:'#2b1b45','stroke-width':5, fill:'none','stroke-linecap':'round'}, sun);
+    var deg = 0;
+    setInterval(function(){ deg += 0.25; rays.setAttribute('transform', 'rotate(' + deg + ')'); }, 40);
+
+    el('rect', {x:0, y:196, width:760, height:52, fill:'#3fb6e8'}, svg);
+    var wave = el('path', {d:'M0 200 q48 -14 96 0 q48 14 96 0 q48 -14 96 0 q48 14 96 0 q48 -14 96 0 q48 14 96 0 q48 -14 96 0 q48 14 96 0 v16 H0 Z',
+      fill:'#2ba3da'}, svg);
+    el('rect', {x:0, y:248, width:760, height:52, fill:'#ffe0a3'}, svg);
+    var sandG = el('g', {}, svg);
+
+    var ball = el('g', {transform:'translate(560,236)', style:'cursor:grab'}, svg);
+    el('circle', {r:26, fill:'#fff', stroke:'#2b1b45','stroke-width':5}, ball);
+    el('path', {d:'M0 -26 a26 26 0 0 1 0 52 a14 26 0 0 1 0 -52z', fill:'#ff5fa2'}, ball);
+    el('path', {d:'M0 -26 a26 26 0 0 0 0 52 a14 26 0 0 0 0 -52z', fill:'#4fc3f7'}, ball);
+    el('circle', {r:26, fill:'none', stroke:'#2b1b45','stroke-width':5}, ball);
+    draggable(ball, svg, 760, 300, function(){ say('Beach balls float because they are full of air!'); });
+
+    function swimmer(x, y, hair){
+      var g = el('g', {transform:'translate(' + x + ',' + y + ')'}, svg);
+      el('circle', {r:17, fill:'#ffe1b8', stroke:'#2b1b45','stroke-width':5}, g);
+      el('path', {d:'M-14 -8 q14 -12 28 0', stroke:hair,'stroke-width':8, fill:'none'}, g);
+      el('circle', {cx:-6, cy:1, r:2.8, fill:'#2b1b45'}, g);
+      el('circle', {cx:6, cy:1, r:2.8, fill:'#2b1b45'}, g);
+      el('path', {d:'M-6 8 q6 6 12 0', stroke:'#2b1b45','stroke-width':3, fill:'none','stroke-linecap':'round'}, g);
+      el('path', {d:'M-20 14 q-18 -12 -30 -2', stroke:'#ffe1b8','stroke-width':10,'stroke-linecap':'round'}, g);
+      var b = 0;
+      setInterval(function(){ b += 0.06;
+        g.setAttribute('transform', 'translate(' + x + ',' + (y + Math.sin(b) * 7) + ') rotate(' + (Math.sin(b) * 5) + ')');
+      }, 40);
+    }
+    swimmer(300, 206, '#8b5e3c'); swimmer(392, 212, '#e8b96a');
+
+    D.getElementById('waveBtn').onclick = function(){
+      wave.style.transition = 'transform .5s ease-in-out';
+      wave.style.transform = 'translateY(-22px) scaleY(1.5)';
+      setTimeout(function(){ wave.style.transform = ''; }, 620);
+      note.textContent = 'Whoosh! 🌊';
+      say('Waves are made by wind pushing on the top of the water!');
+    };
+    D.getElementById('castleBtn').onclick = function(){
+      var x = rnd(80, 660), g = el('g', {transform:'translate(' + x + ',252) scale(0.05)',
+        style:'transition:transform .6s cubic-bezier(.3,1.5,.4,1)'}, sandG);
+      el('rect', {x:-38, y:-30, width:76, height:42, fill:'#e8b96a', stroke:'#2b1b45','stroke-width':5}, g);
+      el('rect', {x:-52, y:-52, width:22, height:64, fill:'#e8b96a', stroke:'#2b1b45','stroke-width':5}, g);
+      el('rect', {x:30, y:-52, width:22, height:64, fill:'#e8b96a', stroke:'#2b1b45','stroke-width':5}, g);
+      el('path', {d:'M-41 -52 l-6 -16 l6 5 l6 -5 z M41 -52 l6 -16 l-6 5 l-6 -5 z', fill:'#e8b96a', stroke:'#2b1b45','stroke-width':4}, g);
+      el('path', {d:'M0 -30 v-22 l18 8 z', fill:'#ff5fa2', stroke:'#2b1b45','stroke-width':4}, g);
+      setTimeout(function(){ g.setAttribute('transform', 'translate(' + x + ',252) scale(1)'); }, 30);
+      castles++;
+      note.textContent = 'Sandcastles built: ' + castles;
+      if (castles === 3) say('Three sandcastles! Wet sand sticks together because water pulls the grains close.');
+    };
+  })();
+
+  /* ════════════════════ AUTUMN ════════════════════ */
+  (function(){
+    var svg = D.getElementById('autumnScene'), note = D.getElementById('autumnNote'), swept = 0;
+    el('rect', {x:0, y:0, width:760, height:300, fill:'#ffeccd'}, svg);
+    el('rect', {x:0, y:252, width:760, height:48, fill:'#c9a86a'}, svg);
+    var pile = el('g', {}, svg);
+    var tree = el('g', {transform:'translate(180,0)'}, svg);
+    el('rect', {x:-18, y:150, width:36, height:104, fill:'#8b5e3c', stroke:'#2b1b45','stroke-width':5}, tree);
+    el('path', {d:'M0 160 l-40 -34 M0 184 l40 -38', stroke:'#8b5e3c','stroke-width':11,'stroke-linecap':'round'}, tree);
+    var crown = el('g', {}, tree);
+    el('circle', {cy:96, r:66, fill:'#ff8a3d', stroke:'#2b1b45','stroke-width':5}, crown);
+    el('circle', {cx:-54, cy:128, r:40, fill:'#e2562a', stroke:'#2b1b45','stroke-width':5}, crown);
+    el('circle', {cx:54, cy:128, r:40, fill:'#ffc03d', stroke:'#2b1b45','stroke-width':5}, crown);
+
+    /* a pumpkin and an acorn to tap */
+    var pump = el('g', {transform:'translate(470,226)', class:'hot'}, svg);
+    el('ellipse', {rx:50, ry:42, fill:'#ff8a3d', stroke:'#2b1b45','stroke-width':5}, pump);
+    el('path', {d:'M-18 -34 q-11 36 0 72 M18 -34 q11 36 0 72', stroke:'#c85a1e','stroke-width':5, fill:'none'}, pump);
+    el('rect', {x:-9, y:-52, width:18, height:20, rx:6, fill:'#2f9e5e', stroke:'#2b1b45','stroke-width':5}, pump);
+    pump.addEventListener('click', function(){
+      say('A pumpkin is a <b>fruit</b>, not a vegetable, because it grows from a flower and has seeds!');
+    });
+
+    function leaf(x, y){
+      var c = pickOne(['#ff8a3d','#e2562a','#ffc03d','#c9722a']);
+      var g = el('g', {transform:'translate(' + x + ',' + y + ')'}, pile);
+      el('path', {d:'M0 0 q16 10 0 26 q-16 -16 0 -26z', fill:c, stroke:'#2b1b45','stroke-width':3}, g);
+      return g;
+    }
+    function drop(n){
+      for (var i = 0; i < n; i++){
+        (function(i){
+          setTimeout(function(){
+            var x = rnd(90, 300), g = leaf(x, 90);
+            g.style.transition = 'transform 1.9s cubic-bezier(.4,.1,.6,1)';
+            setTimeout(function(){
+              g.style.transform = 'translate(' + rnd(-40, 90) + 'px,' + rnd(150, 175) + 'px) rotate(' + rnd(-260, 260) + 'deg)';
+            }, 20);
+          }, i * 90);
+        })(i);
+      }
+    }
+    function shake(){
+      crown.style.transition = 'transform .12s';
+      var n = 0, iv = setInterval(function(){
+        crown.style.transform = 'rotate(' + (n % 2 ? 3 : -3) + 'deg)';
+        if (++n > 7){ clearInterval(iv); crown.style.transform = ''; }
+      }, 120);
+      drop(9);
+      note.textContent = 'Leaves are falling! 🍂';
+      say('Leaves turn red and gold when the tree stops making green food for winter.');
+    }
+    tree.style.cursor = 'pointer';
+    tree.addEventListener('click', shake);
+    D.getElementById('shakeBtn').onclick = shake;
+    D.getElementById('rakeBtn').onclick = function(){
+      var kids = [].slice.call(pile.children);
+      kids.forEach(function(g, i){
+        g.style.transition = 'transform .8s ease-in';
+        setTimeout(function(){
+          g.style.transform = 'translate(' + (520 - parseFloat((g.getAttribute('transform').match(/translate\(([-\d.]+)/) || [0,0])[1])) + 'px,150px)';
+        }, i * 22);
+      });
+      swept += kids.length;
+      note.textContent = swept ? 'Swept up ' + swept + ' leaves!' : 'Shake the tree first!';
+    };
+    drop(6);
+  })();
+
+  /* ════════════════════ WINTER — build a snowman ════════════════════ */
+  (function(){
+    var svg = D.getElementById('winterScene'), note = D.getElementById('winterNote'),
+        placed = 0, sunny = false;
+    var sky = el('rect', {x:0, y:0, width:760, height:300, fill:'#dff1ff'}, svg);
+    el('rect', {x:0, y:244, width:760, height:56, fill:'#fff'}, svg);
+    el('path', {d:'M0 244 q100 -24 190 0 q100 -22 200 0 q90 -20 190 0 q80 -16 180 0 v56 H0 Z', fill:'#f4fbff'}, svg);
+    var snowG = el('g', {}, svg);
+    var winterSun = el('g', {transform:'translate(672,64) scale(0)',
+      style:'transition:transform .8s cubic-bezier(.3,1.5,.4,1)'}, svg);
+    el('circle', {r:38, fill:'#ffd84d', stroke:'#f0b429','stroke-width':5}, winterSun);
+    el('circle', {cx:-12, cy:-6, r:4.5, fill:'#2b1b45'}, winterSun);
+    el('circle', {cx:12, cy:-6, r:4.5, fill:'#2b1b45'}, winterSun);
+    el('path', {d:'M-13 8 q13 14 26 0', stroke:'#2b1b45','stroke-width':5, fill:'none','stroke-linecap':'round'}, winterSun);
+
+    /* the snowman himself */
+    var sm = el('g', {transform:'translate(300,0)'}, svg);
+    el('circle', {cx:0, cy:226, r:58, fill:'#fff', stroke:'#2b1b45','stroke-width':6}, sm);
+    el('circle', {cx:0, cy:156, r:44, fill:'#fff', stroke:'#2b1b45','stroke-width':6}, sm);
+    el('circle', {cx:0, cy:98, r:34, fill:'#fff', stroke:'#2b1b45','stroke-width':6}, sm);
+    el('path', {d:'M-42 152 L-96 122 M42 152 L96 122', stroke:'#8b5e3c','stroke-width':8,'stroke-linecap':'round'}, sm);
+    el('circle', {cx:0, cy:214, r:6, fill:'#2b1b45'}, sm);
+    el('circle', {cx:0, cy:238, r:6, fill:'#2b1b45'}, sm);
+
+    var targets = {
+      carrot:{x:300, y:100, hit:false},
+      eyeL:  {x:288, y:88,  hit:false},
+      eyeR:  {x:312, y:88,  hit:false},
+      hat:   {x:300, y:62,  hit:false}
+    };
+    function makePiece(name, home, build){
+      var g = el('g', {transform:'translate(' + home.x + ',' + home.y + ')'}, svg);
+      build(g);
+      draggable(g, svg, 760, 300, function(x, y){
+        var t = targets[name];
+        if (Math.abs(x - t.x) < 46 && Math.abs(y - t.y) < 46){
+          g.setAttribute('transform', 'translate(' + t.x + ',' + t.y + ')');
+          g.dataset.locked = 1; g.style.cursor = 'default';
+          if (!t.hit){
+            t.hit = true; placed++;
+            note.textContent = placed >= 4 ? 'He is finished! What a snowman! ⛄'
+                                           : 'Pieces on: ' + placed + ' of 4';
+            if (placed >= 4) say('You built a whole snowman! Snow is tiny ice crystals, and no two snowflakes are the same.');
+          }
+        }
+      });
+      return g;
+    }
+    makePiece('carrot', {x:110, y:292}, function(g){
+      el('path', {d:'M-4 -8 L30 0 L-4 8 z', fill:'#ff8a3d', stroke:'#2b1b45','stroke-width':4,'stroke-linejoin':'round'}, g);
+      el('path', {d:'M6 -4 h8 M14 0 h8', stroke:'#c85a1e','stroke-width':2.5}, g);
+    });
+    makePiece('eyeL', {x:174, y:292}, function(g){ el('circle', {r:10, fill:'#2b1b45'}, g); });
+    makePiece('eyeR', {x:206, y:292}, function(g){ el('circle', {r:10, fill:'#2b1b45'}, g); });
+    makePiece('hat', {x:470, y:290}, function(g){
+      el('rect', {x:-46, y:-4, width:92, height:12, rx:5, fill:'#2b1b45'}, g);
+      el('rect', {x:-28, y:-44, width:56, height:42, fill:'#2b1b45'}, g);
+      el('rect', {x:-28, y:-16, width:56, height:10, fill:'#ff5fa2'}, g);
+    });
+
+    function flakes(n){
+      for (var i = 0; i < n; i++){
+        (function(){
+          var x = rnd(0, 760), f = el('circle', {cx:x, cy:rnd(-90, 0), r:rnd(3, 7), fill:'#fff',
+            stroke:'#cfe3f5','stroke-width':1.5}, snowG);
+          f.style.transition = 'transform ' + rnd(3, 6) + 's linear, opacity .5s';
+          setTimeout(function(){
+            f.style.transform = 'translate(' + rnd(-30, 30) + 'px,340px)';
+            setTimeout(function(){ f.remove(); }, 6000);
+          }, rnd(0, 900));
+        })();
+      }
+    }
+    flakes(26);
+    setInterval(function(){ if (!sunny) flakes(6); }, 1800);
+    D.getElementById('snowBtn').onclick = function(){ sunny = false; flakes(30);
+      note.textContent = 'More snow! ❄️'; say('Snow is frozen water. Every snowflake has six sides!'); };
+    D.getElementById('sunBtn').onclick = function(){
+      sunny = true;
+      sky.setAttribute('fill', '#bfe8ff');
+      winterSun.setAttribute('transform', 'translate(672,64) scale(1)');
+      note.textContent = 'The sun came out! ☀️ (That is not really how weather works, but it is our world!)';
+      say("The sun came out! In real life you cannot call the sun out whenever you like, but in <i>this</i> world you can.");
+    };
+  })();
+
+  /* ════════════════════ SPLAT WALL ════════════════════ */
+  (function(){
+    var svg = D.getElementById('paintWall'), cols = D.getElementById('paintCols'),
+        PAL = ['#ff5fa2','#ffd84d','#4fc3f7','#5ed17a','#a45cff','#ff8a3d','#2b1b45','#fff'],
+        cur = PAL[0];
+    el('rect', {x:0, y:0, width:400, height:300, fill:'#f6eee6'}, svg);
+    el('path', {d:'M0 250 H400', stroke:'#d8cabb','stroke-width':6}, svg);
+    el('rect', {x:0, y:256, width:400, height:44, fill:'#c9a86a'}, svg);
+    var splats = el('g', {}, svg);
+
+    PAL.forEach(function(c, i){
+      var b = D.createElement('button');
+      b.className = 'sw' + (i === 0 ? ' on' : '');
+      b.style.background = c;
+      b.setAttribute('aria-label', 'paint colour');
+      b.onclick = function(){
+        cur = c;
+        [].slice.call(cols.children).forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+      };
+      cols.appendChild(b);
+    });
+
+    function splat(x, y){
+      var g = el('g', {transform:'translate(' + x + ',' + y + ') scale(0.1)',
+        style:'transition:transform .35s cubic-bezier(.3,1.6,.4,1)'}, splats);
+      var r = rnd(14, 26);
+      el('circle', {r:r, fill:cur}, g);
+      for (var i = 0; i < 7; i++){
+        var a = Math.PI * 2 / 7 * i + rnd(-.3, .3), d = r + rnd(4, 20);
+        el('circle', {cx:Math.cos(a) * d, cy:Math.sin(a) * d, r:rnd(3, 9), fill:cur}, g);
+      }
+      /* a drip, because drips are the best part */
+      el('path', {d:'M0 ' + r + ' q5 ' + rnd(14, 40) + ' 0 ' + rnd(22, 54) + ' q-5 -14 0 -' + rnd(22, 54),
+        fill:cur}, g);
+      setTimeout(function(){ g.setAttribute('transform', 'translate(' + x + ',' + y + ') scale(1)'); }, 20);
+    }
+    var painting = false;
+    function pos(e){
+      var r = svg.getBoundingClientRect();
+      return { x:(e.clientX - r.left) / r.width * 400, y:(e.clientY - r.top) / r.height * 300 };
+    }
+    svg.style.touchAction = 'none';
+    svg.addEventListener('pointerdown', function(e){
+      e.preventDefault(); painting = true; svg.setPointerCapture(e.pointerId);
+      var p = pos(e); splat(p.x, p.y);
+    });
+    svg.addEventListener('pointermove', function(e){
+      if (!painting) return;
+      e.preventDefault();
+      if (Math.random() < .45){ var p = pos(e); splat(p.x, p.y); }
+    });
+    svg.addEventListener('pointerup', function(){ painting = false; });
+    D.getElementById('clearWall').onclick = function(){
+      splats.innerHTML = '';
+      say('All clean! Paint it again — you can never get in trouble for painting in here.');
+    };
+  })();
+
+  /* ════════════════════ DECORATE THE ROOM ════════════════════ */
+  (function(){
+    var svg = D.getElementById('room'), cols = D.getElementById('roomCols'),
+        PAL = ['#ffd0e8','#cfe9ff','#d6ffd9','#fff0c2','#e9d8ff','#ffe0cc'];
+    var wall = el('rect', {x:0, y:0, width:400, height:214, fill:'#ffd0e8'}, svg);
+    el('rect', {x:0, y:214, width:400, height:86, fill:'#c9a86a'}, svg);
+    el('path', {d:'M0 214 H400', stroke:'#8b5e3c','stroke-width':6}, svg);
+    el('rect', {x:250, y:42, width:96, height:80, rx:8, fill:'#bfe8ff', stroke:'#2b1b45','stroke-width':5}, svg);
+    el('path', {d:'M298 42 V122 M250 82 H346', stroke:'#2b1b45','stroke-width':5}, svg);
+
+    PAL.forEach(function(c, i){
+      var b = D.createElement('button');
+      b.className = 'sw' + (i === 0 ? ' on' : '');
+      b.style.background = c;
+      b.setAttribute('aria-label', 'wall colour');
+      b.onclick = function(){
+        wall.setAttribute('fill', c);
+        [].slice.call(cols.children).forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+      };
+      cols.appendChild(b);
+    });
+
+    function piece(x, y, build){
+      var g = el('g', {transform:'translate(' + x + ',' + y + ')'}, svg);
+      build(g);
+      draggable(g, svg, 400, 300);
+      return g;
+    }
+    piece(80, 236, function(g){            /* bed */
+      el('rect', {x:-58, y:-26, width:116, height:34, rx:7, fill:'#ff9ed2', stroke:'#2b1b45','stroke-width':5}, g);
+      el('rect', {x:-58, y:-48, width:34, height:24, rx:7, fill:'#fff', stroke:'#2b1b45','stroke-width':5}, g);
+      el('rect', {x:-62, y:6, width:124, height:12, rx:5, fill:'#8b5e3c', stroke:'#2b1b45','stroke-width':4}, g);
+    });
+    piece(300, 244, function(g){           /* toy box */
+      el('rect', {x:-34, y:-30, width:68, height:44, rx:7, fill:'#ffd84d', stroke:'#2b1b45','stroke-width':5}, g);
+      el('path', {d:'M-34 -14 H34', stroke:'#2b1b45','stroke-width':4}, g);
+      el('circle', {cy:-22, r:5, fill:'#2b1b45'}, g);
+    });
+    piece(196, 224, function(g){           /* lamp */
+      el('path', {d:'M0 0 v-42', stroke:'#69737f','stroke-width':6}, g);
+      el('path', {d:'M-24 -42 h48 l-10 -28 h-28 z', fill:'#ffd84d', stroke:'#2b1b45','stroke-width':5,'stroke-linejoin':'round'}, g);
+      el('ellipse', {cy:2, rx:18, ry:6, fill:'#69737f', stroke:'#2b1b45','stroke-width':4}, g);
+    });
+    piece(150, 272, function(g){           /* rug */
+      el('ellipse', {rx:56, ry:20, fill:'#a45cff', stroke:'#2b1b45','stroke-width':5}, g);
+      el('ellipse', {rx:34, ry:11, fill:'#c9a2ff'}, g);
+    });
+    piece(352, 200, function(g){           /* a cat, obviously */
+      el('ellipse', {cy:6, rx:26, ry:20, fill:'#ffb15c', stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cx:-2, cy:-18, r:17, fill:'#ffb15c', stroke:'#2b1b45','stroke-width':5}, g);
+      el('path', {d:'M-16 -30 l-3 -15 l14 8z M12 -30 l3 -15 l-14 8z', fill:'#ffb15c', stroke:'#2b1b45','stroke-width':4,'stroke-linejoin':'round'}, g);
+      el('circle', {cx:-8, cy:-19, r:2.6, fill:'#2b1b45'}, g);
+      el('circle', {cx:5, cy:-19, r:2.6, fill:'#2b1b45'}, g);
+      el('path', {d:'M-2 -13 q4 4 8 0', stroke:'#2b1b45','stroke-width':2.5, fill:'none'}, g);
+      el('path', {d:'M24 4 q22 -6 16 -24', stroke:'#ffb15c','stroke-width':9, fill:'none','stroke-linecap':'round'}, g);
+    });
+  })();
+
+  /* ════════════════════ MARBLE MAZE ════════════════════ */
+  (function(){
+    var svg = D.getElementById('maze'), note = D.getElementById('mazeNote'),
+        lvBox = D.getElementById('mazeLv'), lv = 0, cur = null;
+
+    MAZES.forEach(function(m, i){
+      var b = D.createElement('button');
+      b.className = 'lv' + (i === 0 ? ' on' : '');
+      b.textContent = m.name;
+      b.onclick = function(){
+        lv = i;
+        [].slice.call(lvBox.children).forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        build();
+      };
+      lvBox.appendChild(b);
+    });
+
+    function build(){
+      svg.innerHTML = '';
+      var m = MAZES[lv], W = 400, H = 300, pad = 14,
+          cw = (W - pad * 2) / m.w, ch = (H - pad * 2) / m.h,
+          cell = Math.min(cw, ch),
+          ox = (W - cell * m.w) / 2, oy = (H - cell * m.h) / 2;
+      cur = { m:m, cell:cell, ox:ox, oy:oy, cx:0, cy:0, done:false };
+
+      el('rect', {x:0, y:0, width:W, height:H, fill:'#f2f7ff'}, svg);
+      /* goal first so the marble sits on top */
+      var gx = ox + (m.w - .5) * cell, gy = oy + (m.h - .5) * cell;
+      el('path', {d:'M' + gx + ' ' + (gy - cell * .3) + ' l' + (cell * .09) + ' ' + (cell * .2) +
+        ' l' + (cell * .22) + ' ' + (cell * .03) + ' l-' + (cell * .16) + ' ' + (cell * .16) +
+        ' l' + (cell * .05) + ' ' + (cell * .22) + ' l-' + (cell * .2) + ' -' + (cell * .12) +
+        ' l-' + (cell * .2) + ' ' + (cell * .12) + ' l' + (cell * .05) + ' -' + (cell * .22) +
+        ' l-' + (cell * .16) + ' -' + (cell * .16) + ' l' + (cell * .22) + ' -' + (cell * .03) + ' z',
+        fill:'#ffd84d', stroke:'#2b1b45','stroke-width':3,'stroke-linejoin':'round'}, svg);
+
+      var g = el('g', {stroke:'#2b1b45','stroke-width':5,'stroke-linecap':'round'}, svg);
+      for (var y = 0; y < m.h; y++){
+        for (var x = 0; x < m.w; x++){
+          var open = m.cells[x + ',' + y], X = ox + x * cell, Y = oy + y * cell;
+          if (open.indexOf('N') < 0) el('path', {d:'M' + X + ' ' + Y + ' h' + cell}, g);
+          if (open.indexOf('W') < 0) el('path', {d:'M' + X + ' ' + Y + ' v' + cell}, g);
+          if (x === m.w - 1 && open.indexOf('E') < 0) el('path', {d:'M' + (X + cell) + ' ' + Y + ' v' + cell}, g);
+          if (y === m.h - 1 && open.indexOf('S') < 0) el('path', {d:'M' + X + ' ' + (Y + cell) + ' h' + cell}, g);
+        }
+      }
+
+      var ball = el('circle', {cx:ox + cell * .5, cy:oy + cell * .5, r:cell * .3,
+        fill:'#d8dee6', stroke:'#2b1b45','stroke-width':4}, svg);
+      el('circle', {cx:ox + cell * .4, cy:oy + cell * .4, r:cell * .1, fill:'#fff'}, svg);
+      cur.ball = ball;
+      note.textContent = 'Drag the marble to the gold star! (' + m.name + ')';
+
+      /* movement is cell by cell, and only through gaps — so it can never
+         cut a corner or get stuck in a wall */
+      var DIRS = { N:[0,-1], S:[0,1], E:[1,0], W:[-1,0] };
+      function tryMove(tx, ty){
+        var want = null;
+        if (tx > cur.cx) want = 'E'; else if (tx < cur.cx) want = 'W';
+        else if (ty > cur.cy) want = 'S'; else if (ty < cur.cy) want = 'N';
+        if (!want) return;
+        if (cur.m.cells[cur.cx + ',' + cur.cy].indexOf(want) < 0) return;   /* wall */
+        cur.cx += DIRS[want][0]; cur.cy += DIRS[want][1];
+        ball.setAttribute('cx', cur.ox + (cur.cx + .5) * cur.cell);
+        ball.setAttribute('cy', cur.oy + (cur.cy + .5) * cur.cell);
+        if (!cur.done && cur.cx === cur.m.w - 1 && cur.cy === cur.m.h - 1){
+          cur.done = true;
+          note.textContent = 'YOU DID IT! ⭐ Try a harder one!';
+          say('You solved the <b>' + cur.m.name + '</b> maze! Mazes are puzzles for your fingers AND your brain.');
+        }
+      }
+      var dragging = false;
+      svg.style.touchAction = 'none';
+      function at(e){
+        var r = svg.getBoundingClientRect();
+        return { x:Math.floor(((e.clientX - r.left) / r.width * 400 - cur.ox) / cur.cell),
+                 y:Math.floor(((e.clientY - r.top) / r.height * 300 - cur.oy) / cur.cell) };
+      }
+      svg.onpointerdown = function(e){ e.preventDefault(); dragging = true; svg.setPointerCapture(e.pointerId); };
+      svg.onpointermove = function(e){
+        if (!dragging) return;
+        e.preventDefault();
+        var c = at(e);
+        if (c.x < 0 || c.y < 0 || c.x >= cur.m.w || c.y >= cur.m.h) return;
+        for (var guard = 0; guard < 3 && (c.x !== cur.cx || c.y !== cur.cy); guard++) tryMove(c.x, c.y);
+      };
+      svg.onpointerup = function(){ dragging = false; };
+    }
+    build();
+  })();
+
+  /* ════════════════════ LETTER BLOCKS ════════════════════ */
+  (function(){
+    var svg = D.getElementById('blocks'), note = D.getElementById('blockNote'),
+        WORDS = ['CAT','DOG','SUN','HAT','STAR','BOOK','TREE','FISH','MOON','CAKE'],
+        word = '', slots = [], done = 0;
+
+    function build(){
+      svg.innerHTML = ''; slots = []; done = 0;
+      word = pickOne(WORDS);
+      el('rect', {x:0, y:0, width:400, height:300, fill:'#fff8ef'}, svg);
+      el('rect', {x:20, y:96, width:360, height:12, rx:5, fill:'#8b5e3c', stroke:'#2b1b45','stroke-width':4}, svg);
+
+      var n = word.length, bw = 58, gap = 10,
+          total = n * bw + (n - 1) * gap, sx = (400 - total) / 2;
+      for (var i = 0; i < n; i++){
+        var x = sx + i * (bw + gap);
+        el('rect', {x:x, y:36, width:bw, height:58, rx:9, fill:'none',
+          stroke:'#c3b6a6','stroke-width':4,'stroke-dasharray':'9 7'}, svg);
+        slots.push({ x:x + bw / 2, y:65, letter:word[i], filled:false });
+      }
+
+      /* blocks shuffled along the bottom */
+      var order = word.split('').map(function(c, i){ return { c:c, i:i }; })
+        .sort(function(){ return Math.random() - .5; });
+      order.forEach(function(o, k){
+        var hx = 44 + k * (bw + gap), hy = 220;
+        var g = el('g', {transform:'translate(' + hx + ',' + hy + ')'}, svg);
+        var c = ['#ff5fa2','#4fc3f7','#5ed17a','#ffd84d','#a45cff','#ff8a3d'][k % 6];
+        el('rect', {x:-29, y:-29, width:58, height:58, rx:10, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+        el('rect', {x:-22, y:-22, width:44, height:44, rx:7, fill:'#fff','fill-opacity':.35}, g);
+        var t = el('text', {x:0, y:11, 'text-anchor':'middle',
+          'font-family':'Trebuchet MS, Verdana, sans-serif', 'font-size':34, 'font-weight':800,
+          fill:'#2b1b45'}, g);
+        t.textContent = o.c;
+        draggable(g, svg, 400, 300, function(x, y){
+          for (var s = 0; s < slots.length; s++){
+            var sl = slots[s];
+            if (!sl.filled && sl.letter === o.c && Math.abs(x - sl.x) < 40 && Math.abs(y - sl.y) < 44){
+              g.setAttribute('transform', 'translate(' + sl.x + ',' + sl.y + ')');
+              g.dataset.locked = 1; g.style.cursor = 'default';
+              sl.filled = true; done++;
+              note.textContent = done === slots.length
+                ? 'You spelled ' + word + '! ⭐ Say it out loud!'
+                : 'Letters placed: ' + done + ' of ' + slots.length;
+              if (done === slots.length)
+                say('You spelled <b>' + word + '</b>! ' + word.split('').join(' - ') + '. Brilliant!');
+              return;
+            }
+          }
+        });
+      });
+      note.textContent = 'Spell the word: ' + word;
+    }
+    D.getElementById('newWord').onclick = build;
+    build();
+  })();
+
+  /* ════════════════════ STUFFIES ════════════════════ */
+  (function(){
+    var svg = D.getElementById('stuffies'), note = D.getElementById('stuffNote');
+    el('rect', {x:0, y:0, width:400, height:260, fill:'#fff3fa'}, svg);
+    el('rect', {x:0, y:214, width:400, height:46, fill:'#e8b96a'}, svg);
+    el('path', {d:'M0 214 H400', stroke:'#c9922f','stroke-width':5}, svg);
+
+    var LINES = {
+      cat:'Meow! Cats purr when they are happy — and sometimes to feel better when they are poorly.',
+      bear:'Bear hug! Real bears sleep all winter long. That is called hibernating.',
+      bunny:'Boing! A rabbit can hop nearly ten times its own body length.',
+      dino:'RAAWR! Some dinosaurs were as small as a chicken. Birds are their living cousins!',
+      duck:'Quack! Ducks have waterproof feathers, so rain just rolls right off.'
+    };
+    function wobble(g){
+      g.style.transition = 'transform .18s';
+      var n = 0, iv = setInterval(function(){
+        g.style.transform = 'rotate(' + (n % 2 ? 9 : -9) + 'deg) scale(1.08)';
+        if (++n > 5){ clearInterval(iv); g.style.transform = ''; }
+      }, 130);
+    }
+    function stuffie(x, kind, body, build){
+      var g = el('g', {transform:'translate(' + x + ',196)', style:'cursor:pointer'}, svg);
+      g.style.transformBox = 'fill-box';
+      g.style.transformOrigin = 'center';
+      build(g, body);
+      g.addEventListener('click', function(){
+        wobble(g); note.textContent = 'You cuddled the ' + kind + '! 🤍'; say(LINES[kind]);
+      });
+    }
+    stuffie(56, 'cat', '#ffb15c', function(g, c){
+      el('ellipse', {cy:6, rx:30, ry:26, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cy:-28, r:24, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('path', {d:'M-20 -44 l-5 -20 l19 11z M20 -44 l5 -20 l-19 11z', fill:c, stroke:'#2b1b45','stroke-width':4,'stroke-linejoin':'round'}, g);
+      el('circle', {cx:-9, cy:-30, r:3.4, fill:'#2b1b45'}, g);
+      el('circle', {cx:9, cy:-30, r:3.4, fill:'#2b1b45'}, g);
+      el('path', {d:'M0 -24 q5 5 10 0 M0 -24 q-5 5 -10 0', stroke:'#2b1b45','stroke-width':3, fill:'none'}, g);
+      el('path', {d:'M-30 -26 h-16 M30 -26 h16', stroke:'#2b1b45','stroke-width':3}, g);
+    });
+    stuffie(148, 'bear', '#b98a5e', function(g, c){
+      el('ellipse', {cy:6, rx:32, ry:28, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cy:-30, r:25, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cx:-20, cy:-48, r:10, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cx:20, cy:-48, r:10, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('ellipse', {cy:-24, rx:12, ry:9, fill:'#e8cbb0'}, g);
+      el('circle', {cx:-9, cy:-34, r:3.2, fill:'#2b1b45'}, g);
+      el('circle', {cx:9, cy:-34, r:3.2, fill:'#2b1b45'}, g);
+      el('circle', {cy:-26, r:4, fill:'#2b1b45'}, g);
+    });
+    stuffie(240, 'bunny', '#f3d9e8', function(g, c){
+      el('ellipse', {cy:8, rx:26, ry:24, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cy:-24, r:21, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('ellipse', {cx:-11, cy:-56, rx:8, ry:22, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('ellipse', {cx:11, cy:-56, rx:8, ry:22, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cx:-8, cy:-26, r:3.2, fill:'#2b1b45'}, g);
+      el('circle', {cx:8, cy:-26, r:3.2, fill:'#2b1b45'}, g);
+      el('path', {d:'M0 -18 l-5 4 h10z', fill:'#ff8aa8'}, g);
+    });
+    stuffie(330, 'dino', '#6ed17a', function(g, c){
+      el('ellipse', {cy:6, rx:32, ry:24, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('circle', {cx:-16, cy:-26, r:20, fill:c, stroke:'#2b1b45','stroke-width':5}, g);
+      el('path', {d:'M4 -14 l10 -14 l8 16z M20 -2 l12 -12 l6 16z', fill:'#4fb863', stroke:'#2b1b45','stroke-width':4,'stroke-linejoin':'round'}, g);
+      el('circle', {cx:-22, cy:-30, r:3.4, fill:'#2b1b45'}, g);
+      el('path', {d:'M-30 -20 q8 6 16 2', stroke:'#2b1b45','stroke-width':3, fill:'none'}, g);
+      el('path', {d:'M30 8 q20 4 22 -12', stroke:c,'stroke-width':10, fill:'none','stroke-linecap':'round'}, g);
+    });
+  })();
+
+  /* ════════════════════ BUBBLES ════════════════════ */
+  (function(){
+    var svg = D.getElementById('bubbles'), note = D.getElementById('bubNote'), popped = 0;
+    el('rect', {x:0, y:0, width:400, height:260, fill:'#eaf8ff'}, svg);
+    el('path', {d:'M0 226 q60 -14 110 0 q70 -12 120 0 q60 -10 170 0 v40 H0 Z', fill:'#9fdcf5'}, svg);
+
+    /* Wormy the Worm, who lives down here and is very encouraging */
+    var worm = el('g', {transform:'translate(60,214)', style:'cursor:pointer'}, svg);
+    [0,1,2,3,4].forEach(function(i){
+      el('circle', {cx:i * 22, cy:(i % 2 ? -6 : 0), r:15 - i * .8,
+        fill:['#ff8a3d','#ffd84d','#6ed17a','#4fc3f7','#a45cff'][i],
+        stroke:'#2b1b45','stroke-width':4}, worm);
+    });
+    el('circle', {cx:-6, cy:-14, r:9, fill:'#fff', stroke:'#2b1b45','stroke-width':4}, worm);
+    el('circle', {cx:10, cy:-14, r:9, fill:'#fff', stroke:'#2b1b45','stroke-width':4}, worm);
+    el('circle', {cx:-5, cy:-14, r:4, fill:'#2b1b45'}, worm);
+    el('circle', {cx:11, cy:-14, r:4, fill:'#2b1b45'}, worm);
+    el('path', {d:'M-15 -14 h-6 M19 -14 h6 M2 -14 h0', stroke:'#2b1b45','stroke-width':3}, worm);
+    el('path', {d:'M-2 2 q8 6 14 0', stroke:'#2b1b45','stroke-width':3, fill:'none','stroke-linecap':'round'}, worm);
+    var wt = 0;
+    setInterval(function(){
+      wt += .012;
+      worm.setAttribute('transform', 'translate(' + (60 + Math.sin(wt) * 230) + ',' +
+        (214 + Math.sin(wt * 3) * 5) + ') scale(' + (Math.cos(wt) >= 0 ? 1 : -1) + ',1)');
+    }, 40);
+    worm.addEventListener('click', function(){
+      say(pickOne([
+        "Hello! I am <b>Wormy the Worm</b>, the royal study partner. Shall we learn something together?",
+        "Wormy here! My glasses are for reading. I read about <i>everything</i>.",
+        "Did you know worms help the garden by making tunnels for the roots to drink? Useful, me."
+      ]));
+      note.textContent = 'You found Wormy! 🐛';
+    });
+
+    function bubble(x, y){
+      var r = rnd(12, 30),
+          b = el('circle', {cx:x, cy:y, r:r, fill:'rgba(160,225,255,.45)',
+            stroke:'#9fdcf5','stroke-width':3, style:'cursor:pointer'}, svg);
+      el('circle', {cx:x - r * .3, cy:y - r * .3, r:r * .22, fill:'#fff','fill-opacity':.85}, svg);
+      b.style.transition = 'transform ' + rnd(4, 8) + 's linear, opacity .3s';
+      setTimeout(function(){ b.style.transform = 'translate(' + rnd(-40, 40) + 'px,-300px)'; }, 20);
+      b.addEventListener('pointerdown', function(e){
+        e.stopPropagation();
+        b.style.opacity = 0; popped++;
+        note.textContent = 'Bubbles popped: ' + popped;
+        if (popped === 10) say('Ten bubbles popped! A bubble is just air wearing a very thin coat of soapy water.');
+        setTimeout(function(){ b.remove(); }, 320);
+      });
+      setTimeout(function(){ b.remove(); }, 9000);
+    }
+    svg.style.touchAction = 'none';
+    svg.addEventListener('pointerdown', function(e){
+      var r = svg.getBoundingClientRect(),
+          x = (e.clientX - r.left) / r.width * 400, y = (e.clientY - r.top) / r.height * 260;
+      for (var i = 0; i < 4; i++) bubble(x + rnd(-24, 24), y + rnd(-14, 14));
+    });
+    setInterval(function(){ bubble(rnd(40, 360), 250); }, 2200);
+  })();
+
+})();
