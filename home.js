@@ -60,10 +60,10 @@
   /* ════════ tumbling background shapes ════════ */
   (function(){
     var box = D.getElementById('bgshapes');
-    var cols = ['#ff5fa2','#ffd84d','#4fc3f7','#5ed17a','#a45cff','#ffa63d'];
+    var cols = ['#ff2d95','#ff6ec7','#ffd400','#00e5ff','#00ff9d','#b14bff','#ff7a00','#ff4d6d','#ff2d95','#ff6ec7'];
     var kinds = ['circle','square','triangle','blob'];
-    for (var i = 0; i < 14; i++){
-      var s = D.createElement('i'), size = rnd(70, 210), c = pickOne(cols), k = pickOne(kinds);
+    for (var i = 0; i < 22; i++){
+      var s = D.createElement('i'), size = rnd(60, 260), c = pickOne(cols), k = pickOne(kinds);
       s.style.left = rnd(-6, 96) + 'vw';
       s.style.top  = rnd(-5, 95) + 'vh';
       s.style.width = s.style.height = size + 'px';
@@ -797,4 +797,370 @@
     setInterval(function(){ bubble(rnd(40, 360), 250); }, 2200);
   })();
 
+})();
+
+
+/* ==========================================================================
+   EXTRAS — magic buttons, drawing pad, sparkle catch, memory match,
+   the chocolate milk, and the rainbow river.
+
+   Built on what the research says works for little ones: every action gets
+   an instant response, one step at a time, repetition with variation, and
+   absolutely nothing that can be lost or failed.
+   ========================================================================== */
+(function(){
+  var NS = 'http://www.w3.org/2000/svg', D = document;
+  function el(t, a, p){ var e = D.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+  function rnd(a, b){ return a + Math.random() * (b - a); }
+  function pickOne(a){ return a[Math.floor(Math.random() * a.length)]; }
+  function say(t){ if (window.PWspeak) window.PWspeak(t); }
+
+  var BRIGHT = ['#ff2d95','#ff6ec7','#ffd400','#00e5ff','#00ff9d','#b14bff','#ff7a00','#ff4d6d'];
+
+  /* ════════ MAGIC BUTTONS — full-screen effects ════════ */
+  var fx = D.createElement('div');
+  fx.id = 'fxlayer';
+  D.body.appendChild(fx);
+
+  function burstSparkles(n, cx, cy){
+    for (var i = 0; i < n; i++){
+      (function(){
+        var s = D.createElement('b'), size = rnd(10, 30);
+        s.className = 'fxspark';
+        s.style.left = (cx || innerWidth / 2) + 'px';
+        s.style.top  = (cy || innerHeight / 2) + 'px';
+        s.style.width = s.style.height = size + 'px';
+        s.style.background = pickOne(BRIGHT);
+        var a = rnd(0, Math.PI * 2), d = rnd(80, Math.min(innerWidth, 520));
+        s.style.setProperty('--dx', Math.cos(a) * d + 'px');
+        s.style.setProperty('--dy', Math.sin(a) * d + 'px');
+        s.style.animationDuration = rnd(.9, 1.8) + 's';
+        fx.appendChild(s);
+        setTimeout(function(){ s.remove(); }, 2000);
+      })();
+    }
+  }
+  function fireworks(){
+    for (var i = 0; i < 6; i++){
+      (function(i){
+        setTimeout(function(){
+          burstSparkles(26, rnd(innerWidth * .15, innerWidth * .85), rnd(innerHeight * .15, innerHeight * .55));
+        }, i * 380);
+      })(i);
+    }
+    say('BOOM! 🎆 Fireworks are tiny bits of metal burning in different colours. Copper burns blue!');
+  }
+  function rainbowBlast(){
+    var b = D.createElement('div');
+    b.className = 'fxbow';
+    fx.appendChild(b);
+    setTimeout(function(){ b.remove(); }, 2600);
+    say('A rainbow across the whole world! 🌈 Red, orange, yellow, green, blue, indigo, violet — always that order.');
+  }
+  function paintSplash(){
+    for (var i = 0; i < 18; i++){
+      (function(){
+        var s = D.createElement('b'), size = rnd(30, 110);
+        s.className = 'fxblob';
+        s.style.left = rnd(0, innerWidth) + 'px';
+        s.style.top  = rnd(0, innerHeight * .8) + 'px';
+        s.style.width = s.style.height = size + 'px';
+        s.style.background = pickOne(BRIGHT);
+        s.style.animationDuration = rnd(1.4, 2.4) + 's';
+        fx.appendChild(s);
+        setTimeout(function(){ s.remove(); }, 2600);
+      })();
+    }
+    say('SPLAT! 🎨 Paint everywhere and not one bit of trouble.');
+  }
+  function confetti(){
+    for (var i = 0; i < 70; i++){
+      (function(){
+        var c = D.createElement('b');
+        c.className = 'fxconf';
+        c.style.left = rnd(0, innerWidth) + 'px';
+        c.style.background = pickOne(BRIGHT);
+        c.style.animationDuration = rnd(2.2, 4.4) + 's';
+        c.style.animationDelay = rnd(0, .8) + 's';
+        c.style.width = rnd(8, 16) + 'px';
+        c.style.height = rnd(12, 22) + 'px';
+        fx.appendChild(c);
+        setTimeout(function(){ c.remove(); }, 5400);
+      })();
+    }
+    say('🎉 A party! What are we celebrating? I say we celebrate YOU.');
+  }
+  window.PWfx = { sparkles:burstSparkles, fireworks:fireworks, rainbow:rainbowBlast, splash:paintSplash, confetti:confetti };
+
+  var MB = D.getElementById('magicBtns');
+  if (MB){
+    [['✨ Sparkle burst', function(e){ burstSparkles(40); }],
+     ['🎆 Fireworks', fireworks],
+     ['🌈 Rainbow blast', rainbowBlast],
+     ['🎨 Paint splash', paintSplash],
+     ['🎉 Confetti', confetti]
+    ].forEach(function(b, i){
+      var btn = D.createElement('button');
+      btn.className = 'magic m' + (i % 5);
+      btn.textContent = b[0];
+      btn.onclick = b[1];
+      MB.appendChild(btn);
+    });
+  }
+
+  /* ════════ DRAWING PAD ════════ */
+  (function(){
+    var cv = D.getElementById('pad');
+    if (!cv) return;
+    var ctx = cv.getContext('2d'), drawing = false, col = '#ff2d95', size = 10, stamp = null,
+        tip = D.getElementById('padTip');
+    cv.width = 800; cv.height = 500;
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 800, 500);
+    ctx.lineCap = ctx.lineJoin = 'round';
+
+    function pos(e){
+      var r = cv.getBoundingClientRect();
+      return { x:(e.clientX - r.left) / r.width * 800, y:(e.clientY - r.top) / r.height * 500 };
+    }
+    cv.style.touchAction = 'none';
+    cv.addEventListener('pointerdown', function(e){
+      e.preventDefault(); cv.setPointerCapture(e.pointerId);
+      var p = pos(e);
+      if (stamp){
+        ctx.font = '64px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(stamp, p.x, p.y);
+        return;
+      }
+      drawing = true;
+      ctx.strokeStyle = col; ctx.lineWidth = size;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + .1, p.y);
+      ctx.stroke();
+    });
+    cv.addEventListener('pointermove', function(e){
+      if (!drawing) return;
+      e.preventDefault();
+      var p = pos(e);
+      ctx.lineTo(p.x, p.y); ctx.stroke();
+    });
+    cv.addEventListener('pointerup', function(){ drawing = false; });
+
+    var cols = D.getElementById('padCols');
+    ['#ff2d95','#ff7a00','#ffd400','#00ff9d','#00e5ff','#b14bff','#2b1b45','#ffffff'].forEach(function(c, i){
+      var b = D.createElement('button');
+      b.className = 'sw' + (i === 0 ? ' on' : '');
+      b.style.background = c;
+      b.setAttribute('aria-label', 'pen colour');
+      b.onclick = function(){
+        col = c; stamp = null; size = (c === '#ffffff') ? 34 : 10;
+        [].slice.call(cols.children).forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        tip.textContent = (c === '#ffffff') ? 'Rubber! Draw over a mistake to erase it.' : 'Draw with your finger!';
+      };
+      cols.appendChild(b);
+    });
+
+    var st = D.getElementById('padStamps');
+    ['⭐','🌈','🐱','🦋','🌸','🦕','🍎','👑','🫧','❤️'].forEach(function(s){
+      var b = D.createElement('button');
+      b.className = 'stamp';
+      b.textContent = s;
+      b.onclick = function(){
+        stamp = s;
+        [].slice.call(st.children).forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        tip.textContent = 'Now tap the paper to stamp a ' + s;
+      };
+      st.appendChild(b);
+    });
+
+    D.getElementById('padClear').onclick = function(){
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 800, 500);
+      stamp = null; tip.textContent = 'Clean paper! Draw whatever you like.';
+      [].slice.call(st.children).forEach(function(x){ x.classList.remove('on'); });
+    };
+    D.getElementById('padSave').onclick = function(){
+      try {
+        var a = D.createElement('a');
+        a.download = 'my-picture.png';
+        a.href = cv.toDataURL('image/png');
+        a.click();
+        tip.textContent = 'Saved! Look in your downloads. 🖼️';
+        say('I saved your picture! Show it to a grown-up — artists always need an audience.');
+      } catch(e){ tip.textContent = 'Ask a grown-up to help you save it!'; }
+    };
+  })();
+
+  /* ════════ SPARKLE CATCH — colour and counting practice ════════ */
+  (function(){
+    var svg = D.getElementById('catch');
+    if (!svg) return;
+    var note = D.getElementById('catchTip'), basket, target, got = 0, need = 0, live = [], running = false;
+    var COLNAMES = [['#ff2d95','pink'],['#ffd400','yellow'],['#00e5ff','blue'],['#00ff9d','green'],['#b14bff','purple']];
+
+    function start(){
+      svg.innerHTML = ''; live = []; got = 0;
+      el('rect', {x:0, y:0, width:400, height:300, fill:'#1b1040'}, svg);
+      for (var i = 0; i < 26; i++)
+        el('circle', {cx:rnd(0,400), cy:rnd(0,240), r:rnd(.6,1.8), fill:'#fff', opacity:rnd(.3,.9)}, svg);
+
+      target = pickOne(COLNAMES);
+      need = 3 + Math.floor(Math.random() * 4);
+      note.textContent = 'Catch ' + need + ' ' + target[1] + ' sparkles!';
+
+      basket = el('g', {transform:'translate(200,262)'}, svg);
+      el('path', {d:'M-34 -14 L34 -14 L26 20 L-26 20 Z', fill:'#ffd400', stroke:'#2b1b45','stroke-width':5,'stroke-linejoin':'round'}, basket);
+      el('path', {d:'M-34 -14 q34 -22 68 0', fill:'none', stroke:'#2b1b45','stroke-width':5}, basket);
+
+      running = true;
+      svg.style.touchAction = 'none';
+      svg.onpointerdown = svg.onpointermove = function(e){
+        var r = svg.getBoundingClientRect(),
+            x = Math.max(40, Math.min(360, (e.clientX - r.left) / r.width * 400));
+        basket.setAttribute('transform', 'translate(' + x + ',262)');
+      };
+      drop();
+      tick();
+    }
+    function drop(){
+      if (!running) return;
+      var c = pickOne(COLNAMES), x = rnd(30, 370), s = rnd(9, 15);
+      var g = el('g', {transform:'translate(' + x + ',-20)'}, svg);
+      el('path', {d:'M0 ' + (-s) + ' Q' + (s*.3) + ' ' + (-s*.3) + ' ' + s + ' 0 Q' + (s*.3) + ' ' + (s*.3) +
+        ' 0 ' + s + ' Q' + (-s*.3) + ' ' + (s*.3) + ' ' + (-s) + ' 0 Q' + (-s*.3) + ' ' + (-s*.3) + ' 0 ' + (-s) + ' Z',
+        fill:c[0]}, g);
+      live.push({ g:g, x:x, y:-20, c:c, v:rnd(.9, 1.9) });
+      setTimeout(drop, rnd(500, 1000));
+    }
+    function tick(){
+      if (!running) return;
+      var bx = +(basket.getAttribute('transform').match(/translate\(([-\d.]+)/)[1]);
+      live = live.filter(function(o){
+        o.y += o.v;
+        o.g.setAttribute('transform', 'translate(' + o.x + ',' + o.y + ')');
+        if (o.y > 242 && o.y < 286 && Math.abs(o.x - bx) < 40){
+          o.g.remove();
+          if (o.c[1] === target[1]){
+            got++;
+            note.textContent = got >= need
+              ? 'YOU GOT ' + need + '! ⭐ Tap to play again.'
+              : 'Caught ' + got + ' of ' + need + ' ' + target[1] + ' ones!';
+            if (got >= need){
+              running = false;
+              say('You caught <b>' + need + '</b> ' + target[1] + ' sparkles! Counting and colours at the same time. 🌟');
+              svg.onpointerdown = function(){ start(); };
+            }
+          } else {
+            note.textContent = 'That one was ' + o.c[1] + '! We want ' + target[1] + '. Keep going!';
+          }
+          return false;
+        }
+        if (o.y > 320){ o.g.remove(); return false; }
+        return true;
+      });
+      requestAnimationFrame(tick);
+    }
+    start();
+  })();
+
+  /* ════════ MEMORY MATCH ════════ */
+  (function(){
+    var svg = D.getElementById('memory');
+    if (!svg) return;
+    var note = D.getElementById('memTip'),
+        ICONS = ['🐱','🌈','⭐','🦕','🌸','🫧'],
+        deck = [], open = [], found = 0, busy = false;
+
+    function build(){
+      svg.innerHTML = ''; deck = []; open = []; found = 0; busy = false;
+      var pool = ICONS.concat(ICONS).sort(function(){ return Math.random() - .5; });
+      pool.forEach(function(ic, i){
+        var cx = 46 + (i % 4) * 104, cy = 56 + Math.floor(i / 4) * 104;
+        var g = el('g', {transform:'translate(' + cx + ',' + cy + ')', style:'cursor:pointer'}, svg);
+        var back = el('rect', {x:-42, y:-42, width:84, height:84, rx:14,
+          fill:BRIGHT[i % BRIGHT.length], stroke:'#2b1b45','stroke-width':5}, g);
+        el('text', {x:0, y:12, 'text-anchor':'middle','font-size':38, fill:'#fff','font-weight':800}, g).textContent = '?';
+        var face = el('text', {x:0, y:16, 'text-anchor':'middle','font-size':46, opacity:0}, g);
+        face.textContent = ic;
+        var card = { g:g, ic:ic, face:face, back:back, up:false, done:false };
+        deck.push(card);
+        g.addEventListener('click', function(){ flip(card); });
+      });
+      note.textContent = 'Find the matching pairs!';
+    }
+    function flip(c){
+      if (busy || c.up || c.done) return;
+      c.up = true;
+      c.face.setAttribute('opacity', 1);
+      c.back.setAttribute('fill', '#fff');
+      c.g.querySelector('text').setAttribute('opacity', 0);
+      open.push(c);
+      if (open.length === 2){
+        busy = true;
+        setTimeout(function(){
+          if (open[0].ic === open[1].ic){
+            open.forEach(function(o){ o.done = true; o.g.style.opacity = .45; });
+            found++;
+            note.textContent = found === ICONS.length
+              ? 'ALL MATCHED! 🎉 Tap a card to play again.'
+              : 'Pairs found: ' + found + ' of ' + ICONS.length;
+            if (found === ICONS.length){
+              say('You matched them all! Memory games make your brain better at remembering things. 🧠');
+              setTimeout(build, 1600);
+            }
+          } else {
+            open.forEach(function(o){
+              o.up = false;
+              o.face.setAttribute('opacity', 0);
+              o.back.setAttribute('fill', BRIGHT[deck.indexOf(o) % BRIGHT.length]);
+              o.g.querySelector('text').setAttribute('opacity', 1);
+            });
+          }
+          open = []; busy = false;
+        }, 700);
+      }
+    }
+    build();
+  })();
+
+  /* ════════ THE CHOCOLATE MILK ════════ */
+  (function(){
+    var svg = D.getElementById('milk');
+    if (!svg) return;
+    var note = D.getElementById('milkTip'), level = 0, MAXL = 5;
+    function draw(){
+      svg.innerHTML = '';
+      el('rect', {x:0, y:0, width:300, height:300, fill:'#fff6ea'}, svg);
+      el('ellipse', {cx:150, cy:282, rx:90, ry:12, fill:'#e2cdb4'}, svg);
+      /* glass */
+      el('path', {d:'M84 66 L216 66 L200 272 L100 272 Z', fill:'rgba(255,255,255,.55)',
+        stroke:'#2b1b45','stroke-width':6,'stroke-linejoin':'round'}, svg);
+      /* the milk itself, dropping as you drink */
+      var top = 92 + level * 30;
+      if (level < MAXL){
+        el('path', {d:'M' + (86 + (top-92)*0.08*1) + ' ' + top + ' L' + (214 - (top-92)*0.08) + ' ' + top +
+          ' L200 268 L100 268 Z', fill:'#8b5a2b'}, svg);
+        el('ellipse', {cx:150, cy:top, rx:(64 - (top-92)*0.08), ry:9, fill:'#a9713a'}, svg);
+      }
+      /* straw */
+      el('path', {d:'M170 40 L150 272', stroke:'#ff2d95','stroke-width':13,'stroke-linecap':'round'}, svg);
+      el('path', {d:'M170 40 L150 272', stroke:'#fff','stroke-width':5,'stroke-linecap':'round','stroke-dasharray':'14 14'}, svg);
+      el('path', {d:'M170 40 q22 -14 34 4', stroke:'#ff2d95','stroke-width':13, fill:'none','stroke-linecap':'round'}, svg);
+      /* a little smiley face on the glass, because why not */
+      el('circle', {cx:130, cy:170, r:4, fill:'#2b1b45'}, svg);
+      el('circle', {cx:172, cy:170, r:4, fill:'#2b1b45'}, svg);
+      el('path', {d:'M128 186 q22 16 44 0', stroke:'#2b1b45','stroke-width':4, fill:'none','stroke-linecap':'round'}, svg);
+      svg.style.cursor = 'pointer';
+    }
+    svg.addEventListener('click', function(){
+      if (level < MAXL){
+        level++;
+        draw();
+        note.textContent = level >= MAXL ? 'All gone! 🥛 Tap again to refill.' : 'Slurp! Sips taken: ' + level;
+        if (level >= MAXL) say('You drank the whole thing! Milk helps build strong bones. Now go and have some water too.');
+      } else {
+        level = 0; draw(); note.textContent = 'Refilled! Tap the glass to sip.';
+      }
+    });
+    draw();
+  })();
 })();
