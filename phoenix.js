@@ -75,7 +75,7 @@
       poof  = D.getElementById('poof'),
       uni   = D.getElementById('uni');
 
-  var FACES = { happy:'images/face-happy.jpg', talk:'images/face-talk.jpg', silly:'images/face-silly.jpg' };
+  var FACES = { happy:'/images/face-happy.jpg', talk:'/images/face-talk.jpg', silly:'/images/face-silly.jpg' };
 
   window.PWage = 'b';
   function say3(e){
@@ -352,6 +352,121 @@
      "Ooh! Is it… a rainbow? A cat? A snack? No — tell me, tell me, I am terrible at waiting!"]}
   );
 
+
+  /* ── She knows every page on the site, so she can send a child to the
+        right one instead of just talking about it. ───────────────────── */
+  var PAGES = [
+    {u:'/counting-for-toddlers/',   n:'Counting for Toddlers', k:'count,counting,numbers,how many,1 2 3'},
+    {u:'/simple-addition-for-kids/',n:'Simple Addition',       k:'add,adding,plus,math,maths,sum'},
+    {u:'/learn-colors-for-kids/',   n:'Learn Colors',          k:'color,colour,rainbow,paint colors'},
+    {u:'/alphabet-for-kids/',       n:'The Alphabet',          k:'alphabet,abc,letters,a b c'},
+    {u:'/letter-sounds-phonics/',   n:'Letter Sounds',         k:'phonics,sounds,sound out,reading,blend'},
+    {u:'/shapes-for-kids/',         n:'Shapes',                k:'shape,shapes,circle,square,triangle'},
+    {u:'/science-for-toddlers/',    n:'Science for Toddlers',  k:'science,experiment,how does it work'},
+    {u:'/space-facts-for-kids/',    n:'Space Facts',           k:'space,planet,moon,star,rocket,sun'},
+    {u:'/animal-facts-for-kids/',   n:'Animal Facts',          k:'animal,animals,cat,dog,zebra,whale'},
+    {u:'/dinosaurs-for-kids/',      n:'Dinosaurs',             k:'dinosaur,dino,fossil,t rex'},
+    {u:'/weather-for-kids/',        n:'Weather',               k:'weather,rain,snow,cloud,storm,water cycle'},
+    {u:'/kindergarten-readiness/',  n:'Ready for Big School',  k:'kindergarten,school,big school,preschool'},
+    {u:'/feelings-for-kids/',       n:'Big Feelings',          k:'feeling,feelings,sad,angry,scared,emotion'},
+    {u:'/affirmations-for-kids/',   n:'I Am Amazing',          k:'affirmation,confidence,brave,i can'},
+    {u:'/spanish-for-kids/',        n:'Spanish for Kids',      k:'spanish,espanol,hola,another language'}
+  ];
+  function findPage(q){
+    var t = ' ' + q.toLowerCase() + ' ', best = null, score = 0;
+    PAGES.forEach(function(p){
+      var s = 0;
+      p.k.split(',').forEach(function(w){ if (t.indexOf(w.trim()) >= 0) s += w.trim().length; });
+      if (s > score){ score = s; best = p; }
+    });
+    return score > 2 ? best : null;
+  }
+  function pageLink(p){
+    return '<a href="' + p.u + '" style="color:#7a3ddb;font-weight:800">' + p.n + '</a>';
+  }
+
+  /* ── Study mode. She and Wormy run a tiny lesson, one step at a time. ── */
+  var LESSONS = {
+    counting: { title:'Counting', steps:[
+      "Ready? Hold up one finger. That is <b>1</b>. Say it!",
+      "Now two fingers. <b>2</b>. Brilliant.",
+      "Three! <b>3</b>. You are quick at this.",
+      "Four… <b>4</b>. Nearly a whole hand.",
+      "And five! <b>5</b>. One whole hand! 🖐️",
+      "Now all together: 1, 2, 3, 4, 5. You just counted to five. Wormy is very proud." ]},
+    shapes: { title:'Shapes', steps:[
+      "A <b>circle</b> is round all the way with no corners. Find something round near you!",
+      "A <b>square</b> has 4 sides, all the same. Like a window!",
+      "A <b>triangle</b> has 3 sides and 3 corners. Like a slice of pizza. 🍕",
+      "Last one: a <b>rectangle</b> has 4 sides but two are longer. Like a door!",
+      "Circle, square, triangle, rectangle. Four shapes learned. That is a proper lesson done!" ]},
+    letters: { title:'Letter Sounds', steps:[
+      "The letter <b>S</b> says <i>ssssss</i>, like a snake. Try it!",
+      "The letter <b>M</b> says <i>mmmm</i>, like yummy food.",
+      "The letter <b>A</b> says <i>ah</i>, like apple.",
+      "Now blend: c - a - t. Slowly… then faster. <b>CAT</b>!",
+      "You just read a word by sounding it out. That is exactly how reading works!" ]},
+    colors: { title:'Colors', steps:[
+      "Blue and yellow mixed together make <b>green</b>. Like grass!",
+      "Red and blue make <b>purple</b>. Very royal.",
+      "Red and yellow make <b>orange</b>. Like a pumpkin!",
+      "Rainbow order never changes: red, orange, yellow, green, blue, indigo, violet.",
+      "Lesson complete! Go and find something of every rainbow colour in your house." ]},
+    kindness: { title:'Being Kind', steps:[
+      "Kindness rule one: say the nice thing out loud. Thinking it does not count!",
+      "Rule two: if somebody is left out, go and stand with them.",
+      "Rule three: share the good stuff, not just the leftovers.",
+      "Rule four: saying sorry properly means saying what you did, then what you will do next time.",
+      "You already knew all of that, did you not? Kind people usually do." ]}
+  };
+  var study = null, studyAt = 0;
+  function studyStep(which){
+    if (which && LESSONS[which]){ study = which; studyAt = -1; }
+    if (!study) return null;
+    studyAt++;
+    var L = LESSONS[study];
+    if (studyAt === 0)
+      return "📚 <b>" + L.title + " lesson!</b> Wormy has his glasses on. Say <b>next</b> when you are ready.<br><br>" + L.steps[0];
+    if (studyAt < L.steps.length) return L.steps[studyAt];
+    study = null; studyAt = 0;
+    return "That is the whole lesson done! 🎓 You and Wormy make a good team. Want another one?";
+  }
+
+  KB.push(
+   {id:'studymode', w:3, k:'study,lesson,teach me,learn with me,study partner,wormy,teach me something,school time', r:['__STUDY__']},
+   {id:'next', w:2.8, k:'next,keep going,then what,go on,continue,more please', r:['__NEXT__']},
+   {id:'wormyguy', k:'who is wormy,worm,wormy the worm,glasses worm', r:[
+     "That is <b>Wormy the Worm</b>, my study partner! He wears little glasses and he has read about absolutely everything. He lives in the bubble patch. Say <b>study</b> and we will all learn together."]},
+   {id:'whatpage', w:2.6, k:'where do i go,what page,show me a page,take me,which page,i want to learn about,got a page about', r:['__PAGE__']},
+   {id:'whatgames', w:2.5, k:'what games,games,play a game,what can i play,fun stuff,things to do', r:[
+     "So many! On the homepage you can <b>splat paint</b> on a wall, <b>build a snowman</b>, roll a marble through a <b>maze</b>, spell with <b>letter blocks</b>, decorate a <b>bedroom</b>, blow <b>bubbles</b>, and cuddle the <b>stuffies</b>. Which sounds best?",
+     "My favourite is the <b>Splat Wall</b> — you can paint absolutely everywhere and never get in trouble. Try the <b>Marble Maze</b> too, it has three levels!"]},
+   {id:'bored2', k:'im bored,nothing to do,what now,whats next', r:[
+     "Never bored in this kingdom! Pick one: paint the wall, build a snowman, or let me teach you a quick lesson. Say <b>study</b> for the lesson!"]},
+
+   /* ── more uplift, because a kid cannot hear this too often ────────── */
+   {id:'proud', k:'i did it,i finished,look what i did,i made,i won,i got it', r:[
+     "YOU DID IT! I am so proud I could twirl. Say this with me: <b>I did that.</b> Because you did!",
+     "Look at you go! That thing was hard and you did it anyway. That is the whole secret, you know."]},
+   {id:'tryagain', k:'i messed up,it broke,wrong,i failed,not working,bad at this', r:[
+     "Good! That means you tried something hard enough to be worth trying. Brains grow the most in the wobbly bit. Go again — I am watching. 💪",
+     "Every single person who is brilliant at something was rubbish at it first. Every one. Including me at twirling."]},
+   {id:'tired', k:'tired,sleepy,yawn,i need a break,worn out', r:[
+     "Then have a rest! Resting is part of learning, not the opposite of it. Go and have a stretch and a drink of water. I shall be right here."]},
+   {id:'hungry', k:'hungry,snack,food,lunch,dinner,breakfast', r:[
+     "Snack time! Go for something with a colour in it — an apple, a carrot, some berries. Colourful food is basically fuel for your brain. 🍎"]},
+   {id:'iamgreat', k:'am i good,am i smart,do you like me,am i pretty,am i nice', r:[
+     "You are <b>curious</b>, which is the best thing a person can be, and you are <b>kind</b>, which is the strongest. Those two beat everything else. Yes. Absolutely yes."]},
+   {id:'scaredbig', k:'scared of big school,nervous about school,first day,new place,new kids', r:[
+     "New things feel wobbly for everybody — even grown-ups, they just hide it better. Here is the trick: find one person and say hello. One is enough to start. You are braver than you think."]},
+   {id:'balloon', k:'balloon,blow up,pop,party', r:[
+     "Balloons! Here is a good one: a balloon flies about when you let it go because the air rushing out pushes it the other way. That is the same idea that makes a rocket work! 🎈"]},
+   {id:'bubble', k:'bubble,bubbles,soap', r:[
+     "Bubbles are my favourite. A bubble is just air wearing a very thin coat of soapy water — and it is always a ball shape, because that is the shape that uses the least skin!"]},
+   {id:'dino2', k:'ride a dinosaur,dinosaur ride,unicorn,ride,fly', r:[
+     "Hop on! 🦕 Today we are riding a dinosaur to the top of the tallest hill in the kingdom. Hold onto my crown. Where shall we go?"]}
+  );
+
   var MISS = [
     "Ooh, I do not know that one <i>yet</i>! I am still learning too. Try me on <b>animals</b>, <b>space</b>, <b>colors</b>, <b>counting</b>, or say <b>joke</b>!",
     "Hmm! My kitty brain is small but growing every day. Ask me about <b>vegetables</b>, <b>the park</b>, <b>art</b>, or tell me how you are feeling.",
@@ -373,6 +488,28 @@
     });
     if(score<1.5) return pick(MISS);
     if(best.r[0]==='__CREED__') return creedStep();
+    if(best.r[0]==='__STUDY__'){
+      var pickL = ['counting','shapes','letters','colors','kindness'];
+      var want = null;
+      ['counting','shape','letter','color','colour','kind'].forEach(function(w,i){
+        if(q.toLowerCase().indexOf(w)>=0) want = pickL[Math.min(i,4)];
+      });
+      return studyStep(want || pickL[Math.floor(Math.random()*pickL.length)]);
+    }
+    if(best.r[0]==='__NEXT__'){
+      var s = studyStep();
+      return s || "Next! What shall we do — a <b>joke</b>, a <b>lesson</b>, or shall I find you a page to explore?";
+    }
+    if(best.r[0]==='__PAGE__'){
+      var p = findPage(q);
+      return p ? "Perfect — go and visit " + pageLink(p) + "! It has three levels on it, so it grows with you. 👑"
+               : "Ooh, tell me what you want to learn and I will find the right room. Try <b>counting</b>, <b>colors</b>, <b>space</b>, <b>dinosaurs</b> or <b>feelings</b>!";
+    }
+    /* if she is mid-lesson, keep the lesson going */
+    if (study && /^(ok|okay|yes|yep|ready|done|got it)\b/i.test(q.trim())) return studyStep();
+    /* and if a child names a subject, point them at the right page */
+    var pg = findPage(q);
+    if (pg && score < 6) return say3(best) + '<br><br>There is a whole room about that: ' + pageLink(pg) + ' 👑';
     return say3(best);
   }
 
@@ -401,8 +538,8 @@
       picks.appendChild(b);
     });
   }
-  var MAIN=['Tell me a joke','Repeat after me!','Let us count','Colors!','I feel sad','Play a game',
-            'Tell me about cats','Why vegetables?'];
+  var MAIN=['Tell me a joke','Study with me! 📚','Repeat after me!','What games are there?',
+            'Tell me about cats','I feel sad','Find me a page','Let us count'];
   function mainChips(){
     chips(MAIN.map(function(t){ return {label:t, go:function(){ speak(answer(t)); }}; }));
   }
@@ -471,10 +608,38 @@
   };
 
   mainChips();
-  speak("Welcome to <b>Phoenix's World</b>, where <i>kids are the boss</i>! 😋<br>We can learn and have fun all day. And all night!");
+  speak("Welcome to <b>Phoenix's World</b>, where <i>kids make rulz</i>! 😋<br>I am <b>Princess Phoenix Sparkles</b>. Let us learn something and have some fun!");
   host.classList.add('arriving');
   setTimeout(function(){ host.classList.remove('arriving'); }, 2600);
   setTimeout(toCorner, 7200);
 
-  window.PWprincess = { toCorner:toCorner, goodbye:goodbye, setAge:setAge, speak:speak, ask:answer };
+  /* every now and then she does something daft on her own */
+  var ANTICS = [
+    function(){ speak("Watch this! 🤸 <b>FLIP!</b>"); pcat.classList.add('flipping');
+      setTimeout(function(){ pcat.classList.remove('flipping'); }, 1300); },
+    function(){ speak("Bubble time! 🫧"); blowBubbles(); },
+    function(){ speak("🎈 Blowing up a balloon… and… letting it GO! Wheeee!"); },
+    function(){ speak("Wormy says hello! 🐛 He is reading a book about clouds."); }
+  ];
+  function blowBubbles(){
+    for (var i=0;i<10;i++){
+      (function(i){
+        setTimeout(function(){
+          var b=D.createElement('b');
+          b.className='floatbub';
+          b.style.left=(10+Math.random()*80)+'vw';
+          b.style.width=b.style.height=(16+Math.random()*40)+'px';
+          b.style.animationDuration=(4+Math.random()*4)+'s';
+          D.body.appendChild(b);
+          setTimeout(function(){ b.remove(); }, 8000);
+        }, i*140);
+      })(i);
+    }
+  }
+  setInterval(function(){
+    if (host.classList.contains('mini') && !host.classList.contains('gone') && Math.random()<0.5)
+      ANTICS[Math.floor(Math.random()*ANTICS.length)]();
+  }, 42000);
+
+  window.PWprincess = { bubbles:blowBubbles, toCorner:toCorner, goodbye:goodbye, setAge:setAge, speak:speak, ask:answer };
 })();
