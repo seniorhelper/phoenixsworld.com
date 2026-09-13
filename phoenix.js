@@ -24,24 +24,67 @@
 
   var SVG = "<svg class=\"pcat\" id=\"pcat\" viewBox=\"0 0 500 880\" aria-label=\"Princess Phoenix Sparkles, your guide\">\n  <defs>\n    <!-- an egg-shaped face mask: wide at the cheeks, narrow at the chin.\n         The photo is cropped to her face only, and the drawn hair overlaps\n         every edge of it, so there is no ring and no background. -->\n    <clipPath id=\"faceHole\">\n      <path d=\"M256 286\n               C 210 288 150 320 126 373 C 110 410 110 425 114 448\n               C 118 490 122 505 134 528 C 148 560 160 592 184 608\n               C 202 628 224 642 246 640 C 270 640 292 624 314 606\n               C 338 588 350 556 361 528 C 374 500 382 472 386 448\n               C 390 420 388 386 378 358 C 368 330 320 288 256 286 Z\"/>\n    </clipPath>\n    <linearGradient id=\"strawb\" x1=\"0\" y1=\"0\" x2=\"0.25\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#fff4d2\"/><stop offset=\"28%\" stop-color=\"#ffdf9a\"/>\n      <stop offset=\"62%\" stop-color=\"#f3c368\"/><stop offset=\"100%\" stop-color=\"#d9a248\"/></linearGradient>\n    <linearGradient id=\"strawb2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#fff8e4\"/><stop offset=\"100%\" stop-color=\"#ffdf9a\"/></linearGradient>\n    <linearGradient id=\"gown\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffb3dd\"/><stop offset=\"42%\" stop-color=\"#f778c0\"/>\n      <stop offset=\"100%\" stop-color=\"#bf3488\"/></linearGradient>\n    <linearGradient id=\"gown2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffe6f5\"/><stop offset=\"100%\" stop-color=\"#ffc2e4\"/></linearGradient>\n    <linearGradient id=\"bodice\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#a45cff\"/><stop offset=\"100%\" stop-color=\"#6b34d4\"/></linearGradient>\n    <linearGradient id=\"hatg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#cfa8ff\"/><stop offset=\"48%\" stop-color=\"#9a5cf0\"/>\n      <stop offset=\"100%\" stop-color=\"#5f2bc4\"/></linearGradient>\n    <linearGradient id=\"gold\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffe9a8\"/><stop offset=\"50%\" stop-color=\"#ffd84d\"/>\n      <stop offset=\"100%\" stop-color=\"#d79b12\"/></linearGradient>\n    <linearGradient id=\"ribbon\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ff9ed2\"/><stop offset=\"100%\" stop-color=\"#e0398f\"/></linearGradient>\n    <radialGradient id=\"glow\" cx=\"50%\" cy=\"50%\" r=\"50%\">\n      <stop offset=\"0%\" stop-color=\"rgba(255,216,77,.95)\"/>\n      <stop offset=\"100%\" stop-color=\"rgba(255,216,77,0)\"/></radialGradient>\n  </defs>\n\n  <g opacity=\".2\" fill=\"#8b6bb5\">\n    <rect x=\"26\" y=\"636\" width=\"36\" height=\"98\"/><path d=\"M22 636 h44 l-9 -20 h-26 z\"/>\n    <path d=\"M44 586 l17 28 h-34 z\"/>\n    <rect x=\"66\" y=\"664\" width=\"48\" height=\"70\"/>\n    <rect x=\"436\" y=\"644\" width=\"34\" height=\"90\"/><path d=\"M432 644 h42 l-8 -18 h-26 z\"/>\n    <path d=\"M453 600 l16 26 h-32 z\"/>\n    <rect x=\"392\" y=\"670\" width=\"44\" height=\"64\"/>\n  </g>\n\n  <ellipse cx=\"250\" cy=\"846\" rx=\"140\" ry=\"18\" fill=\"#8b6bb5\" opacity=\".22\"/>\n\n  <g class=\"p-body\">\n    <g class=\"p-tail\">\n      <path d=\"M352 740 C 424 722 452 650 420 598\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"28\" stroke-linecap=\"round\"/>\n      <path d=\"M352 740 C 424 722 452 650 420 598\" fill=\"none\" stroke=\"url(#strawb)\" stroke-width=\"18\" stroke-linecap=\"round\"/>\n      <path d=\"M410 618 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M402 652 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M386 690 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <circle cx=\"420\" cy=\"598\" r=\"9\" fill=\"#ffd0e8\" stroke=\"#33234a\" stroke-width=\"4\"/>\n    </g>\n\n    <!-- gown -->\n    <path d=\"M250 646 C 302 652 326 696 340 742 C 354 792 374 832 388 854 L 112 854\n             C 126 832 146 792 160 742 C 174 696 198 652 250 646 Z\"\n      fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"7\" stroke-linejoin=\"round\"/>\n    <path d=\"M250 696 C 284 702 302 734 312 772 C 322 808 336 836 344 852 L 156 852\n             C 164 836 178 808 188 772 C 198 734 216 702 250 696 Z\"\n      fill=\"url(#gown2)\" opacity=\".92\"/>\n    <path d=\"M160 782 q90 30 180 0\" stroke=\"#fff\" stroke-width=\"9\" fill=\"none\" opacity=\".75\"/>\n    <path d=\"M140 822 q110 36 220 0\" stroke=\"#fff\" stroke-width=\"9\" fill=\"none\" opacity=\".6\"/>\n    <path d=\"M118 852 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0\n             q16 -18 32 0 q16 -18 32 0 q16 -18 32 0\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"5\"/>\n    <circle cx=\"208\" cy=\"746\" r=\"6\" fill=\"#fff\" opacity=\".85\"/>\n    <circle cx=\"292\" cy=\"766\" r=\"5\" fill=\"#fff\" opacity=\".8\"/>\n    <circle cx=\"250\" cy=\"806\" r=\"7\" fill=\"#fff\" opacity=\".7\"/>\n    <circle cx=\"180\" cy=\"812\" r=\"5\" fill=\"#fff\" opacity=\".7\"/>\n    <circle cx=\"322\" cy=\"822\" r=\"6\" fill=\"#fff\" opacity=\".65\"/>\n\n    <path d=\"M204 626 C 220 618 280 618 296 626 L 290 682 C 266 692 234 692 210 682 Z\"\n      fill=\"url(#bodice)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n    <path d=\"M236 632 L 264 644 M236 646 L 264 658 M236 660 L 264 672\"\n      stroke=\"#ffe9a8\" stroke-width=\"4\" stroke-linecap=\"round\"/>\n    <path d=\"M250 688 l-13 22 h26 z\" fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"4\" stroke-linejoin=\"round\"/>\n    <circle cx=\"250\" cy=\"624\" r=\"11\" fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"5\"/>\n\n    <ellipse cx=\"192\" cy=\"638\" rx=\"30\" ry=\"26\" fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"6\"/>\n    <ellipse cx=\"308\" cy=\"638\" rx=\"30\" ry=\"26\" fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"6\"/>\n\n    <path d=\"M182 658 C 156 678 148 696 168 712\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n    <path d=\"M182 658 C 156 678 148 696 168 712\" fill=\"none\" stroke=\"#ffe1b8\" stroke-width=\"14\" stroke-linecap=\"round\"/>\n    <path d=\"M318 658 C 344 678 352 698 332 714\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n    <path d=\"M318 658 C 344 678 352 698 332 714\" fill=\"none\" stroke=\"#ffe1b8\" stroke-width=\"14\" stroke-linecap=\"round\"/>\n    <g>\n      <circle cx=\"334\" cy=\"718\" r=\"18\" fill=\"#ffe1b8\" stroke=\"#33234a\" stroke-width=\"5\"/>\n      <circle cx=\"334\" cy=\"722\" r=\"7\" fill=\"#ff9ed2\"/>\n      <circle cx=\"326\" cy=\"710\" r=\"3.4\" fill=\"#ff9ed2\"/>\n      <circle cx=\"334\" cy=\"707\" r=\"3.4\" fill=\"#ff9ed2\"/>\n      <circle cx=\"342\" cy=\"710\" r=\"3.4\" fill=\"#ff9ed2\"/>\n    </g>\n\n    <g class=\"p-wand\">\n      <path d=\"M152 712 L 120 608\" stroke=\"#33234a\" stroke-width=\"12\" stroke-linecap=\"round\"/>\n      <path d=\"M152 712 L 120 608\" stroke=\"#f4f4f1\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <path class=\"p-rib1\" d=\"M124 626 C 98 640 94 668 108 686\" fill=\"none\" stroke=\"#ff9ed2\"\n        stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <path class=\"p-rib2\" d=\"M128 630 C 148 648 150 674 136 692\" fill=\"none\" stroke=\"#9ef0ff\"\n        stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <circle cx=\"120\" cy=\"598\" r=\"38\" fill=\"url(#glow)\"/>\n      <g class=\"p-star\">\n        <path d=\"M120 566 L130 590 L156 592 L136 609 L142 635 L120 621 L98 635 L104 609 L84 592 L110 590 Z\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n      </g>\n      <circle cx=\"152\" cy=\"716\" r=\"18\" fill=\"#ffe1b8\" stroke=\"#33234a\" stroke-width=\"5\"/>\n      <circle cx=\"152\" cy=\"720\" r=\"7\" fill=\"#ff9ed2\"/>\n    </g>\n\n    <!-- \u2550\u2550\u2550 THE HEAD \u2014 her face at full size, framed by drawn hair \u2550\u2550\u2550 -->\n    <g class=\"p-head\">\n\n      <!-- long flowing locks, behind -->\n      <g class=\"p-lockL\">\n        <path d=\"M152 352 C 48 424 30 616 74 726 C 86 640 72 528 112 462\n                 C 84 552 92 648 122 716 C 124 598 128 456 178 400 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M150 372 C 74 444 62 606 100 704 C 108 622 100 520 134 456\n                 C 114 540 120 630 146 694 C 146 584 150 458 182 406 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\" opacity=\".96\"/>\n        <path d=\"M108 452 C 84 524 88 606 108 666\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"6\" opacity=\".5\"/>\n        <path d=\"M132 470 C 114 532 118 596 134 648\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"4\" opacity=\".35\"/>\n      </g>\n      <g class=\"p-lockR\">\n        <path d=\"M350 352 C 454 424 472 616 428 726 C 416 640 430 528 390 462\n                 C 418 552 410 648 380 716 C 378 598 374 456 324 400 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M352 372 C 428 444 440 606 402 704 C 394 622 402 520 368 456\n                 C 388 540 382 630 356 694 C 356 584 352 458 320 406 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\" opacity=\".96\"/>\n        <path d=\"M394 452 C 418 524 414 606 394 666\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"6\" opacity=\".5\"/>\n        <path d=\"M370 470 C 388 532 384 596 368 648\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"4\" opacity=\".35\"/>\n      </g>\n\n      <!-- cat ears, tucked closer to her head -->\n      <g class=\"p-earL\">\n        <path d=\"M146 320 L 120 214 L 214 276 Z\" fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M152 304 L 140 244 L 190 276 Z\" fill=\"#ff9ed2\"/>\n      </g>\n      <g class=\"p-earR\">\n        <path d=\"M356 320 L 382 214 L 288 276 Z\" fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M350 304 L 362 244 L 312 276 Z\" fill=\"#ff9ed2\"/>\n      </g>\n\n      <!-- her face, clipped to the traced outline -->\n      <g clip-path=\"url(#faceHole)\">\n        <image id=\"face\" x=\"87\" y=\"225\" width=\"360\" height=\"432\"\n          transform=\"rotate(4 262 463)\"\n          preserveAspectRatio=\"xMidYMid meet\" href=\"images/face-happy.jpg\"/>\n      </g>\n\n      <!-- hair laid over the top and sides, following the same outline -->\n      <path d=\"M256 268 C 168 266 120 310 106 380 C 100 414 100 434 104 458\n               C 110 400 132 352 178 326 C 214 304 300 306 336 332\n               C 382 358 396 406 400 458 C 404 432 404 408 400 380\n               C 386 308 344 268 256 268 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n      <path d=\"M174 328 C 214 348 276 352 330 332 C 308 370 224 378 174 328 Z\"\n        fill=\"url(#strawb2)\" opacity=\".92\"/>\n      <path d=\"M150 330 C 186 300 320 300 356 332 C 320 314 186 314 150 330 Z\"\n        fill=\"#fff8e4\" opacity=\".55\"/>\n      <path d=\"M198 316 C 228 334 276 336 312 322\" fill=\"none\" stroke=\"#ffe3bd\" stroke-width=\"5\" opacity=\".6\"/>\n      <path d=\"M120 444 C 114 384 138 334 178 318 C 148 350 130 396 130 452\n               C 130 502 138 546 150 574 C 126 536 118 492 120 444 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n      <path d=\"M382 444 C 388 384 364 334 324 318 C 354 350 372 396 372 452\n               C 372 502 364 546 352 574 C 376 536 384 492 382 444 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n\n      <!-- ribbons, moved out to the hair so they stop covering her cheeks -->\n      <g class=\"p-bowL\">\n        <path d=\"M124 506 C 100 486 88 506 98 524 C 108 540 124 528 124 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <path d=\"M124 506 C 148 486 160 506 150 524 C 140 540 124 528 124 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <circle cx=\"124\" cy=\"510\" r=\"9\" fill=\"#ffd84d\" stroke=\"#33234a\" stroke-width=\"4\"/>\n        <path d=\"M116 524 C 108 546 112 566 102 580\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n        <path d=\"M132 524 C 140 546 138 568 148 582\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      </g>\n      <g class=\"p-bowR\">\n        <path d=\"M378 506 C 354 486 342 506 352 524 C 362 540 378 528 378 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <path d=\"M378 506 C 402 486 414 506 404 524 C 394 540 378 528 378 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <circle cx=\"378\" cy=\"510\" r=\"9\" fill=\"#ffd84d\" stroke=\"#33234a\" stroke-width=\"4\"/>\n        <path d=\"M370 524 C 362 546 366 566 356 580\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n        <path d=\"M386 524 C 394 546 392 568 402 582\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      </g>\n\n      <!-- whiskers, clear of her face -->\n      <path d=\"M112 470 L 58 456 M110 496 L 52 496 M112 522 L 58 538\"\n        stroke=\"#33234a\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n      <path d=\"M390 470 L 444 456 M392 496 L 450 496 M390 522 L 444 538\"\n        stroke=\"#33234a\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n\n      <!-- \u2500\u2500 A PROPER CROWN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->\n      <g class=\"p-crown\" transform=\"translate(0,-30) rotate(-7 250 268)\">\n        <!-- five points, each tipped with a pearl -->\n        <path d=\"M148 300 L 160 216 L 198 262 L 222 186 L 250 246 L 278 186\n                 L 302 262 L 340 216 L 352 300 Z\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"7\" stroke-linejoin=\"round\"/>\n        <path d=\"M162 268 C 200 284 300 284 338 268\" fill=\"none\" stroke=\"#fff6d0\"\n          stroke-width=\"5\" opacity=\".65\"/>\n        <!-- jewelled band -->\n        <rect x=\"142\" y=\"292\" width=\"216\" height=\"34\" rx=\"14\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"7\"/>\n        <ellipse cx=\"250\" cy=\"309\" rx=\"17\" ry=\"14\" fill=\"#ff5fa2\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"250\" cy=\"304\" r=\"4\" fill=\"#fff\" opacity=\".85\"/>\n        <ellipse cx=\"196\" cy=\"309\" rx=\"12\" ry=\"10\" fill=\"#2bb3ff\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n        <ellipse cx=\"304\" cy=\"309\" rx=\"12\" ry=\"10\" fill=\"#8cff9e\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n        <circle cx=\"166\" cy=\"309\" r=\"6\" fill=\"#c9a2ff\" stroke=\"#33234a\" stroke-width=\"3.5\"/>\n        <circle cx=\"334\" cy=\"309\" r=\"6\" fill=\"#c9a2ff\" stroke=\"#33234a\" stroke-width=\"3.5\"/>\n        <!-- pearls on the points -->\n        <circle cx=\"160\" cy=\"212\" r=\"10\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"222\" cy=\"182\" r=\"11\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"278\" cy=\"182\" r=\"11\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"340\" cy=\"212\" r=\"10\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"250\" cy=\"240\" r=\"9\" fill=\"#ff9ed2\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n      </g>\n    </g>\n  </g>\n\n  <g id=\"fairy\"></g>\n</svg>";
 
-  var UNICORN = '<svg viewBox="0 0 320 240" aria-hidden="true">'
-  + '<defs><linearGradient id="uniM" x1="0" y1="0" x2="1" y2="1">'
-  + '<stop offset="0%" stop-color="#ff9ed2"/><stop offset="34%" stop-color="#c9a2ff"/>'
-  + '<stop offset="68%" stop-color="#9ef0ff"/><stop offset="100%" stop-color="#c9f0a2"/>'
-  + '</linearGradient></defs>'
-  + '<path d="M74 168 q-10 30 4 46 M118 176 q-4 30 6 44 M198 176 q6 30 -2 44 M236 166 q12 28 2 46"'
-  + ' stroke="#33234a" stroke-width="13" fill="none" stroke-linecap="round"/>'
-  + '<path d="M64 132 q-10 -34 26 -40 l120 0 q44 0 48 40 q4 36 -34 40 l-120 0 q-34 -4 -40 -40z"'
-  + ' fill="#fff" stroke="#33234a" stroke-width="7" stroke-linejoin="round"/>'
-  + '<path d="M228 112 q30 -16 34 -44 q2 -20 -14 -24 q-20 -4 -26 16 q-6 22 -18 30"'
-  + ' fill="#fff" stroke="#33234a" stroke-width="7" stroke-linejoin="round"/>'
-  + '<path d="M246 52 l10 -34 l14 32 z" fill="#ffd84d" stroke="#33234a" stroke-width="5" stroke-linejoin="round"/>'
-  + '<circle cx="252" cy="72" r="4.5" fill="#33234a"/>'
-  + '<path d="M214 78 q28 -22 46 -6 q-14 30 -46 26z" fill="url(#uniM)" stroke="#33234a" stroke-width="5"/>'
-  + '<path d="M92 96 q46 -26 96 -8 q34 12 30 44 q-58 10 -96 -6 q-34 -14 -30 -30z"'
-  + ' fill="url(#uniM)" stroke="#33234a" stroke-width="5"/>'
-  + '<path d="M62 128 q-34 6 -44 34 q28 8 46 -12z" fill="url(#uniM)" stroke="#33234a" stroke-width="5"/>'
+  var UNICORN = '<svg viewBox="0 0 360 260" aria-hidden="true">'
+  + '<defs>'
+  + '<linearGradient id="uMane" x1="0" y1="0" x2="1" y2="1">'
+  +   '<stop offset="0%" stop-color="#ff2d95"/><stop offset="22%" stop-color="#ff7a00"/>'
+  +   '<stop offset="44%" stop-color="#ffd400"/><stop offset="66%" stop-color="#00ff9d"/>'
+  +   '<stop offset="84%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#b14bff"/>'
+  + '</linearGradient>'
+  + '<linearGradient id="uBody" x1="0" y1="0" x2="0" y2="1">'
+  +   '<stop offset="0%" stop-color="#ffffff"/><stop offset="62%" stop-color="#fdf4ff"/>'
+  +   '<stop offset="100%" stop-color="#e8d9f2"/></linearGradient>'
+  + '<linearGradient id="uHorn" x1="0" y1="1" x2="0" y2="0">'
+  +   '<stop offset="0%" stop-color="#ffd400"/><stop offset="60%" stop-color="#ffe9a8"/>'
+  +   '<stop offset="100%" stop-color="#fff"/></linearGradient>'
+  + '</defs>'
+  /* tail, streaming behind */
+  + '<path d="M58 138 C 8 120 -6 176 22 214 C 30 176 44 160 66 152 Z" fill="url(#uMane)"'
+  +   ' stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
+  + '<path d="M60 150 C 22 146 12 190 32 218" fill="none" stroke="#ff2d95" stroke-width="7" stroke-linecap="round"/>'
+  + '<path d="M62 160 C 30 160 24 196 42 220" fill="none" stroke="#00e5ff" stroke-width="6" stroke-linecap="round"/>'
+  /* back legs */
+  + '<path d="M96 176 C 92 202 86 218 74 234" stroke="#f3e8fa" stroke-width="19" fill="none" stroke-linecap="round"/>'
+  + '<path d="M96 176 C 92 202 86 218 74 234" stroke="#2b1b45" stroke-width="5" fill="none" stroke-linecap="round" opacity=".25"/>'
+  + '<path d="M136 182 C 136 206 132 222 124 238" stroke="#f3e8fa" stroke-width="19" fill="none" stroke-linecap="round"/>'
+  + '<ellipse cx="74" cy="238" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
+  + '<ellipse cx="124" cy="242" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
+  /* body */
+  + '<path d="M62 136 C 54 100 92 78 140 76 L232 76 C 276 76 300 100 296 136'
+  +   ' C 292 172 262 186 224 186 L134 186 C 92 186 68 170 62 136 Z"'
+  +   ' fill="url(#uBody)" stroke="#2b1b45" stroke-width="6" stroke-linejoin="round"/>'
+  /* front legs */
+  + '<path d="M196 182 C 200 206 196 222 186 238" stroke="#fdf4ff" stroke-width="19" fill="none" stroke-linecap="round"/>'
+  + '<path d="M246 178 C 254 202 254 220 248 238" stroke="#fdf4ff" stroke-width="19" fill="none" stroke-linecap="round"/>'
+  + '<ellipse cx="186" cy="242" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
+  + '<ellipse cx="248" cy="242" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
+  /* neck and head */
+  + '<path d="M252 96 C 268 60 296 34 318 26 C 340 18 352 34 346 54'
+  +   ' C 340 76 318 92 300 104 C 286 114 266 118 252 116 Z"'
+  +   ' fill="url(#uBody)" stroke="#2b1b45" stroke-width="6" stroke-linejoin="round"/>'
+  + '<path d="M318 26 C 336 20 350 30 346 50" fill="none" stroke="#2b1b45" stroke-width="5"/>'
+  /* mane along the neck */
+  + '<path d="M252 96 C 262 60 288 30 314 20 C 300 46 292 74 288 102 Z"'
+  +   ' fill="url(#uMane)" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
+  + '<path d="M268 74 C 250 62 236 74 232 92" fill="none" stroke="#ffd400" stroke-width="7" stroke-linecap="round"/>'
+  + '<path d="M262 90 C 242 82 228 94 226 112" fill="none" stroke="#00ff9d" stroke-width="7" stroke-linecap="round"/>'
+  + '<path d="M258 106 C 238 100 224 114 224 130" fill="none" stroke="#b14bff" stroke-width="7" stroke-linecap="round"/>'
+  /* ear, eye, nostril, horn */
+  + '<path d="M300 38 L 296 12 L 316 28 Z" fill="#fdf4ff" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
+  + '<path d="M322 22 L 336 -14 L 348 24 Z" fill="url(#uHorn)" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
+  + '<path d="M328 12 L 342 8 M326 20 L 344 16" stroke="#d79b12" stroke-width="3"/>'
+  + '<circle cx="324" cy="46" r="5.5" fill="#2b1b45"/>'
+  + '<circle cx="322" cy="44" r="2" fill="#fff"/>'
+  + '<path d="M344 62 q6 4 2 9" stroke="#2b1b45" stroke-width="4" fill="none" stroke-linecap="round"/>'
+  /* wings, because a flying unicorn needs them */
+  + '<path d="M176 92 C 150 44 186 18 224 34 C 208 52 200 72 200 96 Z"'
+  +   ' fill="#ffffff" fill-opacity=".92" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
+  + '<path d="M186 76 C 178 56 194 42 214 44" fill="none" stroke="#c9a2ff" stroke-width="4"/>'
+  + '<circle cx="150" cy="128" r="5" fill="#ffd400" opacity=".9"/>'
+  + '<circle cx="118" cy="150" r="4" fill="#00e5ff" opacity=".9"/>'
+  + '<circle cx="176" cy="158" r="4" fill="#ff2d95" opacity=".9"/>'
   + '</svg>';
+
 
   host.innerHTML =
       '<div class="stage" id="stage">'
@@ -242,6 +285,48 @@
    {id:'bye', k:'bye,goodbye,see you,goodnight,night,later,leaving', r:[
      "Bye for now, friend! Go be amazing. Eat something green for me and listen to your grown-ups. 👑"]}
   ];
+
+
+  /* ── Names. She picks the name out of whatever a child types, then uses
+        it. If it is Phoenix, she checks one gentle detail before treating
+        her as the Phoenix this whole kingdom is named after. ─────────── */
+  var KIDNAMES = ('emma olivia ava sophia isabella mia charlotte amelia harper evelyn abigail '
+    + 'ella scarlett grace chloe camila penelope riley layla lily zoey nora hannah lillian addison '
+    + 'aubrey ellie stella natalie zoe leah hazel violet aurora savannah audrey brooklyn bella claire '
+    + 'skylar lucy paisley everly anna caroline nova genesis emilia kennedy maya willow kinsley naomi '
+    + 'liam noah oliver elijah james william benjamin lucas henry theodore jack levi alexander jackson '
+    + 'mateo daniel michael mason sebastian ethan logan owen samuel jacob asher aiden john joseph wyatt '
+    + 'david leo luke julian hudson grayson matthew ezra gabriel carter isaac jayden luca anthony dylan '
+    + 'lincoln thomas maverick elias josiah charles caleb christopher ezekiel miles jaxon isaiah andrew '
+    + 'phoenix coburn river sage rowan quinn charlie finn milo ivy remi juniper wren').split(' ');
+
+  var KID = { name:null, isPhoenix:false, asked:false };
+
+  function grabName(raw){
+    var t = ' ' + raw.toLowerCase().replace(/[^a-z' ]/g, ' ').replace(/\s+/g, ' ') + ' ';
+    var m = t.match(/(?:my name is|my names|i am called|call me|this is|im|i am|name is|its|it is)\s+([a-z']{2,14})/);
+    if (m){
+      var w = m[1];
+      var STOP = ['a','an','the','here','good','fine','ok','okay','happy','sad','tired','hungry',
+                  'playing','going','doing','five','four','six','so','very','really','not','just','back'];
+      if (STOP.indexOf(w) < 0) return w;
+    }
+    /* a bare name on its own line, e.g. just "Phoenix" */
+    var one = raw.trim().toLowerCase().replace(/[^a-z]/g, '');
+    if (one.length > 1 && one.length < 14 && KIDNAMES.indexOf(one) >= 0) return one;
+    return null;
+  }
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* the little verification, and everything that follows it */
+  var PHX = [
+    "PHOENIX! It really is you! 🎉 Guess what — <b>I am you and you are me</b>. I am the cartoon version of YOU. How do you like me?!",
+    "You have a <b>birthday</b> coming up, do you not? And you are turning <b>FIVE</b>! Five is enormous. What do you want for your birthday?",
+    "Five years old means you can count your age on one whole hand. 🖐️ Hold it up! That is you, that is.",
+    "I heard you were born in <b>Colorado</b>, where the mountains are. Mountains are made when the ground slowly pushes up over millions of years. Yours are very big ones!",
+    "Shall we learn something together, Phoenix? Say <b>study</b> and Wormy will fetch his glasses. Or say <b>joke</b> if you want a giggle first."
+  ];
+  var phxAt = 0;
 
   /* ── Toddler and little-kid speech. Five-year-olds type by sound, so the
         normalizer turns what they meant into something matchable before
@@ -476,6 +561,35 @@
   function norm(s){ return (' '+String(s).toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ')+' '); }
   function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
   function answer(q){
+    var raw = q;
+
+    /* mid-verification: a yes here means it is the real Phoenix */
+    if (KID.asked && !KID.isPhoenix){
+      if (/\b(yes|yeah|yep|ya|yup|uh huh|mhm|it does|correct|right)\b/i.test(raw)){
+        KID.isPhoenix = true; KID.asked = false; phxAt = 0;
+        return PHX[phxAt++];
+      }
+      if (/\b(no|nope|nah|nuh uh|it doesnt|does not)\b/i.test(raw)){
+        KID.asked = false;
+        return "A different Phoenix! Then you share a name with the princess of this whole kingdom, which is a very good name to have. Welcome! What shall we play?";
+      }
+    }
+    /* she keeps the Phoenix chat rolling while there is more to say */
+    if (KID.isPhoenix && phxAt < PHX.length &&
+        /\b(yes|yeah|ok|okay|cool|wow|more|next|what else|tell me)\b/i.test(raw)){
+      return PHX[phxAt++];
+    }
+
+    var nm = grabName(raw);
+    if (nm && !KID.name){
+      KID.name = cap(nm);
+      if (nm === 'phoenix'){
+        KID.asked = true;
+        return "Phoenix?! That is MY name too! 👑 Quick question then — does your last name start with a <b>W</b>?";
+      }
+      return "Hello <b>" + KID.name + "</b>! What a brilliant name. I am Princess Phoenix Sparkles, and you are officially invited to everything. What shall we do first — a <b>joke</b>, a <b>lesson</b>, or a <b>game</b>?";
+    }
+
     var t=norm(q), best=null, score=0;
     KB.forEach(function(e){
       var s=0;
@@ -510,7 +624,9 @@
     /* and if a child names a subject, point them at the right page */
     var pg = findPage(q);
     if (pg && score < 6) return say3(best) + '<br><br>There is a whole room about that: ' + pageLink(pg) + ' 👑';
-    return say3(best);
+    var out = say3(best);
+    if (KID.name && Math.random() < 0.22) out = out.replace(/^/, cap(KID.name) + ', ');
+    return out;
   }
 
   var flap=null;
@@ -597,7 +713,7 @@
       host.classList.add('gone');
       host.classList.remove('riding');
       reopen.classList.add('on');
-    }, 3400);
+    }, 19500);
   }
   D.getElementById('closeme').onclick=goodbye;
   reopen.onclick=function(){
@@ -608,10 +724,18 @@
   };
 
   mainChips();
+  var isHome = D.body.getAttribute('data-pw') === 'home';
+  if (!isHome){
+    /* every other page: straight into the little corner helper */
+    host.classList.add('mini');
+    speak("I am here to help you! Ask me anything, or say <b>study</b> and we will learn together.");
+    window.PWprincessReady = 1;
+    return;
+  }
   speak("Welcome to <b>Phoenix's World</b>, where <i>kids make rulz</i>! 😋<br>I am <b>Princess Phoenix Sparkles</b>. Let us learn something and have some fun!");
   host.classList.add('arriving');
-  setTimeout(function(){ host.classList.remove('arriving'); }, 2600);
-  setTimeout(toCorner, 7200);
+  setTimeout(function(){ host.classList.remove('arriving'); }, 3000);
+  setTimeout(toCorner, 8200);
 
   /* every now and then she does something daft on her own */
   var ANTICS = [
