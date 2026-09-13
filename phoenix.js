@@ -274,5 +274,5 @@ D.addEventListener('keydown',function(e){ if(e.key==='Escape'&&card.classList.co
 
 window.Phoenix={say:function(t){ bubble(t,'her'); say(t); },ask:reply,arrive:arrive,leave:closeHer,open:openChat,mem:mem};
 if(!window.PWspeak) window.PWspeak=say;
-setTimeout(function(){ if(reduced){ showMini(); } else arrive(); },1200);
+setTimeout(function(){ if(reduced||D.body.getAttribute('data-pw')==='page'){ showMini(); } else arrive(); },1200);
 })();
