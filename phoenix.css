@@ -248,3 +248,45 @@
   80%{transform:translate(-38vw,-68vh) rotate(-1110deg) scale(.56)}
   92%{opacity:1;transform:translate(24vw,-82vh) rotate(-1120deg) scale(.4)}
   100%{opacity:0;transform:translate(60vw,-100vh) rotate(-1130deg) scale(.18)}}
+
+
+/* ══════ v4: she arrives centre-screen, then rides a rainbow slide down ══════
+   The old build put her in normal page flow, so on a phone she landed below
+   the fold and you never saw her. Now the arrival is a fixed overlay. */
+#phoenix.big{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;
+  pointer-events:none;padding:0}
+#phoenix.big .stage{width:min(88vw,430px);margin:0;pointer-events:auto}
+#phoenix.big .pcat{width:100%}
+#phoenix.big .say{position:fixed;left:50%;bottom:6vh;transform:translateX(-50%);
+  pointer-events:auto;max-width:min(92vw,520px);margin:0;z-index:3}
+#phoenix.big .picks,#phoenix.big .askrow,#phoenix.big .closeme{display:none}
+@media(max-width:640px){
+  #phoenix.big .stage{width:86vw}
+  #phoenix.big .say{bottom:4vh;font-size:17px;padding:15px 17px}
+}
+
+/* the rainbow slide: a real arc she rides down to the corner */
+#phoenix.big .slide{position:fixed;left:50%;top:34%;width:min(120vw,900px);
+  margin-left:calc(min(120vw,900px) / -2);opacity:0;z-index:1;transition:opacity .5s}
+#phoenix.sliding .slide{opacity:1;animation:none}
+#phoenix.sliding .pcat{animation:rideSlide 2.4s cubic-bezier(.4,.02,.5,1) both}
+@keyframes rideSlide{
+  0%{transform:translate(0,0) rotate(0) scale(1)}
+  14%{transform:translate(-6%,-6%) rotate(-8deg) scale(1.04)}
+  42%{transform:translate(22vw,14vh) rotate(12deg) scale(.72)}
+  70%{transform:translate(34vw,28vh) rotate(20deg) scale(.46)}
+  92%{transform:translate(40vw,36vh) rotate(8deg) scale(.24)}
+  100%{opacity:.1;transform:translate(42vw,38vh) rotate(0) scale(.16)}}
+
+/* bigger, softer, longer-lasting smoke */
+.poof{left:50%;top:50%}
+#phoenix.sliding .poof{left:78%;top:74%}
+.poof b{filter:blur(1px);box-shadow:0 0 42px rgba(255,255,255,.95)}
+@keyframes puffOut{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}
+  18%{opacity:1}55%{opacity:.85}
+  100%{opacity:0;transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(2.1)}}
+.poof b{animation-duration:2s!important}
+
+/* the goodbye ride also takes over the screen */
+#phoenix.big.riding{place-items:center}
+#phoenix.big.riding .say{bottom:auto;top:8vh}
