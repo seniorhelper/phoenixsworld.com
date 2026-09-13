@@ -297,25 +297,54 @@
         crown.style.transform = 'rotate(' + (n % 2 ? 3 : -3) + 'deg)';
         if (++n > 7){ clearInterval(iv); crown.style.transform = ''; }
       }, 120);
-      drop(9);
+      drop(18);
       note.textContent = 'Leaves are falling! 🍂';
       say('Leaves turn red and gold when the tree stops making green food for winter.');
     }
     tree.style.cursor = 'pointer';
     tree.addEventListener('click', shake);
     D.getElementById('shakeBtn').onclick = shake;
+    /* a rake sweeps across the ground and gathers the leaves into a pile */
+    var rake = el('g', {transform:'translate(-120,236)', opacity:'0'}, svg);
+    el('path', {d:'M0 0 L34 -96', stroke:'#a5703f','stroke-width':10,'stroke-linecap':'round'}, rake);
+    el('path', {d:'M34 -96 q10 -10 20 -4', stroke:'#a5703f','stroke-width':10, fill:'none','stroke-linecap':'round'}, rake);
+    el('path', {d:'M-30 2 L30 2', stroke:'#69737f','stroke-width':9,'stroke-linecap':'round'}, rake);
+    for (var ti = -30; ti <= 30; ti += 10)
+      el('path', {d:'M' + ti + ' 2 L' + (ti - 3) + ' 20', stroke:'#69737f','stroke-width':6,'stroke-linecap':'round'}, rake);
+
     D.getElementById('rakeBtn').onclick = function(){
       var kids = [].slice.call(pile.children);
-      kids.forEach(function(g, i){
-        g.style.transition = 'transform .8s ease-in';
-        setTimeout(function(){
-          g.style.transform = 'translate(' + (520 - parseFloat((g.getAttribute('transform').match(/translate\(([-\d.]+)/) || [0,0])[1])) + 'px,150px)';
-        }, i * 22);
+      if (!kids.length){ note.textContent = 'Shake the tree first to get some leaves!'; return; }
+
+      rake.setAttribute('opacity', '1');
+      rake.style.transition = 'transform 2.2s linear';
+      rake.setAttribute('transform', 'translate(-120,236)');
+      requestAnimationFrame(function(){
+        rake.style.transform = 'translate(700px,0)';
       });
+
+      /* each leaf gets pushed along and lands in a heap on the ground */
+      kids.forEach(function(g, i){
+        var cur = (g.getAttribute('transform') || '').match(/translate\(([-\d.]+)[ ,]([-\d.]+)\)/);
+        var cx = cur ? +cur[1] : 0, cy = cur ? +cur[2] : 0;
+        var px = 540 + (i % 7) * 16 + rnd(-6, 6);          /* heap position */
+        var py = 252 - Math.floor(i / 7) * 12 + rnd(-3, 3);  /* stacked on the ground */
+        g.style.transition = 'transform 1.1s ease-in';
+        setTimeout(function(){
+          g.style.transform = 'translate(' + (px - cx) + 'px,' + (py - cy) + 'px) rotate(' + rnd(-40, 40) + 'deg)';
+        }, 300 + i * 45);
+      });
+
       swept += kids.length;
-      note.textContent = swept ? 'Swept up ' + swept + ' leaves!' : 'Shake the tree first!';
+      note.textContent = 'Raking…';
+      setTimeout(function(){
+        rake.style.transition = 'opacity .4s';
+        rake.setAttribute('opacity', '0');
+        note.textContent = 'Swept up ' + swept + ' leaves into a big pile! 🍂 Jump in!';
+        say('You raked <b>' + kids.length + '</b> leaves into a pile! Leaves fall so the tree can rest all winter.');
+      }, 2400);
     };
-    drop(6);
+    drop(10);
   })();
 
   /* ════════════════════ WINTER — build a snowman ════════════════════ */
