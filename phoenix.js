@@ -1,837 +1,504 @@
-/* ==========================================================================
-   phoenix.js — Princess Phoenix Sparkles, guide for PhoenixsWorld.com
+/* ═══════════════════════════════════════════════════════════════════
+   PHOENIX'S WORLD — playroom.js  (Drop 2a)
 
-   Put her on any page with:
-       <link rel="stylesheet" href="phoenix.css">
-       <div id="phoenix"></div>
-       <script src="phoenix.js"></script>
+   The Playroom band. Every game from the original site, rebuilt in the
+   toy look and upgraded. Nothing removed. Plus the new SPLAT ENGINE:
+   blobs of every size, drips, swirls, rainbow arcs, starbursts and
+   glitter that twinkles — shared by the Splat Wall, the drawing pad,
+   and the "Paint Splash the whole page" button on the Control Panel.
 
-   She arrives on a slide, grows, says hello, then waves her wand and puffs
-   down to a little helper in the corner. Close her and she rides a unicorn
-   up to the clouds and stays gone for that visit.
-
-   She is rule-based on purpose: she can only say what is written here, so
-   she cannot invent a fact or say anything unsuitable for a child.
-
-   PRIVACY: this file is public. Nothing in it identifies any real child —
-   no surname, no address, no family names, no exact date of birth. Nothing
-   is collected, stored or sent. The age register is one variable that dies
-   when the tab closes.
-   ========================================================================== */
+   Loads after index.html; needs window.PW. Mounts itself above #shelf.
+   ═══════════════════════════════════════════════════════════════════ */
 (function(){
-  var D = document, host = D.getElementById('phoenix');
-  if (!host) return;
+'use strict';
+var P=window.PW; if(!P) return;
+var E=P.E,H=P.H,$=P.$,rnd=P.rnd,ri=P.ri,pick=P.pick,clear=P.clear,SND=P.SND,say=P.say;
+var D=document, NS='http://www.w3.org/2000/svg';
+function tip(id,t){ var e=$(id); if(e) e.textContent=t; }
+function pt(svg,e,vw,vh){ var r=svg.getBoundingClientRect(); return {x:(e.clientX-r.left)*vw/r.width,y:(e.clientY-r.top)*vh/r.height}; }
 
-  var SVG = "<svg class=\"pcat\" id=\"pcat\" viewBox=\"0 0 500 880\" aria-label=\"Princess Phoenix Sparkles, your guide\">\n  <defs>\n    <!-- an egg-shaped face mask: wide at the cheeks, narrow at the chin.\n         The photo is cropped to her face only, and the drawn hair overlaps\n         every edge of it, so there is no ring and no background. -->\n    <clipPath id=\"faceHole\">\n      <path d=\"M256 286\n               C 210 288 150 320 126 373 C 110 410 110 425 114 448\n               C 118 490 122 505 134 528 C 148 560 160 592 184 608\n               C 202 628 224 642 246 640 C 270 640 292 624 314 606\n               C 338 588 350 556 361 528 C 374 500 382 472 386 448\n               C 390 420 388 386 378 358 C 368 330 320 288 256 286 Z\"/>\n    </clipPath>\n    <linearGradient id=\"strawb\" x1=\"0\" y1=\"0\" x2=\"0.25\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#fff4d2\"/><stop offset=\"28%\" stop-color=\"#ffdf9a\"/>\n      <stop offset=\"62%\" stop-color=\"#f3c368\"/><stop offset=\"100%\" stop-color=\"#d9a248\"/></linearGradient>\n    <linearGradient id=\"strawb2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#fff8e4\"/><stop offset=\"100%\" stop-color=\"#ffdf9a\"/></linearGradient>\n    <linearGradient id=\"gown\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffb3dd\"/><stop offset=\"42%\" stop-color=\"#f778c0\"/>\n      <stop offset=\"100%\" stop-color=\"#bf3488\"/></linearGradient>\n    <linearGradient id=\"gown2\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffe6f5\"/><stop offset=\"100%\" stop-color=\"#ffc2e4\"/></linearGradient>\n    <linearGradient id=\"bodice\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#a45cff\"/><stop offset=\"100%\" stop-color=\"#6b34d4\"/></linearGradient>\n    <linearGradient id=\"hatg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#cfa8ff\"/><stop offset=\"48%\" stop-color=\"#9a5cf0\"/>\n      <stop offset=\"100%\" stop-color=\"#5f2bc4\"/></linearGradient>\n    <linearGradient id=\"gold\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ffe9a8\"/><stop offset=\"50%\" stop-color=\"#ffd84d\"/>\n      <stop offset=\"100%\" stop-color=\"#d79b12\"/></linearGradient>\n    <linearGradient id=\"ribbon\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0%\" stop-color=\"#ff9ed2\"/><stop offset=\"100%\" stop-color=\"#e0398f\"/></linearGradient>\n    <radialGradient id=\"glow\" cx=\"50%\" cy=\"50%\" r=\"50%\">\n      <stop offset=\"0%\" stop-color=\"rgba(255,216,77,.95)\"/>\n      <stop offset=\"100%\" stop-color=\"rgba(255,216,77,0)\"/></radialGradient>\n  </defs>\n\n  <g opacity=\".2\" fill=\"#8b6bb5\">\n    <rect x=\"26\" y=\"636\" width=\"36\" height=\"98\"/><path d=\"M22 636 h44 l-9 -20 h-26 z\"/>\n    <path d=\"M44 586 l17 28 h-34 z\"/>\n    <rect x=\"66\" y=\"664\" width=\"48\" height=\"70\"/>\n    <rect x=\"436\" y=\"644\" width=\"34\" height=\"90\"/><path d=\"M432 644 h42 l-8 -18 h-26 z\"/>\n    <path d=\"M453 600 l16 26 h-32 z\"/>\n    <rect x=\"392\" y=\"670\" width=\"44\" height=\"64\"/>\n  </g>\n\n  <ellipse cx=\"250\" cy=\"846\" rx=\"140\" ry=\"18\" fill=\"#8b6bb5\" opacity=\".22\"/>\n\n  <g class=\"p-body\">\n    <g class=\"p-tail\">\n      <path d=\"M352 740 C 424 722 452 650 420 598\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"28\" stroke-linecap=\"round\"/>\n      <path d=\"M352 740 C 424 722 452 650 420 598\" fill=\"none\" stroke=\"url(#strawb)\" stroke-width=\"18\" stroke-linecap=\"round\"/>\n      <path d=\"M410 618 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M402 652 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M386 690 q11 -7 20 2\" stroke=\"#b25a2c\" stroke-width=\"6\" fill=\"none\" stroke-linecap=\"round\"/>\n      <circle cx=\"420\" cy=\"598\" r=\"9\" fill=\"#ffd0e8\" stroke=\"#33234a\" stroke-width=\"4\"/>\n    </g>\n\n    <!-- gown -->\n    <path d=\"M250 646 C 302 652 326 696 340 742 C 354 792 374 832 388 854 L 112 854\n             C 126 832 146 792 160 742 C 174 696 198 652 250 646 Z\"\n      fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"7\" stroke-linejoin=\"round\"/>\n    <path d=\"M250 696 C 284 702 302 734 312 772 C 322 808 336 836 344 852 L 156 852\n             C 164 836 178 808 188 772 C 198 734 216 702 250 696 Z\"\n      fill=\"url(#gown2)\" opacity=\".92\"/>\n    <path d=\"M160 782 q90 30 180 0\" stroke=\"#fff\" stroke-width=\"9\" fill=\"none\" opacity=\".75\"/>\n    <path d=\"M140 822 q110 36 220 0\" stroke=\"#fff\" stroke-width=\"9\" fill=\"none\" opacity=\".6\"/>\n    <path d=\"M118 852 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0 q16 -18 32 0\n             q16 -18 32 0 q16 -18 32 0 q16 -18 32 0\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"5\"/>\n    <circle cx=\"208\" cy=\"746\" r=\"6\" fill=\"#fff\" opacity=\".85\"/>\n    <circle cx=\"292\" cy=\"766\" r=\"5\" fill=\"#fff\" opacity=\".8\"/>\n    <circle cx=\"250\" cy=\"806\" r=\"7\" fill=\"#fff\" opacity=\".7\"/>\n    <circle cx=\"180\" cy=\"812\" r=\"5\" fill=\"#fff\" opacity=\".7\"/>\n    <circle cx=\"322\" cy=\"822\" r=\"6\" fill=\"#fff\" opacity=\".65\"/>\n\n    <path d=\"M204 626 C 220 618 280 618 296 626 L 290 682 C 266 692 234 692 210 682 Z\"\n      fill=\"url(#bodice)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n    <path d=\"M236 632 L 264 644 M236 646 L 264 658 M236 660 L 264 672\"\n      stroke=\"#ffe9a8\" stroke-width=\"4\" stroke-linecap=\"round\"/>\n    <path d=\"M250 688 l-13 22 h26 z\" fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"4\" stroke-linejoin=\"round\"/>\n    <circle cx=\"250\" cy=\"624\" r=\"11\" fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"5\"/>\n\n    <ellipse cx=\"192\" cy=\"638\" rx=\"30\" ry=\"26\" fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"6\"/>\n    <ellipse cx=\"308\" cy=\"638\" rx=\"30\" ry=\"26\" fill=\"url(#gown)\" stroke=\"#33234a\" stroke-width=\"6\"/>\n\n    <path d=\"M182 658 C 156 678 148 696 168 712\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n    <path d=\"M182 658 C 156 678 148 696 168 712\" fill=\"none\" stroke=\"#ffe1b8\" stroke-width=\"14\" stroke-linecap=\"round\"/>\n    <path d=\"M318 658 C 344 678 352 698 332 714\" fill=\"none\" stroke=\"#33234a\" stroke-width=\"22\" stroke-linecap=\"round\"/>\n    <path d=\"M318 658 C 344 678 352 698 332 714\" fill=\"none\" stroke=\"#ffe1b8\" stroke-width=\"14\" stroke-linecap=\"round\"/>\n    <g>\n      <circle cx=\"334\" cy=\"718\" r=\"18\" fill=\"#ffe1b8\" stroke=\"#33234a\" stroke-width=\"5\"/>\n      <circle cx=\"334\" cy=\"722\" r=\"7\" fill=\"#ff9ed2\"/>\n      <circle cx=\"326\" cy=\"710\" r=\"3.4\" fill=\"#ff9ed2\"/>\n      <circle cx=\"334\" cy=\"707\" r=\"3.4\" fill=\"#ff9ed2\"/>\n      <circle cx=\"342\" cy=\"710\" r=\"3.4\" fill=\"#ff9ed2\"/>\n    </g>\n\n    <g class=\"p-wand\">\n      <path d=\"M152 712 L 120 608\" stroke=\"#33234a\" stroke-width=\"12\" stroke-linecap=\"round\"/>\n      <path d=\"M152 712 L 120 608\" stroke=\"#f4f4f1\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <path class=\"p-rib1\" d=\"M124 626 C 98 640 94 668 108 686\" fill=\"none\" stroke=\"#ff9ed2\"\n        stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <path class=\"p-rib2\" d=\"M128 630 C 148 648 150 674 136 692\" fill=\"none\" stroke=\"#9ef0ff\"\n        stroke-width=\"6\" stroke-linecap=\"round\"/>\n      <circle cx=\"120\" cy=\"598\" r=\"38\" fill=\"url(#glow)\"/>\n      <g class=\"p-star\">\n        <path d=\"M120 566 L130 590 L156 592 L136 609 L142 635 L120 621 L98 635 L104 609 L84 592 L110 590 Z\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n      </g>\n      <circle cx=\"152\" cy=\"716\" r=\"18\" fill=\"#ffe1b8\" stroke=\"#33234a\" stroke-width=\"5\"/>\n      <circle cx=\"152\" cy=\"720\" r=\"7\" fill=\"#ff9ed2\"/>\n    </g>\n\n    <!-- \u2550\u2550\u2550 THE HEAD \u2014 her face at full size, framed by drawn hair \u2550\u2550\u2550 -->\n    <g class=\"p-head\">\n\n      <!-- long flowing locks, behind -->\n      <g class=\"p-lockL\">\n        <path d=\"M152 352 C 48 424 30 616 74 726 C 86 640 72 528 112 462\n                 C 84 552 92 648 122 716 C 124 598 128 456 178 400 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M150 372 C 74 444 62 606 100 704 C 108 622 100 520 134 456\n                 C 114 540 120 630 146 694 C 146 584 150 458 182 406 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\" opacity=\".96\"/>\n        <path d=\"M108 452 C 84 524 88 606 108 666\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"6\" opacity=\".5\"/>\n        <path d=\"M132 470 C 114 532 118 596 134 648\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"4\" opacity=\".35\"/>\n      </g>\n      <g class=\"p-lockR\">\n        <path d=\"M350 352 C 454 424 472 616 428 726 C 416 640 430 528 390 462\n                 C 418 552 410 648 380 716 C 378 598 374 456 324 400 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M352 372 C 428 444 440 606 402 704 C 394 622 402 520 368 456\n                 C 388 540 382 630 356 694 C 356 584 352 458 320 406 Z\"\n          fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\" opacity=\".96\"/>\n        <path d=\"M394 452 C 418 524 414 606 394 666\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"6\" opacity=\".5\"/>\n        <path d=\"M370 470 C 388 532 384 596 368 648\" fill=\"none\" stroke=\"#fff8e4\" stroke-width=\"4\" opacity=\".35\"/>\n      </g>\n\n      <!-- cat ears, tucked closer to her head -->\n      <g class=\"p-earL\">\n        <path d=\"M146 320 L 120 214 L 214 276 Z\" fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M152 304 L 140 244 L 190 276 Z\" fill=\"#ff9ed2\"/>\n      </g>\n      <g class=\"p-earR\">\n        <path d=\"M356 320 L 382 214 L 288 276 Z\" fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n        <path d=\"M350 304 L 362 244 L 312 276 Z\" fill=\"#ff9ed2\"/>\n      </g>\n\n      <!-- her face, clipped to the traced outline -->\n      <g clip-path=\"url(#faceHole)\">\n        <image id=\"face\" x=\"87\" y=\"225\" width=\"360\" height=\"432\"\n          transform=\"rotate(4 262 463)\"\n          preserveAspectRatio=\"xMidYMid meet\" href=\"images/face-happy.jpg\"/>\n      </g>\n\n      <!-- hair laid over the top and sides, following the same outline -->\n      <path d=\"M256 268 C 168 266 120 310 106 380 C 100 414 100 434 104 458\n               C 110 400 132 352 178 326 C 214 304 300 306 336 332\n               C 382 358 396 406 400 458 C 404 432 404 408 400 380\n               C 386 308 344 268 256 268 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"6\" stroke-linejoin=\"round\"/>\n      <path d=\"M174 328 C 214 348 276 352 330 332 C 308 370 224 378 174 328 Z\"\n        fill=\"url(#strawb2)\" opacity=\".92\"/>\n      <path d=\"M150 330 C 186 300 320 300 356 332 C 320 314 186 314 150 330 Z\"\n        fill=\"#fff8e4\" opacity=\".55\"/>\n      <path d=\"M198 316 C 228 334 276 336 312 322\" fill=\"none\" stroke=\"#ffe3bd\" stroke-width=\"5\" opacity=\".6\"/>\n      <path d=\"M120 444 C 114 384 138 334 178 318 C 148 350 130 396 130 452\n               C 130 502 138 546 150 574 C 126 536 118 492 120 444 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n      <path d=\"M382 444 C 388 384 364 334 324 318 C 354 350 372 396 372 452\n               C 372 502 364 546 352 574 C 376 536 384 492 382 444 Z\"\n        fill=\"url(#strawb)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n\n      <!-- ribbons, moved out to the hair so they stop covering her cheeks -->\n      <g class=\"p-bowL\">\n        <path d=\"M124 506 C 100 486 88 506 98 524 C 108 540 124 528 124 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <path d=\"M124 506 C 148 486 160 506 150 524 C 140 540 124 528 124 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <circle cx=\"124\" cy=\"510\" r=\"9\" fill=\"#ffd84d\" stroke=\"#33234a\" stroke-width=\"4\"/>\n        <path d=\"M116 524 C 108 546 112 566 102 580\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n        <path d=\"M132 524 C 140 546 138 568 148 582\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      </g>\n      <g class=\"p-bowR\">\n        <path d=\"M378 506 C 354 486 342 506 352 524 C 362 540 378 528 378 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <path d=\"M378 506 C 402 486 414 506 404 524 C 394 540 378 528 378 506 Z\"\n          fill=\"url(#ribbon)\" stroke=\"#33234a\" stroke-width=\"5\" stroke-linejoin=\"round\"/>\n        <circle cx=\"378\" cy=\"510\" r=\"9\" fill=\"#ffd84d\" stroke=\"#33234a\" stroke-width=\"4\"/>\n        <path d=\"M370 524 C 362 546 366 566 356 580\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n        <path d=\"M386 524 C 394 546 392 568 402 582\" fill=\"none\" stroke=\"#e0398f\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n      </g>\n\n      <!-- whiskers, clear of her face -->\n      <path d=\"M112 470 L 58 456 M110 496 L 52 496 M112 522 L 58 538\"\n        stroke=\"#33234a\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n      <path d=\"M390 470 L 444 456 M392 496 L 450 496 M390 522 L 444 538\"\n        stroke=\"#33234a\" stroke-width=\"5\" stroke-linecap=\"round\"/>\n\n      <!-- \u2500\u2500 A PROPER CROWN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->\n      <g class=\"p-crown\" transform=\"translate(0,-30) rotate(-7 250 268)\">\n        <!-- five points, each tipped with a pearl -->\n        <path d=\"M148 300 L 160 216 L 198 262 L 222 186 L 250 246 L 278 186\n                 L 302 262 L 340 216 L 352 300 Z\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"7\" stroke-linejoin=\"round\"/>\n        <path d=\"M162 268 C 200 284 300 284 338 268\" fill=\"none\" stroke=\"#fff6d0\"\n          stroke-width=\"5\" opacity=\".65\"/>\n        <!-- jewelled band -->\n        <rect x=\"142\" y=\"292\" width=\"216\" height=\"34\" rx=\"14\"\n          fill=\"url(#gold)\" stroke=\"#33234a\" stroke-width=\"7\"/>\n        <ellipse cx=\"250\" cy=\"309\" rx=\"17\" ry=\"14\" fill=\"#ff5fa2\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"250\" cy=\"304\" r=\"4\" fill=\"#fff\" opacity=\".85\"/>\n        <ellipse cx=\"196\" cy=\"309\" rx=\"12\" ry=\"10\" fill=\"#2bb3ff\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n        <ellipse cx=\"304\" cy=\"309\" rx=\"12\" ry=\"10\" fill=\"#8cff9e\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n        <circle cx=\"166\" cy=\"309\" r=\"6\" fill=\"#c9a2ff\" stroke=\"#33234a\" stroke-width=\"3.5\"/>\n        <circle cx=\"334\" cy=\"309\" r=\"6\" fill=\"#c9a2ff\" stroke=\"#33234a\" stroke-width=\"3.5\"/>\n        <!-- pearls on the points -->\n        <circle cx=\"160\" cy=\"212\" r=\"10\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"222\" cy=\"182\" r=\"11\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"278\" cy=\"182\" r=\"11\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"340\" cy=\"212\" r=\"10\" fill=\"#fff6d0\" stroke=\"#33234a\" stroke-width=\"5\"/>\n        <circle cx=\"250\" cy=\"240\" r=\"9\" fill=\"#ff9ed2\" stroke=\"#33234a\" stroke-width=\"4.5\"/>\n      </g>\n    </g>\n  </g>\n\n  <g id=\"fairy\"></g>\n</svg>";
+/* ─────────────── STYLES ─────────────── */
+H('style',{html:
+'.play-wrap{background:linear-gradient(180deg,#fff7fd,#eee4ff)}'+
+'.play-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;max-width:1140px;margin:26px auto 0}'+
+'.toybox{border:6px solid var(--ink);border-radius:var(--r-slab);background:#fff;padding:14px;box-shadow:0 12px 0 rgb(var(--ink-rgb)/.22);color:var(--ink)}'+
+'.toybox.wide{grid-column:1/-1}'+
+'.toybox h3{font-size:22px;text-align:center;margin:2px 0 10px}'+
+'.toybox svg{width:100%;height:auto;display:block;border-radius:18px;touch-action:none}'+
+'.toybox canvas{width:100%;height:auto;aspect-ratio:8/5;display:block;border:5px solid var(--ink);border-radius:18px;background:#fff;touch-action:none;cursor:crosshair}'+
+'.tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}'+
+'.sw{width:44px;height:44px;border-radius:50%;border:4px solid var(--ink);cursor:pointer;padding:0;box-shadow:0 4px 0 rgb(var(--ink-rgb)/.25)}'+
+'.sw[aria-pressed="true"]{transform:scale(1.16);box-shadow:0 0 0 4px var(--sherbet),0 4px 0 rgb(var(--ink-rgb)/.25)}'+
+'.sw.rain{background:conic-gradient(#ff4d9d,#ff8a3d,#ffc53d,#3fe0a4,#17c7e8,#8b3dff,#ff4d9d)}'+
+'.sw.glit{background:radial-gradient(circle,#fff 0 30%,#ffd84d 32% 60%,#ff4d9d 62%)}'+
+'.pill{min-height:46px;padding:10px 16px;cursor:pointer;border:4px solid var(--ink);border-radius:999px;background:#fff;font:700 14px/1 "Fredoka",sans-serif;color:var(--ink);box-shadow:0 4px 0 rgb(var(--ink-rgb)/.22)}'+
+'.pill:active{transform:translateY(4px);box-shadow:none}'+
+'.pill[aria-pressed="true"]{background:var(--sherbet)}'+
+'.stamp{font-size:25px;line-height:1;min-height:46px;padding:6px 10px;cursor:pointer;background:#fff;border:4px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 rgb(var(--ink-rgb)/.22)}'+
+'.stamp[aria-pressed="true"]{background:var(--sherbet);transform:scale(1.09)}'+
+'.tip{text-align:center;font-weight:800;color:#5a4a86;margin:10px 0 0;font-size:15px;min-height:22px}'+
+'.pgb{min-height:52px;padding:13px 18px;cursor:pointer;border:5px solid var(--ink);border-radius:18px;background:var(--sherbet);font:700 16px/1 "Fredoka",sans-serif;color:var(--ink);box-shadow:0 5px 0 var(--sherbet-deep)}'+
+'.pgb:active{transform:translateY(4px);box-shadow:0 1px 0 var(--sherbet-deep)}'+
+'.pgb.pink{background:var(--bubblegum);color:#fff;box-shadow:0 5px 0 var(--bubblegum-deep)}'+
+'.pgb.cy{background:var(--lagoon);box-shadow:0 5px 0 var(--lagoon-deep)}'+
+'.pgb.gr{background:var(--mint);box-shadow:0 5px 0 var(--mint-deep)}'+
+'.pgb.wh{background:#fff;box-shadow:0 5px 0 rgb(var(--ink-rgb)/.28)}'+
+'#pageSplat{position:fixed;inset:0;z-index:1950;pointer-events:none;overflow:hidden}'+
+'.glit{animation:glit 1.6s ease-in-out infinite}@keyframes glit{0%,100%{opacity:.35;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}'+
+'@keyframes popin{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}.popin{animation:popin .36s cubic-bezier(.3,1.65,.5,1)}'+
+'@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(6deg)}75%{transform:rotate(-6deg)}}.wig{animation:wig .5s ease-in-out 2;transform-box:fill-box;transform-origin:center}'+
+'@keyframes bobby{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}'
+},D.head);
 
-  var UNICORN = '<svg viewBox="0 0 360 260" aria-hidden="true">'
-  + '<defs>'
-  + '<linearGradient id="uMane" x1="0" y1="0" x2="1" y2="1">'
-  +   '<stop offset="0%" stop-color="#ff2d95"/><stop offset="22%" stop-color="#ff7a00"/>'
-  +   '<stop offset="44%" stop-color="#ffd400"/><stop offset="66%" stop-color="#00ff9d"/>'
-  +   '<stop offset="84%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#b14bff"/>'
-  + '</linearGradient>'
-  + '<linearGradient id="uBody" x1="0" y1="0" x2="0" y2="1">'
-  +   '<stop offset="0%" stop-color="#ffffff"/><stop offset="62%" stop-color="#fdf4ff"/>'
-  +   '<stop offset="100%" stop-color="#e8d9f2"/></linearGradient>'
-  + '<linearGradient id="uHorn" x1="0" y1="1" x2="0" y2="0">'
-  +   '<stop offset="0%" stop-color="#ffd400"/><stop offset="60%" stop-color="#ffe9a8"/>'
-  +   '<stop offset="100%" stop-color="#fff"/></linearGradient>'
-  + '</defs>'
-  /* tail, streaming behind */
-  + '<path d="M58 138 C 8 120 -6 176 22 214 C 30 176 44 160 66 152 Z" fill="url(#uMane)"'
-  +   ' stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
-  + '<path d="M60 150 C 22 146 12 190 32 218" fill="none" stroke="#ff2d95" stroke-width="7" stroke-linecap="round"/>'
-  + '<path d="M62 160 C 30 160 24 196 42 220" fill="none" stroke="#00e5ff" stroke-width="6" stroke-linecap="round"/>'
-  /* back legs */
-  + '<path d="M96 176 C 92 202 86 218 74 234" stroke="#f3e8fa" stroke-width="19" fill="none" stroke-linecap="round"/>'
-  + '<path d="M96 176 C 92 202 86 218 74 234" stroke="#2b1b45" stroke-width="5" fill="none" stroke-linecap="round" opacity=".25"/>'
-  + '<path d="M136 182 C 136 206 132 222 124 238" stroke="#f3e8fa" stroke-width="19" fill="none" stroke-linecap="round"/>'
-  + '<ellipse cx="74" cy="238" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
-  + '<ellipse cx="124" cy="242" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
-  /* body */
-  + '<path d="M62 136 C 54 100 92 78 140 76 L232 76 C 276 76 300 100 296 136'
-  +   ' C 292 172 262 186 224 186 L134 186 C 92 186 68 170 62 136 Z"'
-  +   ' fill="url(#uBody)" stroke="#2b1b45" stroke-width="6" stroke-linejoin="round"/>'
-  /* front legs */
-  + '<path d="M196 182 C 200 206 196 222 186 238" stroke="#fdf4ff" stroke-width="19" fill="none" stroke-linecap="round"/>'
-  + '<path d="M246 178 C 254 202 254 220 248 238" stroke="#fdf4ff" stroke-width="19" fill="none" stroke-linecap="round"/>'
-  + '<ellipse cx="186" cy="242" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
-  + '<ellipse cx="248" cy="242" rx="13" ry="8" fill="#c9a2ff" stroke="#2b1b45" stroke-width="4"/>'
-  /* neck and head */
-  + '<path d="M252 96 C 268 60 296 34 318 26 C 340 18 352 34 346 54'
-  +   ' C 340 76 318 92 300 104 C 286 114 266 118 252 116 Z"'
-  +   ' fill="url(#uBody)" stroke="#2b1b45" stroke-width="6" stroke-linejoin="round"/>'
-  + '<path d="M318 26 C 336 20 350 30 346 50" fill="none" stroke="#2b1b45" stroke-width="5"/>'
-  /* mane along the neck */
-  + '<path d="M252 96 C 262 60 288 30 314 20 C 300 46 292 74 288 102 Z"'
-  +   ' fill="url(#uMane)" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
-  + '<path d="M268 74 C 250 62 236 74 232 92" fill="none" stroke="#ffd400" stroke-width="7" stroke-linecap="round"/>'
-  + '<path d="M262 90 C 242 82 228 94 226 112" fill="none" stroke="#00ff9d" stroke-width="7" stroke-linecap="round"/>'
-  + '<path d="M258 106 C 238 100 224 114 224 130" fill="none" stroke="#b14bff" stroke-width="7" stroke-linecap="round"/>'
-  /* ear, eye, nostril, horn */
-  + '<path d="M300 38 L 296 12 L 316 28 Z" fill="#fdf4ff" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
-  + '<path d="M322 22 L 336 -14 L 348 24 Z" fill="url(#uHorn)" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
-  + '<path d="M328 12 L 342 8 M326 20 L 344 16" stroke="#d79b12" stroke-width="3"/>'
-  + '<circle cx="324" cy="46" r="5.5" fill="#2b1b45"/>'
-  + '<circle cx="322" cy="44" r="2" fill="#fff"/>'
-  + '<path d="M344 62 q6 4 2 9" stroke="#2b1b45" stroke-width="4" fill="none" stroke-linecap="round"/>'
-  /* wings, because a flying unicorn needs them */
-  + '<path d="M176 92 C 150 44 186 18 224 34 C 208 52 200 72 200 96 Z"'
-  +   ' fill="#ffffff" fill-opacity=".92" stroke="#2b1b45" stroke-width="5" stroke-linejoin="round"/>'
-  + '<path d="M186 76 C 178 56 194 42 214 44" fill="none" stroke="#c9a2ff" stroke-width="4"/>'
-  + '<circle cx="150" cy="128" r="5" fill="#ffd400" opacity=".9"/>'
-  + '<circle cx="118" cy="150" r="4" fill="#00e5ff" opacity=".9"/>'
-  + '<circle cx="176" cy="158" r="4" fill="#ff2d95" opacity=".9"/>'
-  + '</svg>';
-
-
-  host.innerHTML =
-      '<div class="stage" id="stage">'
-    +   '<div class="poof" id="poof"></div>'
-    +   '<div class="slide" id="slide"><svg viewBox="0 0 1000 520" aria-hidden="true">'
-    +     '<path d="M30 30 Q520 30 880 440" stroke="#ff2d95" stroke-width="46" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M30 76 Q520 76 880 486" stroke="#ff7a00" stroke-width="46" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M30 122 Q520 122 880 532" stroke="#ffd400" stroke-width="46" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M30 168 Q520 168 880 578" stroke="#00ff9d" stroke-width="46" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M30 214 Q520 214 880 624" stroke="#00e5ff" stroke-width="46" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M30 18 Q520 18 880 428" stroke="#ffffff" stroke-width="10" fill="none" stroke-linecap="round" opacity=".7"/>'
-    +     '<circle cx="120" cy="34" r="9" fill="#fff" opacity=".9"/>'
-    +     '<circle cx="330" cy="42" r="7" fill="#fff" opacity=".8"/>'
-    +     '<circle cx="560" cy="96" r="8" fill="#fff" opacity=".75"/>'
-    +   '</svg></div>'
-    +   SVG
-    +   '<div class="uni" id="uni">' + UNICORN + '</div>'
-    + '</div>'
-    + '<div class="say" id="say">Loading…</div>'
-    + '<div class="picks" id="picks"></div>'
-    + '<div class="askrow">'
-    +   '<input id="ask" type="text" placeholder="Ask me anything!" autocomplete="off">'
-    +   '<button id="send">Go!</button>'
-    + '</div>'
-    + '<button class="closeme" id="closeme" aria-label="Say goodbye to the princess">&times;</button>';
-
-  var reopen = D.createElement('button');
-  reopen.className = 'reopen'; reopen.id = 'reopen';
-  reopen.innerHTML = '👑 Talk to Princess Phoenix Sparkles';
-  D.body.appendChild(reopen);
-
-  var face  = D.getElementById('face'),
-      pcat  = D.getElementById('pcat'),
-      say   = D.getElementById('say'),
-      picks = D.getElementById('picks'),
-      ask   = D.getElementById('ask'),
-      stage = D.getElementById('stage'),
-      poof  = D.getElementById('poof'),
-      uni   = D.getElementById('uni');
-
-  var FACES = { happy:'/images/face-happy.jpg', talk:'/images/face-talk.jpg', silly:'/images/face-silly.jpg' };
-
-  window.PWage = 'b';
-  function say3(e){
-    if (window.PWage==='l' && e.rl) return pick(e.rl);
-    if (window.PWage==='s' && e.rs) return pick(e.rs);
-    return pick(e.r);
+/* ═══════════════ THE SPLAT ENGINE ═══════════════
+   splatAt(group, x, y, opts) — draws ONE splat into an SVG group.
+   Randomly picks a shape: blob, big blob, drips, swirl, rainbow arc,
+   starburst, glitter puff. Colour 'rainbow' rotates hue. 'glitter' is
+   twinkling metallic dots. Sizes range wildly on purpose. */
+var BOW=['#ff4d9d','#ff8a3d','#ffc53d','#3fe0a4','#17c7e8','#8b3dff'];
+var hue=0;
+function splatAt(g,x,y,opts){
+  opts=opts||{}; var col=opts.color||'#ff4d9d', scale=opts.scale||1;
+  if(col==='rainbow'){ hue=(hue+23)%360; col='hsl('+hue+' 92% 58%)'; }
+  var kind = opts.kind || pick(['blob','blob','blob','big','drip','swirl','bow','burst','glitter','blob']);
+  var s=E('g',{transform:'translate('+x.toFixed(1)+','+y.toFixed(1)+')',style:'transform-box:fill-box;transform-origin:center'},g);
+  if(col==='glitter') kind='glitter';
+  if(kind==='blob'||kind==='big'){
+    var r=(kind==='big'?rnd(34,64):rnd(8,28))*scale, d='', n=ri(9,14), i, a, rr;
+    for(i=0;i<n;i++){ a=i*6.283/n; rr=r*rnd(0.55,1.45); d+=(i?'L':'M')+(Math.cos(a)*rr).toFixed(1)+' '+(Math.sin(a)*rr).toFixed(1)+' '; }
+    E('path',{d:d+'Z',fill:col,opacity:.92},s);
+    for(i=0;i<ri(2,6);i++) E('circle',{cx:rnd(-r*2.2,r*2.2),cy:rnd(-r*2.2,r*2.2),r:rnd(1.5,r*0.3),fill:col,opacity:.85},s);
+    if(Math.random()<.5) E('path',{d:'M0 '+r+' q5 '+rnd(16,50)+' 0 '+rnd(24,70)+' q-5 -14 0 -'+rnd(24,70),fill:col,opacity:.85},s);
+    E('ellipse',{cx:-r*.3,cy:-r*.3,rx:r*.28,ry:r*.16,fill:'#fff',opacity:.35},s);
+  } else if(kind==='drip'){
+    var w=rnd(10,26)*scale;
+    E('ellipse',{rx:w,ry:w*.6,fill:col,opacity:.92},s);
+    for(i=0;i<ri(2,4);i++){ var dx=rnd(-w,w), len=rnd(30,110);
+      E('path',{d:'M'+dx+' 0 q'+rnd(-4,4)+' '+(len*.6)+' 0 '+len,stroke:col,'stroke-width':rnd(4,9),'stroke-linecap':'round',fill:'none',opacity:.9},s);
+      E('circle',{cx:dx,cy:len,r:rnd(4,8),fill:col,opacity:.9},s); }
+  } else if(kind==='swirl'){
+    var pts='M0 0', R=rnd(18,46)*scale, t;
+    for(t=0;t<=6.283*2.2;t+=0.25){ var rad=R*t/(6.283*2.2); pts+=' L'+(Math.cos(t)*rad).toFixed(1)+' '+(Math.sin(t)*rad).toFixed(1); }
+    E('path',{d:pts,stroke:col,'stroke-width':rnd(6,12),'stroke-linecap':'round',fill:'none',opacity:.92},s);
+  } else if(kind==='bow'){
+    var R2=rnd(30,70)*scale;
+    BOW.forEach(function(c,i){ E('path',{d:'M'+(-R2+i*7)+' 0 A'+(R2-i*7)+' '+(R2-i*7)+' 0 0 1 '+(R2-i*7)+' 0',stroke:c,'stroke-width':7,fill:'none','stroke-linecap':'round',opacity:.95},s); });
+    s.setAttribute('transform',s.getAttribute('transform')+' rotate('+ri(-40,40)+')');
+  } else if(kind==='burst'){
+    var R3=rnd(22,60)*scale;
+    for(i=0;i<ri(6,10);i++){ a=i*6.283/8+rnd(-.3,.3); E('path',{d:'M0 0 L'+(Math.cos(a)*R3).toFixed(1)+' '+(Math.sin(a)*R3).toFixed(1),stroke:col,'stroke-width':rnd(5,11),'stroke-linecap':'round'},s);
+      E('circle',{cx:Math.cos(a)*R3,cy:Math.sin(a)*R3,r:rnd(4,9),fill:col},s); }
+    E('circle',{r:R3*.3,fill:col},s);
+  } else { /* glitter */
+    var gc=col==='glitter'?null:col;
+    for(i=0;i<ri(14,26);i++){ var gx=rnd(-40,40)*scale, gy=rnd(-40,40)*scale, gr=rnd(1.5,5);
+      var c=gc||pick(['#fff','#ffd84d','#ffe9a8','#ff9ec2','#a3ecfa','#fff']);
+      var star=E('path',{'class':'glit',d:'M0 '+(-gr*2)+' L'+(gr*.5)+' '+(-gr*.5)+' L'+(gr*2)+' 0 L'+(gr*.5)+' '+(gr*.5)+' L0 '+(gr*2)+' L'+(-gr*.5)+' '+(gr*.5)+' L'+(-gr*2)+' 0 L'+(-gr*.5)+' '+(-gr*.5)+' Z',
+        fill:c,transform:'translate('+gx+','+gy+')',style:'transform-box:fill-box;transform-origin:center;animation-delay:-'+rnd(0,1.6)+'s'},s); }
   }
+  s.classList.add('popin');
+  return s;
+}
+window.PWsplat=splatAt;
 
-  var CREED = [
-    "I am <b>amazing</b>.",
-    "I can do <b>anything</b> I set my mind to.",
-    "I am <b>kind</b>, and kind is strong.",
-    "Mistakes help me <b>grow</b>.",
-    "Being <b>myself</b> is the best way to be.",
-    "I am <b>brave</b> even when I feel small.",
-    "My words can make somebody's whole day.",
-    "I am <b>loved</b>, exactly as I am."
-  ];
-  var creedAt = -1;
-  function creedStep(){
-    creedAt++;
-    if (creedAt === 0)
-      return "Stand up tall like a royal! Hands on hips. Now <b>repeat after me</b>…<br><br>" + CREED[0];
-    if (creedAt < CREED.length) return "Yes! Say it loud…<br><br>" + CREED[creedAt];
-    creedAt = -1;
-    return "And you <i>meant</i> every word. I felt it from here. 👑";
-  }
-
-  var KB = [
-   {id:'hi', k:'hi,hello,hey,hiya,yo,howdy,sup,good morning,hola', r:[
-     "Hi hi HI! I am <b>Princess Phoenix Sparkles</b>. I am part kitty, part princess, and <i>all</i> curious. What should we learn today?",
-     "Hello, friend! You found my castle. Want to learn something, or hear a silly joke?"]},
-   {id:'name', k:'name,who are you,what are you,your name,princess', r:[
-     "I am <b>Princess Phoenix Sparkles</b>! I have a gold crown, a wand, and a tail that will not sit still. My three favourite things are <i>learning</i>, <i>the park</i>, and <i>making art</i>."]},
-   {id:'myage', k:'how old are you,your age,are you a kid,are you real', r:[
-     "I am exactly <b>one sparkle</b> old, which is a royal secret amount. But YOU can tell me if you are a little kid, a big kid, or a super big kid — tap a button and I will know how to play!"]},
-
-   /* ── learning ─────────────────────────────────────────────────────── */
-   {id:'count', k:'count,number,numbers,how many,one two three,123,counting',
-     rl:["Let us count together! <b>1… 2… 3… 4… 5!</b> Now hold up your fingers and do it with me. You did it!"],
-     r:["Counting time! <b>1, 2, 3, 4, 5, 6, 7, 8, 9, 10.</b> Now try counting backwards from 10. That one is trickier!"],
-     rs:["Let us skip count by twos: <b>2, 4, 6, 8, 10, 12, 14, 16, 18, 20.</b> Now try by fives all the way to 50!"]},
-   {id:'math', k:'math,add,plus,minus,subtract,take away,sum,times,multiply',
-     rl:["Here is a little one. If you have <b>1</b> apple and I give you <b>1</b> more, you have <b>2</b>! Hold up two fingers. Perfect."],
-     r:["Try this: <b>3 + 4 = 7</b>. And <b>10 − 6 = 4</b>. Want a trick? Adding zero to a number leaves it exactly the same. Zero is very polite."],
-     rs:["Ready for a real one? <b>7 × 8 = 56</b>. Here is a trick for nines: 9 × 6 = 54, and 5 + 4 = 9. The digits of every answer in the nine times table add up to 9. Try 9 × 7!"]},
-   {id:'letters', k:'letter,letters,abc,alphabet,a b c,spell,spelling,read,reading',
-     rl:["<b>A</b> is for Apple. <b>B</b> is for Butterfly. <b>C</b> is for Cat — that is me! What letter does your name start with?"],
-     r:["Letters are little pictures that make sounds. The alphabet has <b>26</b> of them. Five are vowels: <b>A, E, I, O, U</b>. Every single word needs at least one!"],
-     rs:["Here is a good one: the word <i>queue</i> has five letters and four of them are just standing in line doing nothing. English is very silly."]},
-   {id:'shapes', k:'shape,shapes,circle,square,triangle,rectangle,oval', r:[
-     "A <b>triangle</b> has 3 sides. A <b>square</b> has 4 equal sides. A <b>circle</b> has none at all — it just keeps going round. Can you find a circle in your room right now?"]},
-   {id:'colors', k:'color,colours,colors,rainbow,red,blue,green,yellow,purple,pink,orange', r:[
-     "Rainbow order! <b>Red, orange, yellow, green, blue, indigo, violet.</b> Mixing is the fun part: blue and yellow make <b>green</b>, red and blue make <b>purple</b>, red and yellow make <b>orange</b>.",
-     "My favourite colour is <i>sparkle</i>. Is that a colour? I say YES. What is yours?"]},
-   {id:'space', k:'space,planet,planets,star,stars,moon,sun,rocket,astronaut,earth,alien', r:[
-     "The <b>Earth is round</b> like a ball, and it spins all the way around once every day. That spinning is what makes morning and night!",
-     "The <b>Moon</b> has no wind, so footprints left up there stay for millions of years. Somebody's boot print is sitting there right now.",
-     "There are <b>8 planets</b> going around our Sun. Jupiter is the biggest by far — over a thousand Earths could fit inside it."]},
-   {id:'animals', k:'animal,animals,cat,kitty,dog,puppy,pet,horse,elephant,lion,bird', r:[
-     "Meow! Cats sleep about <b>15 hours</b> a day. Imagine napping that much and still yawning.",
-     "An <b>elephant</b> is the biggest animal on land, and a baby one can stand up the very same day it is born. Brave from minute one!",
-     "Every <b>zebra</b> has stripes in a pattern no other zebra has — like a fingerprint you can see from far away."]},
-   {id:'dino', k:'dinosaur,dinosaurs,t rex,trex,fossil', r:[
-     "Dinosaurs lived <b>millions</b> of years ago, way before people. And here is the wild part — <b>birds</b> are their living relatives. The sparrow outside your window has dinosaur cousins!"]},
-   {id:'ocean', k:'ocean,sea,fish,shark,whale,water animals,dolphin', r:[
-     "The <b>blue whale</b> is the biggest animal that has ever lived — bigger than any dinosaur — and it eats tiny creatures smaller than your fingernail."]},
-   {id:'bugs', k:'bug,bugs,insect,spider,bee,butterfly,ant', r:[
-     "<b>Bees</b> help our food grow by carrying pollen flower to flower. No bees, no apples! Be gentle with them and they will be gentle with you.",
-     "An <b>ant</b> can carry something many times heavier than itself. Small does not mean weak. Remember that one."]},
-   {id:'weather', k:'weather,rain,snow,storm,cloud,wind,sun shining,thunder', r:[
-     "Rain starts as water that floated up into the sky, gathered into clouds, and got too heavy to stay. The same water goes round and round forever — that is the <b>water cycle</b>!"]},
-   {id:'seasons', k:'season,seasons,spring,summer,fall,autumn,winter', r:[
-     "Four seasons: <b>spring, summer, fall, winter</b>. They happen because the Earth leans a little as it travels around the Sun. A leaning planet gave us snowmen AND swimming!"]},
-   {id:'spanish', k:'spanish,espanol,other language,french,how do you say', r:[
-     "<b>Hola</b> means hello. <b>Gracias</b> means thank you. <b>Amigo</b> means friend. Say <i>OH-lah</i> out loud — you just spoke Spanish!"]},
-   {id:'art', k:'art,draw,drawing,paint,painting,color in,craft,make something,creative', r:[
-     "Art is my favourite! Here is my rule: there is <b>no wrong way</b> to make art. A purple sky is allowed. A dog with six legs is allowed. Go make something and show a grown-up.",
-     "Want a challenge? Draw something you have <i>never</i> seen before. Give it a name. You are the only person in the whole world who knows what it looks like."]},
-   {id:'music', k:'music,sing,song,dance,instrument,piano,guitar,drum', r:[
-     "Dance breaks are royal law! Put on a song and wiggle until you are giggling. Music helps your brain AND your mood — that is real science."]},
-   {id:'park', k:'park,playground,outside,swing,slide,play outside,nature,walk', r:[
-     "The park is the BEST. Swinging, sliding, climbing — that is your body getting stronger while you have fun. Ask a grown-up to take you, and look for three different leaves while you are there!"]},
-
-   /* ── growing up well ──────────────────────────────────────────────── */
-   {id:'veggies', k:'vegetable,vegetables,veggies,eat,food,dinner,healthy,broccoli,carrot,fruit,snack', r:[
-     "Do not forget to <b>eat your vegetables</b>! They are the secret fuel that makes you grow strong and keeps your brain sharp. Carrots, broccoli, peas — pick one and be a hero at dinner tonight.",
-     "Try this: make your plate a <b>rainbow</b>. Something red, something green, something orange. The more colours, the more your body gets what it needs."]},
-   {id:'water', k:'water,drink,thirsty,juice,soda', r:[
-     "<b>Water</b> is the best drink there is. Your body is mostly water, and it needs topping up all day. Go take a big sip right now — I will wait!"]},
-   {id:'sleep', k:'sleep,bed,bedtime,tired,nap,stay up', r:[
-     "Sleep is when your body grows and your brain files away everything you learned today. Going to bed when your grown-up says is a <b>superpower</b>, not a punishment."]},
-   {id:'teeth', k:'teeth,brush,toothbrush,dentist,tooth', r:[
-     "Brush your teeth <b>two times every day</b> — morning and before bed — for about as long as it takes to sing a little song. Your grown-up teeth are waiting, and they want a nice clean house to move into!"]},
-   {id:'wash', k:'wash,hands,germ,germs,soap,clean,sick', r:[
-     "Wash your hands with <b>soap and warm water</b>, and really scrub — get between the fingers! It is the number one way to stop germs. Twenty seconds. You can count that now!"]},
-   {id:'exercise', k:'exercise,run,jump,strong,sport,move,workout', r:[
-     "Moving your body every day makes your heart strong and your mood happy. Run, jump, dance, climb. Bodies are for <b>using</b>, not just sitting!"]},
-   {id:'parents', k:'parent,parents,mom,mum,dad,grandma,grandpa,listen,rules,in trouble,grounded', r:[
-     "Here is something important: <b>listen to your parents</b>. They have already been your age, and they know what is best for you. They make rules because they love you — not to spoil your fun.",
-     "If you are cross with a grown-up, that is okay. Feelings are allowed. Tell them how you feel with <i>words</i>, and listen to their answer too. That is how big kids fix things."]},
-   {id:'safety', k:'stranger,lost,scared of people,safe,safety,help me,emergency', r:[
-     "Safety rule, and this one matters: if you ever feel scared or unsure, <b>find your grown-up straight away</b>. Never go anywhere with someone you do not know. You are allowed to say NO loudly and run to a safe person."]},
-   {id:'screen', k:'tablet,ipad,phone,tv,screen,video,youtube,game time', r:[
-     "Screens are fun for a little while, and then your body starts asking to move! When your grown-up says screens are done, that is your cue to go be a wild thing outside."]},
-   {id:'help', k:'chore,chores,clean up,help,tidy,messy,job', r:[
-     "Helping at home makes you part of the team. Pick up five things right now — just five — and watch how proud your grown-up looks. That feeling is the good stuff."]},
-
-   /* ── heart and character ──────────────────────────────────────────── */
-   {id:'affirm', k:'repeat after me,affirmation,say it with me,pep talk,motivate me,i need a boost', r:['__CREED__']},
-   {id:'cant', k:'i cant,cant do it,too hard,give up,i am bad at,i quit,not good at', r:[
-     "Listen very close, because this is the most important thing I know: <b>you are allowed to be bad at something first</b>. That is how everybody starts. Every single person. Try once more — I am right here cheering.",
-     "Not yet is different from never. Add the word <i>yet</i> to the end: <i>I cannot do it… yet.</i> Feel how that changes everything?"]},
-   {id:'mistake', k:'mistake,messed up,i broke,wrong,failed,ruined', r:[
-     "Mistakes are not bad — they are <b>information</b>. Your brain literally grows when you get something wrong and try again. So really, you just got a little stronger."]},
-   {id:'sad', k:'sad,cry,crying,upset,lonely,bad day,unhappy,miss', r:[
-     "Oh, come sit by me. Big feelings are okay — even princesses have them. Take a <b>slow breath</b> in… and let it out. Feelings are like weather. They move through.",
-     "That sounds hard, and you are allowed to feel it. Would you like a joke, or shall we just sit together a minute? Both are good answers."]},
-   {id:'angry', k:'angry,mad,furious,hate,annoyed,frustrated', r:[
-     "Angry is allowed! Hitting is not. Try this: squeeze your fists tight for five… then let go and shake your hands out. Now tell me with words what happened."]},
-   {id:'scared', k:'scared,afraid,dark,monster,nightmare,bad dream,worried,nervous', r:[
-     "Here is a secret: the dark is just your room with its eyes closed. Nothing new is in there. And brave does not mean <i>not scared</i> — brave means scared and doing it anyway.",
-     "When you are nervous, breathe in while you count to four, then out while you count to four. Do it three times. Your body calms down even when your brain is still fussing."]},
-   {id:'kind', k:'kind,kindness,mean,bully,friend,friends,share,sharing,nice', r:[
-     "Being <b>kind</b> is the strongest thing a person can be. If somebody is mean, that is about them, not you. Tell a grown-up, and go find the people who are glad you are there.",
-     "Want a mission? Say something nice to one person today and watch their face. You can hand out good days for free."]},
-   {id:'sorry', k:'sorry,apologize,i hurt,my fault,forgive', r:[
-     "Saying <b>sorry</b> takes real courage. A good one has three parts: say what you did, say you are sorry, and say what you will do next time. Then let it go."]},
-   {id:'thankful', k:'thankful,grateful,lucky,happy,gratitude,love my', r:[
-     "Gratitude is a superpower. Name <b>three things</b> you are glad about right now. Out loud! Doing that actually makes people happier — scientists checked."]},
-   {id:'different', k:'different,weird,fit in,everybody else,i dont like me,ugly,shy', r:[
-     "The things that make you <b>different</b> are the best things about you. Nobody ever changed the world by being exactly like everyone else. <i>Being yourself is the best way to be.</i>"]},
-   {id:'unity', k:'unity,everyone,together,team,skin,colour of skin,we are all', r:[
-     "Every person you meet is having a whole life as big and important as yours. Different families, different homes, different skin — all of us on one spinning planet. Be curious about people, not scared of them."]},
-   {id:'dream', k:'when i grow up,dream,job,astronaut,doctor,famous,what should i be', r:[
-     "You can do <b>anything</b> you set your mind to. Not by magic — by practising, over and over, on the days you feel like it and the days you do not. That is the whole secret. Everyone who is great at something was terrible at it first."]},
-   {id:'practice', k:'practice,keep trying,again,how do i get good,better at', r:[
-     "The fastest way to get good at something is boring and wonderful: <b>do it a little bit every day</b>. Ten minutes beats two hours once a month. Your brain builds the path while you sleep!"]},
-   {id:'curious', k:'why,how does,question,i wonder,teach me,learn,something new', r:[
-     "Ooh, a question! Questions are how everything interesting ever got discovered. Never stop asking them — and if I do not know, ask a grown-up together. Learning with somebody is even better."]},
-
-   /* ── silly ────────────────────────────────────────────────────────── */
-   {id:'joke', k:'joke,funny,laugh,silly,tell me a joke,make me laugh', r:[
-     "Why did the kitty sit on the computer? To keep an eye on the <b>mouse</b>!",
-     "What do you call a princess who will not share her cake? A little <i>crumby</i>!",
-     "Knock knock. Who is there? Meow. Meow who? <b>Meow-ve over</b>, it is my turn to play!",
-     "Why did the teddy bear say no to dessert? Because she was already <b>stuffed</b>!",
-     "What do you call a sleeping dinosaur? A <b>dino-snore</b>!",
-     "Why did the banana go to the doctor? It was not <b>peeling</b> well!",
-     "What is a cat's favourite colour? <b>Purr</b>-ple!",
-     "Why can you never trust the stairs? They are always <b>up to something</b>!",
-     "What did the left shoe say to the right shoe? Nothing — shoes cannot talk. But if they could, I bet they would complain about socks."]},
-   {id:'riddle', k:'riddle,puzzle,guess,brain teaser,quiz', r:[
-     "Riddle time! <i>I have hands but cannot clap. What am I?</i> … A <b>clock</b>!",
-     "<i>What gets wetter the more it dries?</i> … A <b>towel</b>!",
-     "<i>What has a face and two hands but no arms or legs?</i> … A <b>clock</b> again. Clocks are sneaky like that."]},
-   {id:'game', k:'play,game,bored,fun,what can you do,i spy', r:[
-     "Let us play <b>I Spy</b>! I spy with my kitty eye… something <b>blue</b>. Go find it and come tell me what it was!",
-     "Freeze dance! Get a grown-up to play music and stop it whenever they like. When it stops, you FREEZE. I will be over here wobbling."]},
-   {id:'hair', k:'hair,pretty,beautiful,dress,crown,ribbon,sparkle,you look', r:[
-     "You noticed! My hair is <b>golden blonde</b> and my crown is real gold with five pearls. But my favourite thing I am wearing is my <i>smile</i> — that part is free and everybody has one."]},
-   {id:'thanks', k:'thank you,thanks,ty,youre the best', r:[
-     "You are very welcome! And I noticed your good manners. That is a royal quality right there."]},
-   {id:'bye', k:'bye,goodbye,see you,goodnight,night,later,leaving', r:[
-     "Bye for now, friend! Go be amazing. Eat something green for me and listen to your grown-ups. 👑"]}
-  ];
-
-
-  /* ── Names. She picks the name out of whatever a child types, then uses
-        it. If it is Phoenix, she checks one gentle detail before treating
-        her as the Phoenix this whole kingdom is named after. ─────────── */
-  var KIDNAMES = ('emma olivia ava sophia isabella mia charlotte amelia harper evelyn abigail '
-    + 'ella scarlett grace chloe camila penelope riley layla lily zoey nora hannah lillian addison '
-    + 'aubrey ellie stella natalie zoe leah hazel violet aurora savannah audrey brooklyn bella claire '
-    + 'skylar lucy paisley everly anna caroline nova genesis emilia kennedy maya willow kinsley naomi '
-    + 'liam noah oliver elijah james william benjamin lucas henry theodore jack levi alexander jackson '
-    + 'mateo daniel michael mason sebastian ethan logan owen samuel jacob asher aiden john joseph wyatt '
-    + 'david leo luke julian hudson grayson matthew ezra gabriel carter isaac jayden luca anthony dylan '
-    + 'lincoln thomas maverick elias josiah charles caleb christopher ezekiel miles jaxon isaiah andrew '
-    + 'phoenix coburn river sage rowan quinn charlie finn milo ivy remi juniper wren').split(' ');
-
-  var KID = { name:null, isPhoenix:false, asked:false };
-
-  function grabName(raw){
-    var t = ' ' + raw.toLowerCase().replace(/[^a-z' ]/g, ' ').replace(/\s+/g, ' ') + ' ';
-    var m = t.match(/(?:my name is|my names|i am called|call me|this is|im|i am|name is|its|it is)\s+([a-z']{2,14})/);
-    if (m){
-      var w = m[1];
-      var STOP = ['a','an','the','here','good','fine','ok','okay','happy','sad','tired','hungry',
-                  'playing','going','doing','five','four','six','so','very','really','not','just','back'];
-      if (STOP.indexOf(w) < 0) return w;
-    }
-    /* a bare name on its own line, e.g. just "Phoenix" */
-    var one = raw.trim().toLowerCase().replace(/[^a-z]/g, '');
-    if (one.length > 1 && one.length < 14 && KIDNAMES.indexOf(one) >= 0) return one;
-    return null;
-  }
-  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
-
-  /* the little verification, and everything that follows it */
-  var PHX = [
-    "PHOENIX! It really is you! 🎉 Guess what — <b>I am you and you are me</b>. I am the cartoon version of YOU. How do you like me?!",
-    "You have a <b>birthday</b> coming up, do you not? And you are turning <b>FIVE</b>! Five is enormous. What do you want for your birthday?",
-    "Five years old means you can count your age on one whole hand. 🖐️ Hold it up! That is you, that is.",
-    "I heard you were born in <b>Colorado</b>, where the mountains are. Mountains are made when the ground slowly pushes up over millions of years. Yours are very big ones!",
-    "Shall we learn something together, Phoenix? Say <b>study</b> and Wormy will fetch his glasses. Or say <b>joke</b> if you want a giggle first."
-  ];
-  var phxAt = 0;
-
-  /* ── Toddler and little-kid speech. Five-year-olds type by sound, so the
-        normalizer turns what they meant into something matchable before
-        anything else runs. ─────────────────────────────────────────────── */
-  var KIDSPEAK = {
-    ya:'yes', yah:'yes', yeah:'yes', yep:'yes', yup:'yes', yea:'yes', mhm:'yes',
-    'uh huh':'yes', 'uhhuh':'yes', ok:'yes', okie:'yes', okey:'yes', kk:'yes',
-    'nuh uh':'no', 'nuhuh':'no', nah:'no', nope:'no', nu:'no',
-    wanna:'want to', gonna:'going to', gotta:'got to', hafta:'have to',
-    dunno:'i do not know', idk:'i do not know', lemme:'let me', gimme:'give me',
-    cuz:'because', bc:'because', howcum:'how come',
-    wat:'what', wut:'what', whut:'what', wha:'what', wher:'where', wen:'when',
-    y:'why', wy:'why', hoo:'who', hau:'how',
-    pwease:'please', pls:'please', plz:'please', pleeease:'please',
-    tank:'thank', tanks:'thanks', tank_you:'thank you', fank:'thank',
-    luv:'love', lub:'love', wuv:'love', lyk:'like', liek:'like',
-    mommy:'mom', mummy:'mom', mama:'mom', momma:'mom',
-    daddy:'dad', dada:'dad', papa:'dad',
-    bruther:'brother', brudder:'brother', bubba:'brother',
-    sistr:'sister', sissy:'sister',
-    kitty:'cat', kitteh:'cat', kitties:'cats', cate:'cat',
-    doggy:'dog', doggie:'dog', puppy:'dog', puppie:'dog',
-    birfday:'birthday', birfdae:'birthday', bday:'birthday',
-    skool:'school', scool:'school', preskool:'preschool',
-    favrit:'favorite', favourite:'favorite', fav:'favorite', faverite:'favorite',
-    sparkel:'sparkle', sparkley:'sparkle', sparkly:'sparkle',
-    rainbo:'rainbow', raibow:'rainbow', raninbow:'rainbow',
-    prinsess:'princess', princes:'princess', prinses:'princess',
-    playin:'playing', doin:'doing', goin:'going', havin:'having',
-    nite:'night', lite:'light', rite:'right', wite:'white',
-    sum:'some', thay:'they', wus:'was', wuz:'was', iz:'is', da:'the', teh:'the',
-    im:'i am', ur:'your', u:'you', r:'are', n:'and', b:'be', c:'see',
-    hi_hi:'hi', heyy:'hey', helo:'hello', hewwo:'hello', hiya:'hi'
-  };
-  function kidspeak(t){
-    t = ' ' + t + ' ';
-    t = t.replace(/ uh huh /g,' yes ').replace(/ nuh uh /g,' no ')
-         .replace(/ thank you /g,' thanks ');
-    var out = t.split(' ').map(function(w){
-      if (!w) return w;
-      var base = w.replace(/(.)\1{2,}/g, '$1$1');      /* pleeeease -> pleease */
-      return KIDSPEAK[base] || KIDSPEAK[w] || w;
-    }).join(' ');
-    return out;
-  }
-
-  /* ── Phoenix. She is the reason this whole place exists. Nothing in here
-        identifies her: no surname, no town, no family names, no exact date.
-        This file is public, so it only holds the fun parts. ────────────── */
-  KB.push(
-   {id:'phoenix', w:3, k:'phoenix,my name is phoenix,im phoenix,i am phoenix,this is phoenix', r:[
-     "PHOENIX! Oh my sparkles, it is YOU! You are my very favourite person in the whole kingdom. I made this whole world just for you. What shall we play first?",
-     "Phoenix is here! Everybody curtsey! 👑 I have been waiting all day to talk to you. Tell me something good."]},
-   {id:'myname', k:'my name is,i am called,call me,this is me,name is', r:[
-     "What a brilliant name! It is lovely to meet you properly. I am Princess Phoenix Sparkles, and you are officially invited to everything."]},
-   {id:'bday', k:'birthday,turning five,i am five,im 5,i am 4,october,my party,getting older,how old am i', r:[
-     "A birthday coming up?! That is the most exciting news. Turning <b>five</b> is a very big deal — five means you can count on one whole hand. I shall bake an imaginary cake immediately. 🎂"]},
-   {id:'cats', w:2.6, k:'cat,cats,kitty,kitten,meow,my cat', r:[
-     "CATS. My favourite subject. Did you know a cat can jump about <b>six times</b> its own body length? And they purr when they are happy — sometimes when they are poorly too, because purring helps them feel better.",
-     "Meow! Cats have whiskers to measure whether a gap is wide enough to squeeze through. Little built-in measuring sticks!"]},
-   {id:'rainbow', w:2.6, k:'rainbow,rainbows,colours in the sky', r:[
-     "A <b>rainbow</b> happens when sunshine goes through raindrops and splits into all its colours. The colours are always in the same order: red, orange, yellow, green, blue, indigo, violet. Sunshine was hiding them the whole time!"]},
-   {id:'sparkles', w:2.6, k:'sparkle,sparkles,glitter,shiny,sparkly', r:[
-     "Sparkles are simply light bouncing off in lots of little directions at once. Which means whenever you sparkle, you are basically doing science. ✨"]},
-   {id:'pink', k:'pink,my favorite color is pink,i like pink', r:[
-     "<b>Bright pink</b> is a top-tier choice and I will not hear otherwise. Fun bit: pink is made by mixing red with white. You can make it yourself with paint!"]},
-   {id:'dresses', k:'dress,dresses,twirl,girly,fancy,pretty clothes,princess dress', r:[
-     "A dress that <b>twirls</b> is the best kind of dress. Go and do one twirl right now and come back and tell me how it went. I shall wait."]},
-   {id:'brother', k:'brother,my brother,big brother,little brother,sibling,sister', r:[
-     "Brothers are wonderful and also sometimes annoying, and both things can be true on the same day! What is the best thing you two do together?"]},
-   {id:'family', k:'mom,dad,mum,parents,my family,grown up,grandma,grandpa', r:[
-     "Families are the best team you will ever be on. What is your favourite thing you all do together?",
-     "Tell your grown-up one thing you love about them today. Watch their face. It is like a magic trick that works every time."]},
-   {id:'camping', k:'camping,tent,campfire,marshmallow,woods,sleeping bag,smores', r:[
-     "CAMPING! Sleeping in a tent, the fire crackling, everything smelling like woodsmoke. Next time you go, look straight up at night — away from town you can see hundreds more stars."]},
-   {id:'airplane', k:'airplane,plane,flying,flight,trip,vacation,airport,kentucky', r:[
-     "A trip on an <b>airplane</b>! Here is a good bit: planes stay up because their wings make the air move faster over the top than underneath, and that lifts the whole thing. Ask for a window seat and watch the world get tiny."]},
-   {id:'preschool', k:'preschool,school,kindergarten,teacher,my class,my friends at school', r:[
-     "Preschool now and <b>kindergarten</b> next year — that is a huge step and you are going to be brilliant at it. What is the best thing you did at school today?"]},
-   {id:'outmywindow', k:'where i live,my house,my town,outside my window,my street', r:[
-     "Wherever you live, there is something worth spotting outside your window. Go and look and tell me the first thing you see — I want to guess whether it is a tree, a car or a bird."]},
-
-   /* ── conversation. She asks, then keeps hold of the thread. ────────── */
-   {id:'fun', w:2.4, k:'what do you like to do,for fun,what should we do,what do you do,hobby', r:[
-     "Ooh, my favourites are painting, twirling, and learning something brand new before breakfast. What about YOU — are you an art person, an outside person, or a building person?"]},
-   {id:'myday', k:'my day,today i,guess what,i did,we went,i got', r:[
-     "Tell me EVERYTHING. I love a good story. What was the very best part?",
-     "Ooh, go on! Was it the sort of day that needs a snack afterwards, or the sort that needs a nap?"]},
-   {id:'park', w:2.4, k:'park,playground,swing,slide,monkey bars,outside,play outside', r:[
-     "The park! Swings are my favourite because for one second at the top you are actually flying. Which do you go to first — swings, slide, or straight up the climbing frame?"]},
-   {id:'artchat', w:2.4, k:'art,draw,drawing,paint,painting,color in,coloring,craft,make something', r:[
-     "Painting is my number one. Rule of the kingdom: there is <b>no wrong way</b> to make art. A purple sky is allowed. A cat with wings is encouraged. What are you making?"]},
-   {id:'favthing', k:'favorite,favourite,best thing,what do you love,i love', r:[
-     "Lovely question. Mine are cats, rainbows, and the exact moment you understand something you did not understand a minute ago. What is yours?"]},
-   {id:'yes', k:'yes,yeah,i do,me too,i did', r:[
-     "YES! I knew it. Tell me more — I am completely gripped.",
-     "Ooh good. Go on then, what happened next?"]},
-   {id:'no', k:'no,not really,i dont,nope', r:[
-     "That is completely fine! Not everybody likes everything, and that is what makes people interesting. What DO you like?"]},
-   {id:'silly', k:'poop,pee,bum,fart,burp,toot,silly word,haha,lol,hehe', r:[
-     "Hee hee! Right, we have both had our giggle. 😹 Now — quick, what rhymes with <b>cat</b>? I will start: hat, bat, mat…",
-     "You are being <i>extremely</i> silly and honestly I respect it. Now say the silliest word you can invent. Make it up completely!"]},
-   {id:'dontknow', k:'i do not know,i dunno,no idea,not sure,hmm', r:[
-     "That is a perfectly good answer! Nobody knows everything — that is why learning is a thing. Want me to pick something for us instead?"]},
-   {id:'again', k:'again,more,another one,keep going,one more', r:[
-     "Again it is! I could do this all day. ✨"]},
-   {id:'guess', k:'guess,guess what,i have a secret,know what', r:[
-     "Ooh! Is it… a rainbow? A cat? A snack? No — tell me, tell me, I am terrible at waiting!"]}
-  );
-
-
-  /* ── She knows every page on the site, so she can send a child to the
-        right one instead of just talking about it. ───────────────────── */
-  var PAGES = [
-    {u:'/counting-for-toddlers/',   n:'Counting for Toddlers', k:'count,counting,numbers,how many,1 2 3'},
-    {u:'/simple-addition-for-kids/',n:'Simple Addition',       k:'add,adding,plus,math,maths,sum'},
-    {u:'/learn-colors-for-kids/',   n:'Learn Colors',          k:'color,colour,rainbow,paint colors'},
-    {u:'/alphabet-for-kids/',       n:'The Alphabet',          k:'alphabet,abc,letters,a b c'},
-    {u:'/letter-sounds-phonics/',   n:'Letter Sounds',         k:'phonics,sounds,sound out,reading,blend'},
-    {u:'/shapes-for-kids/',         n:'Shapes',                k:'shape,shapes,circle,square,triangle'},
-    {u:'/science-for-toddlers/',    n:'Science for Toddlers',  k:'science,experiment,how does it work'},
-    {u:'/space-facts-for-kids/',    n:'Space Facts',           k:'space,planet,moon,star,rocket,sun'},
-    {u:'/animal-facts-for-kids/',   n:'Animal Facts',          k:'animal,animals,cat,dog,zebra,whale'},
-    {u:'/dinosaurs-for-kids/',      n:'Dinosaurs',             k:'dinosaur,dino,fossil,t rex'},
-    {u:'/weather-for-kids/',        n:'Weather',               k:'weather,rain,snow,cloud,storm,water cycle'},
-    {u:'/kindergarten-readiness/',  n:'Ready for Big School',  k:'kindergarten,school,big school,preschool'},
-    {u:'/feelings-for-kids/',       n:'Big Feelings',          k:'feeling,feelings,sad,angry,scared,emotion'},
-    {u:'/affirmations-for-kids/',   n:'I Am Amazing',          k:'affirmation,confidence,brave,i can'},
-    {u:'/spanish-for-kids/',        n:'Spanish for Kids',      k:'spanish,espanol,hola,another language'}
-  ];
-  function findPage(q){
-    var t = ' ' + q.toLowerCase() + ' ', best = null, score = 0;
-    PAGES.forEach(function(p){
-      var s = 0;
-      p.k.split(',').forEach(function(w){ if (t.indexOf(w.trim()) >= 0) s += w.trim().length; });
-      if (s > score){ score = s; best = p; }
-    });
-    return score > 2 ? best : null;
-  }
-  function pageLink(p){
-    return '<a href="' + p.u + '" style="color:#7a3ddb;font-weight:800">' + p.n + '</a>';
-  }
-
-  /* ── Study mode. She and Wormy run a tiny lesson, one step at a time. ── */
-  var LESSONS = {
-    counting: { title:'Counting', steps:[
-      "Ready? Hold up one finger. That is <b>1</b>. Say it!",
-      "Now two fingers. <b>2</b>. Brilliant.",
-      "Three! <b>3</b>. You are quick at this.",
-      "Four… <b>4</b>. Nearly a whole hand.",
-      "And five! <b>5</b>. One whole hand! 🖐️",
-      "Now all together: 1, 2, 3, 4, 5. You just counted to five. Wormy is very proud." ]},
-    shapes: { title:'Shapes', steps:[
-      "A <b>circle</b> is round all the way with no corners. Find something round near you!",
-      "A <b>square</b> has 4 sides, all the same. Like a window!",
-      "A <b>triangle</b> has 3 sides and 3 corners. Like a slice of pizza. 🍕",
-      "Last one: a <b>rectangle</b> has 4 sides but two are longer. Like a door!",
-      "Circle, square, triangle, rectangle. Four shapes learned. That is a proper lesson done!" ]},
-    letters: { title:'Letter Sounds', steps:[
-      "The letter <b>S</b> says <i>ssssss</i>, like a snake. Try it!",
-      "The letter <b>M</b> says <i>mmmm</i>, like yummy food.",
-      "The letter <b>A</b> says <i>ah</i>, like apple.",
-      "Now blend: c - a - t. Slowly… then faster. <b>CAT</b>!",
-      "You just read a word by sounding it out. That is exactly how reading works!" ]},
-    colors: { title:'Colors', steps:[
-      "Blue and yellow mixed together make <b>green</b>. Like grass!",
-      "Red and blue make <b>purple</b>. Very royal.",
-      "Red and yellow make <b>orange</b>. Like a pumpkin!",
-      "Rainbow order never changes: red, orange, yellow, green, blue, indigo, violet.",
-      "Lesson complete! Go and find something of every rainbow colour in your house." ]},
-    kindness: { title:'Being Kind', steps:[
-      "Kindness rule one: say the nice thing out loud. Thinking it does not count!",
-      "Rule two: if somebody is left out, go and stand with them.",
-      "Rule three: share the good stuff, not just the leftovers.",
-      "Rule four: saying sorry properly means saying what you did, then what you will do next time.",
-      "You already knew all of that, did you not? Kind people usually do." ]}
-  };
-  var study = null, studyAt = 0;
-  function studyStep(which){
-    if (which && LESSONS[which]){ study = which; studyAt = -1; }
-    if (!study) return null;
-    studyAt++;
-    var L = LESSONS[study];
-    if (studyAt === 0)
-      return "📚 <b>" + L.title + " lesson!</b> Wormy has his glasses on. Say <b>next</b> when you are ready.<br><br>" + L.steps[0];
-    if (studyAt < L.steps.length) return L.steps[studyAt];
-    study = null; studyAt = 0;
-    return "That is the whole lesson done! 🎓 You and Wormy make a good team. Want another one?";
-  }
-
-  KB.push(
-   {id:'studymode', w:3, k:'study,lesson,teach me,learn with me,study partner,wormy,teach me something,school time', r:['__STUDY__']},
-   {id:'next', w:2.8, k:'next,keep going,then what,go on,continue,more please', r:['__NEXT__']},
-   {id:'wormyguy', k:'who is wormy,worm,wormy the worm,glasses worm', r:[
-     "That is <b>Wormy the Worm</b>, my study partner! He wears little glasses and he has read about absolutely everything. He lives in the bubble patch. Say <b>study</b> and we will all learn together."]},
-   {id:'whatpage', w:2.6, k:'where do i go,what page,show me a page,take me,which page,i want to learn about,got a page about', r:['__PAGE__']},
-   {id:'whatgames', w:2.5, k:'what games,games,play a game,what can i play,fun stuff,things to do', r:[
-     "So many! On the homepage you can <b>splat paint</b> on a wall, <b>build a snowman</b>, roll a marble through a <b>maze</b>, spell with <b>letter blocks</b>, decorate a <b>bedroom</b>, blow <b>bubbles</b>, and cuddle the <b>stuffies</b>. Which sounds best?",
-     "My favourite is the <b>Splat Wall</b> — you can paint absolutely everywhere and never get in trouble. Try the <b>Marble Maze</b> too, it has three levels!"]},
-   {id:'bored2', k:'im bored,nothing to do,what now,whats next', r:[
-     "Never bored in this kingdom! Pick one: paint the wall, build a snowman, or let me teach you a quick lesson. Say <b>study</b> for the lesson!"]},
-
-   /* ── more uplift, because a kid cannot hear this too often ────────── */
-   {id:'proud', k:'i did it,i finished,look what i did,i made,i won,i got it', r:[
-     "YOU DID IT! I am so proud I could twirl. Say this with me: <b>I did that.</b> Because you did!",
-     "Look at you go! That thing was hard and you did it anyway. That is the whole secret, you know."]},
-   {id:'tryagain', k:'i messed up,it broke,wrong,i failed,not working,bad at this', r:[
-     "Good! That means you tried something hard enough to be worth trying. Brains grow the most in the wobbly bit. Go again — I am watching. 💪",
-     "Every single person who is brilliant at something was rubbish at it first. Every one. Including me at twirling."]},
-   {id:'tired', k:'tired,sleepy,yawn,i need a break,worn out', r:[
-     "Then have a rest! Resting is part of learning, not the opposite of it. Go and have a stretch and a drink of water. I shall be right here."]},
-   {id:'hungry', k:'hungry,snack,food,lunch,dinner,breakfast', r:[
-     "Snack time! Go for something with a colour in it — an apple, a carrot, some berries. Colourful food is basically fuel for your brain. 🍎"]},
-   {id:'iamgreat', k:'am i good,am i smart,do you like me,am i pretty,am i nice', r:[
-     "You are <b>curious</b>, which is the best thing a person can be, and you are <b>kind</b>, which is the strongest. Those two beat everything else. Yes. Absolutely yes."]},
-   {id:'scaredbig', k:'scared of big school,nervous about school,first day,new place,new kids', r:[
-     "New things feel wobbly for everybody — even grown-ups, they just hide it better. Here is the trick: find one person and say hello. One is enough to start. You are braver than you think."]},
-   {id:'balloon', k:'balloon,blow up,pop,party', r:[
-     "Balloons! Here is a good one: a balloon flies about when you let it go because the air rushing out pushes it the other way. That is the same idea that makes a rocket work! 🎈"]},
-   {id:'bubble', k:'bubble,bubbles,soap', r:[
-     "Bubbles are my favourite. A bubble is just air wearing a very thin coat of soapy water — and it is always a ball shape, because that is the shape that uses the least skin!"]},
-   {id:'stretch', w:2.6, k:'stretch,stretching,tired body,sore,sit too long,my legs,exercise break', r:[
-     "Stretch with me! 🙆 Reach up and touch the sky… hold it… now bend down and touch your toes. Your muscles say thank you.",
-     "Standing up and stretching every so often is good for your body AND helps your brain think better. Come on — arms up!"]},
-   {id:'screentime', w:2.6, k:'how long,screen time,too much screen,tablet time,been on here,time limit,ipad time', r:[
-     "Good question to ask yourself! ⏰ Do you have a time limit from your grown-up? When it is up, go outside and run about. Screens are fun, but bodies are for using.",
-     "Here is my rule: some screen, then some stretching, then some outside. All three every day. What have you done outside today?"]},
-   {id:'outside', w:2.4, k:'outside,go outside,playground,fresh air,park time,run around', r:[
-     "YES! Go outside. Ask your grown-up first, then run, climb, dig, look for bugs. Outside makes you strong AND happy. Come back and tell me what you found!"]},
-   {id:'wiggle', k:'wiggle,dance,shake,silly dance,giggle,laugh with me', r:[
-     "WIGGLE AND GIGGLE TIME! 🕺 Shake your arms. Shake your legs. Shake your whole self. Now giggle as loud as you are allowed!"]},
-   {id:'dino2', k:'ride a dinosaur,dinosaur ride,unicorn,ride,fly', r:[
-     "Hop on! 🦕 Today we are riding a dinosaur to the top of the tallest hill in the kingdom. Hold onto my crown. Where shall we go?"]}
-  );
-
-  var MISS = [
-    "Ooh, I do not know that one <i>yet</i>! I am still learning too. Try me on <b>animals</b>, <b>space</b>, <b>colors</b>, <b>counting</b>, or say <b>joke</b>!",
-    "Hmm! My kitty brain is small but growing every day. Ask me about <b>vegetables</b>, <b>the park</b>, <b>art</b>, or tell me how you are feeling.",
-    "That one is not in my royal notebook yet. Ask a grown-up with me! Or try <b>riddle</b>, <b>shapes</b>, or <b>repeat after me</b>."
-  ];
-
-  function norm(s){ return (' '+String(s).toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ')+' '); }
-  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
-  function answer(q){
-    var raw = q;
-
-    /* mid-verification: a yes here means it is the real Phoenix */
-    if (KID.asked && !KID.isPhoenix){
-      if (/\b(yes|yeah|yep|ya|yup|uh huh|mhm|it does|correct|right)\b/i.test(raw)){
-        KID.isPhoenix = true; KID.asked = false; phxAt = 0;
-        return PHX[phxAt++];
-      }
-      if (/\b(no|nope|nah|nuh uh|it doesnt|does not)\b/i.test(raw)){
-        KID.asked = false;
-        return "A different Phoenix! Then you share a name with the princess of this whole kingdom, which is a very good name to have. Welcome! What shall we play?";
-      }
-    }
-    /* she keeps the Phoenix chat rolling while there is more to say */
-    if (KID.isPhoenix && phxAt < PHX.length &&
-        /\b(yes|yeah|ok|okay|cool|wow|more|next|what else|tell me)\b/i.test(raw)){
-      return PHX[phxAt++];
-    }
-
-    var nm = grabName(raw);
-    if (nm && !KID.name){
-      KID.name = cap(nm);
-      if (nm === 'phoenix'){
-        KID.asked = true;
-        return "Phoenix?! That is MY name too! 👑 Quick question then — does your last name start with a <b>W</b>?";
-      }
-      return "Hello <b>" + KID.name + "</b>! What a brilliant name. I am Princess Phoenix Sparkles, and you are officially invited to everything. What shall we do first — a <b>joke</b>, a <b>lesson</b>, or a <b>game</b>?";
-    }
-
-    var t=norm(q), best=null, score=0;
-    KB.forEach(function(e){
-      var s=0;
-      e.k.split(',').forEach(function(w){
-        w=w.trim(); if(!w) return;
-        if(t.indexOf(' '+w+' ')>=0) s+=3+w.split(' ').length;
-        else if(w.length>3 && t.indexOf(w)>=0) s+=1.5;
-      });
-      if(s>score){score=s;best=e;}
-    });
-    if(score<1.5) return pick(MISS);
-    if(best.r[0]==='__CREED__') return creedStep();
-    if(best.r[0]==='__STUDY__'){
-      var pickL = ['counting','shapes','letters','colors','kindness'];
-      var want = null;
-      ['counting','shape','letter','color','colour','kind'].forEach(function(w,i){
-        if(q.toLowerCase().indexOf(w)>=0) want = pickL[Math.min(i,4)];
-      });
-      return studyStep(want || pickL[Math.floor(Math.random()*pickL.length)]);
-    }
-    if(best.r[0]==='__NEXT__'){
-      var s = studyStep();
-      return s || "Next! What shall we do — a <b>joke</b>, a <b>lesson</b>, or shall I find you a page to explore?";
-    }
-    if(best.r[0]==='__PAGE__'){
-      var p = findPage(q);
-      return p ? "Perfect — go and visit " + pageLink(p) + "! It has three levels on it, so it grows with you. 👑"
-               : "Ooh, tell me what you want to learn and I will find the right room. Try <b>counting</b>, <b>colors</b>, <b>space</b>, <b>dinosaurs</b> or <b>feelings</b>!";
-    }
-    /* if she is mid-lesson, keep the lesson going */
-    if (study && /^(ok|okay|yes|yep|ready|done|got it)\b/i.test(q.trim())) return studyStep();
-    /* and if a child names a subject, point them at the right page */
-    var pg = findPage(q);
-    if (pg && score < 6) return say3(best) + '<br><br>There is a whole room about that: ' + pageLink(pg) + ' 👑';
-    var out = say3(best);
-    if (KID.name && Math.random() < 0.22) out = out.replace(/^/, cap(KID.name) + ', ');
-    return out;
-  }
-
-  var flap=null;
-  function speak(html){
-    say.innerHTML=html;
-    pcat.classList.add('talking');
-    clearInterval(flap);
-    var on=false, n=0, len=say.textContent.length;
-    flap=setInterval(function(){
-      on=!on; face.setAttribute('href', on?FACES.talk:FACES.happy);
-      if(++n > Math.min(30, 6+len/9)){
-        clearInterval(flap); face.setAttribute('href',FACES.happy);
-        pcat.classList.remove('talking');
-      }
-    },190);
-  }
-
-
-  function chips(list){
-    picks.innerHTML='';
-    list.forEach(function(c,i){
-      var b=D.createElement('button');
-      b.className='pick p'+((i%6)+1);
-      b.innerHTML=c.label; b.onclick=c.go;
-      picks.appendChild(b);
-    });
-  }
-  var MAIN=['Tell me a joke','Study with me! 📚','Repeat after me!',
-            'What games are there?','Find me a page','I feel sad'];
-  function mainChips(){
-    chips(MAIN.map(function(t){ return {label:t, go:function(){ speak(answer(t)); }}; }));
-  }
-  function setAge(a){ window.PWage=a; if(window.PWsync) window.PWsync(a); }
-  window.PWspeak = function(t){ speak(t); };
-
-  function send(){
-    var v=ask.value.trim(); if(!v) return;
-    ask.value=''; ask.blur(); speak(answer(v));
-  }
-  D.getElementById('send').onclick=send;
-  ask.addEventListener('keydown',function(e){ if(e.key==='Enter') send(); });
-
-  pcat.addEventListener('click',function(){
-    if (host.classList.contains('mini')) { host.classList.remove('shy'); return; }
-    face.setAttribute('href',FACES.silly);
-    speak("You booped me! Boop you back. <b>Blep!</b>");
-    setTimeout(function(){ face.setAttribute('href',FACES.happy); },1400);
+/* Full-page paint splash from the Control Panel */
+(function(){
+  var layer=H('div',{id:'pageSplat'},D.body);
+  var svg=E('svg',{viewBox:'0 0 1000 1000',preserveAspectRatio:'none',style:'width:100%;height:100%;display:block'},layer);
+  var bay=D.querySelector('#bigRed')&&D.querySelector('#bigRed').parentNode;
+  if(!bay) return;
+  var b=H('button',{type:'button','class':'toy btn t-grape gloss',text:'🎨 Paint splash the whole page'},bay);
+  b.addEventListener('click',function(){ SND.pop(); P.screenSay('SPLAT! Paint everywhere and not one bit of trouble. 🎨');
+    for(var i=0;i<28;i++)(function(i){ setTimeout(function(){ SND.tone(rnd(300,900),0.06,'triangle',0.04);
+      splatAt(svg,rnd(40,960),rnd(40,960),{color:pick([pick(BOW),'rainbow','glitter']),scale:rnd(1,2.6)}); },i*55); })(i);
+    setTimeout(function(){ layer.style.transition='opacity 1.2s'; layer.style.opacity='0'; setTimeout(function(){ clear(svg); layer.style.opacity='1'; layer.style.transition=''; },1300); },7000);
   });
+  var w=H('button',{type:'button','class':'toy btn t-white',text:'🧽 Wash the page'},bay);
+  w.addEventListener('click',function(){ clear(svg); SND.whoosh(); });
+})();
 
-  /* ── arrival: down the slide small, grow, say hello, then poof to the
-        corner as a little helper ───────────────────────────────────────── */
-  var SPARKCOLS = ['#ff2d95','#ffd400','#00e5ff','#00ff9d','#b14bff','#ff7a00','#ff6ec7','#ffffff'];
-  function sparks(n){
-    for (var i=0;i<n;i++){
-      (function(){
-        var s = D.createElement('i'), sz = 8 + Math.random()*26;
-        s.className = 'poofspark';
-        s.style.width = s.style.height = sz + 'px';
-        s.style.background = SPARKCOLS[Math.floor(Math.random()*SPARKCOLS.length)];
-        var a = Math.random()*Math.PI*2, d = 90 + Math.random()*420;
-        s.style.setProperty('--sx', Math.cos(a)*d + 'px');
-        s.style.setProperty('--sy', Math.sin(a)*d + 'px');
-        s.style.animationDelay = (Math.random()*.5) + 's';
-        s.style.animationDuration = (1.1 + Math.random()*1.4) + 's';
-        poof.appendChild(s);
-      })();
-    }
-  }
-  function puff(n){
-    n = n || 26;
-    sparks(Math.round(n * 1.6));
-    for (var i=0;i<n;i++){
-      var p=D.createElement('b');
-      p.style.setProperty('--tx',(Math.random()*420-210)+'px');
-      p.style.setProperty('--ty',(Math.random()*360-230)+'px');
-      p.style.animationDelay=(Math.random()*0.45)+'s';
-      p.style.width=p.style.height=(34+Math.random()*86)+'px';
-      p.style.background=['#fff','#ffe9fb','#eaf6ff','#fff6d6'][Math.floor(Math.random()*4)];
-      poof.appendChild(p);
-    }
-    poof.classList.add('go');
-    setTimeout(function(){ poof.classList.remove('go'); poof.innerHTML=''; }, 3200);
-  }
+/* ═══════════════ THE PLAYROOM BAND ═══════════════ */
+var band=H('section',{'class':'band play-wrap',id:'playroom'});
+band.innerHTML='<h2 class="outlined">The Playroom</h2><p class="panel-lead">Fourteen things to play with. Nothing in here can go wrong.</p><div class="play-grid" id="playGrid"></div>';
+var shelf=$('shelf'); shelf.parentNode.insertBefore(band,shelf);
+var bmk=D.querySelector('.bookmarks'); if(bmk){ var a=H('a',{'class':'bm b6',href:'#playroom',html:'<i>🎨</i>Playroom'}); bmk.insertBefore(a,bmk.children[4]); }
+var grid=$('playGrid');
+function toy(title,inner,wide){ var b=H('div',{'class':'toybox'+(wide?' wide':'')},grid); b.innerHTML='<h3>'+title+'</h3>'+inner; return b; }
 
-  function toCorner(){
-    if (host.classList.contains('mini')) return;
-    speak("Watch this! ✨ Down the rainbow slide I go…");
-    pcat.classList.add('casting');            /* wand wave */
-    setTimeout(function(){
-      host.classList.add('sliding');          /* rainbow slide appears, she rides it */
-    }, 700);
-    setTimeout(function(){ puff(46); }, 2400);  /* big puff of smoke at the bottom */
-    setTimeout(function(){
-      host.classList.remove('big', 'sliding');
-      host.classList.add('mini');
-      pcat.classList.remove('casting');
-      puff(30);                                /* and another one as she reappears small */
-      speak("Ta-daaa! ✨ I am here to help you. What do you want to learn about?");
-      mainChips();
-    }, 3100);
-  }
+/* ── 1. DRAW ANYTHING — now with glitter brush, rainbow brush, letter stamps ── */
+(function(){
+  toy('✏️ Draw &amp; write anything',
+    '<canvas id="pad" aria-label="Drawing pad"></canvas><div class="tools" id="padCols"></div><div class="tools" id="padStamps"></div>'+
+    '<div class="tools" id="padLetters"></div><div class="tools"><button class="pill" id="padThin" type="button" aria-pressed="false">Thin</button>'+
+    '<button class="pill" id="padThick" type="button" aria-pressed="true">Thick</button><button class="pill" id="padSplatMode" type="button" aria-pressed="false">💥 Splat brush</button></div>'+
+    '<div class="tools"><button class="pgb" id="padClear" type="button">🧽 Clear</button><button class="pgb gr" id="padSave" type="button">💾 Save my picture</button></div>'+
+    '<p class="tip" id="padTip">Pick a color, then draw. Stickers and letters go on with one tap.</p>',true);
+  var cv=$('pad'),g=cv.getContext('2d'),drawing=false,col='#ff4d9d',w=14,mode='pen',stamp=null,last=null;
+  var COLS=['#ff4d9d','#ff8a3d','#ffc53d','#3fe0a4','#17c7e8','#8b3dff','#8a5a33','#201540','#ffffff'];
+  function size(){ var r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1,img=null; try{img=cv.width?g.getImageData(0,0,cv.width,cv.height):null;}catch(e){}
+    cv.width=Math.max(320,Math.round(r.width*d)); cv.height=Math.round(cv.width*5/8); g.fillStyle='#fff'; g.fillRect(0,0,cv.width,cv.height);
+    if(img) try{g.putImageData(img,0,0);}catch(e){} g.lineCap='round'; g.lineJoin='round'; }
+  size(); var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(size,220); });
+  function pos(e){ var r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height}; }
+  var sw=$('padCols');
+  function selectCol(b){ sw.querySelectorAll('.sw').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); stamp=null;
+    D.querySelectorAll('#padStamps .stamp,#padLetters .stamp').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); SND.tap(); }
+  COLS.forEach(function(c,i){ var b=H('button',{type:'button','class':'sw','aria-label':'Color '+(i+1),'aria-pressed':i===0?'true':'false'},sw); b.style.background=c;
+    b.addEventListener('click',function(){ col=c; if(mode!=='splat') mode='pen'; selectCol(b); }); });
+  var rb=H('button',{type:'button','class':'sw rain','aria-label':'Rainbow brush','aria-pressed':'false'},sw);
+  rb.addEventListener('click',function(){ mode='rainbow'; selectCol(rb); SND.sparkle(); tip('padTip','Rainbow brush! Every line changes color.'); });
+  var gb=H('button',{type:'button','class':'sw glit','aria-label':'Glitter brush','aria-pressed':'false'},sw);
+  gb.addEventListener('click',function(){ mode='glitter'; selectCol(gb); SND.sparkle(); tip('padTip','Glitter brush! Sparkles everywhere you go. ✨'); });
+  var st=$('padStamps');
+  ['⭐','💖','🌈','🐱','🦄','🌸','🚀','😊','🍦','👑','🦋','🐶'].forEach(function(s){ var b=H('button',{type:'button','class':'stamp','aria-pressed':'false',text:s},st);
+    b.addEventListener('click',function(){ stamp=(stamp===s)?null:s; D.querySelectorAll('#padStamps .stamp,#padLetters .stamp').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      if(stamp) b.setAttribute('aria-pressed','true'); SND.tap(); tip('padTip',stamp?'Now tap the paper to place '+stamp:'Back to drawing.'); }); });
+  var lt=$('padLetters');
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(function(L){ var b=H('button',{type:'button','class':'stamp','aria-pressed':'false',text:L,style:'font-family:Fredoka,sans-serif;font-weight:700;font-size:20px;min-width:40px;padding:6px'},lt);
+    b.addEventListener('click',function(){ stamp=(stamp===L)?null:L; D.querySelectorAll('#padStamps .stamp,#padLetters .stamp').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      if(stamp) b.setAttribute('aria-pressed','true'); SND.tap(); tip('padTip',stamp?'Tap the paper to write a '+L+'. Spell your name!':'Back to drawing.'); }); });
+  $('padThin').addEventListener('click',function(){ w=6; $('padThin').setAttribute('aria-pressed','true'); $('padThick').setAttribute('aria-pressed','false'); SND.tap(); });
+  $('padThick').addEventListener('click',function(){ w=16; $('padThin').setAttribute('aria-pressed','false'); $('padThick').setAttribute('aria-pressed','true'); SND.tap(); });
+  $('padSplatMode').addEventListener('click',function(){ var on=mode!=='splat'; mode=on?'splat':'pen'; this.setAttribute('aria-pressed',on?'true':'false'); SND.pop(); tip('padTip',on?'Splat brush! Every tap is a paint splat.':'Pen brush.'); });
+  var hue2=0;
+  function dot(p){ if(mode==='rainbow'){ hue2=(hue2+9)%360; g.strokeStyle='hsl('+hue2+' 92% 58%)'; } else g.strokeStyle=col;
+    g.lineWidth=w*(cv.width/640); g.beginPath(); if(last){ g.moveTo(last.x,last.y); g.lineTo(p.x,p.y); } else { g.moveTo(p.x,p.y); g.lineTo(p.x+.1,p.y); } g.stroke();
+    if(mode==='glitter'){ for(var i=0;i<4;i++){ g.fillStyle=pick(['#fff','#ffd84d','#ff9ec2','#a3ecfa',col]); g.beginPath(); var gx=p.x+rnd(-18,18)*(cv.width/640),gy=p.y+rnd(-18,18)*(cv.width/640),gr=rnd(2,5)*(cv.width/640);
+      g.moveTo(gx,gy-gr*2); g.lineTo(gx+gr*.5,gy-gr*.5); g.lineTo(gx+gr*2,gy); g.lineTo(gx+gr*.5,gy+gr*.5); g.lineTo(gx,gy+gr*2); g.lineTo(gx-gr*.5,gy+gr*.5); g.lineTo(gx-gr*2,gy); g.lineTo(gx-gr*.5,gy-gr*.5); g.fill(); } }
+    last=p; }
+  function canvasSplat(p){ var sc=cv.width/640, kind=pick(['blob','big','drip','burst','swirl']), c=col, i,a,r;
+    g.fillStyle=c; g.strokeStyle=c; g.lineCap='round';
+    if(kind==='swirl'){ g.lineWidth=8*sc; g.beginPath(); var R=rnd(18,46)*sc; for(var t=0;t<=13.8;t+=.25){ var rad=R*t/13.8; var x=p.x+Math.cos(t)*rad,y=p.y+Math.sin(t)*rad; t?g.lineTo(x,y):g.moveTo(x,y);} g.stroke(); }
+    else if(kind==='burst'){ r=rnd(22,60)*sc; g.lineWidth=7*sc; for(i=0;i<8;i++){ a=i*.785+rnd(-.3,.3); g.beginPath(); g.moveTo(p.x,p.y); g.lineTo(p.x+Math.cos(a)*r,p.y+Math.sin(a)*r); g.stroke(); g.beginPath(); g.arc(p.x+Math.cos(a)*r,p.y+Math.sin(a)*r,rnd(4,9)*sc,0,6.283); g.fill(); } }
+    else { r=(kind==='big'?rnd(34,64):rnd(8,28))*sc; g.beginPath(); for(i=0;i<12;i++){ a=i*.523; var rr=r*rnd(.55,1.45); var x2=p.x+Math.cos(a)*rr,y2=p.y+Math.sin(a)*rr; i?g.lineTo(x2,y2):g.moveTo(x2,y2);} g.closePath(); g.fill();
+      for(i=0;i<5;i++){ g.beginPath(); g.arc(p.x+rnd(-r*2,r*2),p.y+rnd(-r*2,r*2),rnd(2,r*.3),0,6.283); g.fill(); }
+      if(kind==='drip'||Math.random()<.5){ g.lineWidth=rnd(4,9)*sc; g.beginPath(); g.moveTo(p.x,p.y+r*.5); g.lineTo(p.x+rnd(-4,4),p.y+r+rnd(30,90)*sc); g.stroke(); } }
+    SND.pop(); }
+  cv.addEventListener('pointerdown',function(e){ var p=pos(e);
+    if(stamp){ g.font='700 '+Math.round(cv.width/10)+'px Fredoka,serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillStyle=col; g.fillText(stamp,p.x,p.y); SND.ding(); return; }
+    if(mode==='splat'){ canvasSplat(p); return; }
+    drawing=true; last=null; dot(p); try{cv.setPointerCapture(e.pointerId);}catch(x){} SND.tone(rnd(500,900),0.07,'sine',0.03); e.preventDefault(); });
+  cv.addEventListener('pointermove',function(e){ if(drawing){ dot(pos(e)); e.preventDefault(); } });
+  function stop(){ drawing=false; last=null; } cv.addEventListener('pointerup',stop); cv.addEventListener('pointercancel',stop); cv.addEventListener('pointerleave',stop);
+  $('padClear').addEventListener('click',function(){ g.fillStyle='#fff'; g.fillRect(0,0,cv.width,cv.height); SND.whoosh(); tip('padTip','Clean paper. Draw something new!'); });
+  $('padSave').addEventListener('click',function(){ try{ var a=D.createElement('a'); a.download='my-picture.png'; a.href=cv.toDataURL('image/png'); a.click(); SND.win(); tip('padTip','Saved! Check your downloads. 💾'); }catch(e){ tip('padTip','Take a screenshot to keep this one!'); } });
+})();
 
-  function goodbye(){
-    if (host.classList.contains('gone')) return;
-    say.innerHTML = "Bye for now! Watch me fly! 🦄👑";
-    puff(26);
-    host.classList.remove('mini');
-    host.classList.add('big','riding');
-    var trail = setInterval(function(){ sparks(6); }, 380);
-    /* the tornado finish */
-    setTimeout(function(){
-      host.classList.add('tornado');
-      sparks(60);
-      puff(40);
-    }, 20500);
-    setTimeout(function(){
-      clearInterval(trail);
-      host.classList.add('gone');
-      host.classList.remove('riding','tornado','big');
-      reopen.classList.add('on');
-    }, 23000);
-  }
-  D.getElementById('closeme').onclick=goodbye;
-  reopen.onclick=function(){
-    host.classList.remove('gone');
-    reopen.classList.remove('on');
-    speak("You came back! Brilliant. What shall we learn?");
-    mainChips();
-  };
+/* ── 2. SPLAT WALL — the new engine ── */
+(function(){
+  toy('🎨 Splat wall','<svg id="wall" viewBox="0 0 760 300" role="img" aria-label="A wall you can splash paint on"></svg><div class="tools" id="wallCols"></div>'+
+    '<div class="tools"><button class="pgb" id="wallClear" type="button">🧽 Clean it off</button><button class="pgb pink" id="wallParty" type="button">🎉 Splat party</button></div>'+
+    '<p class="tip">Drag to splash. Big ones, small ones, swirls, rainbows and glitter. You are allowed to paint everywhere here.</p>',true);
+  var svg=$('wall'), COLS=BOW.concat(['#fff','#201540','rainbow','glitter']), col=COLS[0], paintG, on=false;
+  function reset(){ clear(svg); E('rect',{width:760,height:300,fill:'#f2ece4',rx:18},svg); for(var i=0;i<10;i++) E('line',{x1:0,y1:i*30+14,x2:760,y2:i*30+14,stroke:'#e3dbd0','stroke-width':2},svg); paintG=E('g',null,svg); }
+  reset();
+  var sw=$('wallCols');
+  COLS.forEach(function(c,i){ var b=H('button',{type:'button','class':'sw'+(c==='rainbow'?' rain':c==='glitter'?' glit':''),'aria-label':'Paint '+c,'aria-pressed':i===0?'true':'false'},sw);
+    if(c!=='rainbow'&&c!=='glitter') b.style.background=c;
+    b.addEventListener('click',function(){ col=c; sw.querySelectorAll('.sw').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); SND.tap(); }); });
+  svg.addEventListener('pointerdown',function(e){ on=true; var p=pt(svg,e,760,300); splatAt(paintG,p.x,p.y,{color:col,scale:rnd(.8,1.6)}); SND.pop(); try{svg.setPointerCapture(e.pointerId);}catch(x){} e.preventDefault(); });
+  svg.addEventListener('pointermove',function(e){ if(!on) return; var p=pt(svg,e,760,300); if(Math.random()<.4) splatAt(paintG,p.x,p.y,{color:col,scale:rnd(.5,1.3)}); e.preventDefault(); });
+  svg.addEventListener('pointerup',function(){ on=false; }); svg.addEventListener('pointercancel',function(){ on=false; });
+  $('wallClear').addEventListener('click',function(){ reset(); SND.whoosh(); });
+  $('wallParty').addEventListener('click',function(){ SND.tada(); for(var i=0;i<30;i++)(function(i){ setTimeout(function(){ splatAt(paintG,rnd(30,730),rnd(30,270),{color:pick(COLS),scale:rnd(.6,2)}); SND.tone(rnd(300,900),0.05,'triangle',0.03); },i*60); })(i); });
+})();
 
-  mainChips();
-  var isHome = !D.querySelector('.crumb, .topband')
-            && D.body.getAttribute('data-pw') !== 'page';
-  if (!isHome){
-    /* every other page: straight into the little corner helper */
-    host.classList.add('mini');
-    speak("I am here to help you! Ask me anything, or say <b>study</b> and we will learn together.");
-    window.PWprincessReady = 1;
-    return;
-  }
-  speak("Welcome to <b>Phoenix's World</b>, where <i>kids make rulz</i>! 😋<br>I am <b>Princess Phoenix Sparkles</b>. Let us learn something and have some fun!");
-  /* She lands centre-screen as a fixed overlay, so she is on screen the
-     instant the page opens no matter how far down the page sits. */
-  host.classList.add('big', 'arriving');
-  setTimeout(function(){ host.classList.remove('arriving'); }, 3200);
-  setTimeout(toCorner, 9000);
+/* ── 3. CHOCOLATE MILK ── */
+(function(){
+  toy('🥛 Chocolate milk','<svg id="milk" viewBox="0 0 300 300" role="img" aria-label="A glass of chocolate milk. Tap to sip."></svg><div class="tools"><button class="pgb" id="milkFill" type="button">🍫 Fill it back up</button></div><p class="tip" id="milkTip">Tap the glass to take a sip through the straw.</p>');
+  var svg=$('milk'),FULL=96,EMPTY=248,level=FULL;
+  var defs=E('defs',null,svg),cp=E('clipPath',{id:'mkClip'},defs); E('path',{d:'M101 78 L199 78 L187 250 L113 250 Z'},cp);
+  var lg=E('linearGradient',{id:'mkG',x1:0,y1:0,x2:1,y2:0},defs); E('stop',{offset:0,'stop-color':'#7a4a2a'},lg); E('stop',{offset:.45,'stop-color':'#a9714a'},lg); E('stop',{offset:1,'stop-color':'#6e3f22'},lg);
+  E('rect',{width:300,height:300,fill:'#fff6ea',rx:18},svg);
+  E('path',{d:'M95 70 L205 70 L192 258 L108 258 Z',fill:'#eaf4fb',stroke:'#b8cfdd','stroke-width':3},svg);
+  var milkG=E('g',{'clip-path':'url(#mkClip)'},svg), milk=E('rect',{x:100,y:level,width:100,height:260,fill:'url(#mkG)'},milkG), surf=E('ellipse',{cx:150,cy:level,rx:48,ry:7,fill:'#c08a5e'},milkG);
+  var bubG=E('g',{'clip-path':'url(#mkClip)'},svg);
+  E('path',{d:'M186 34 q-14 2 -16 14 l-14 190',stroke:'#ff4d9d','stroke-width':13,fill:'none','stroke-linecap':'round'},svg);
+  E('path',{d:'M186 34 q-14 2 -16 14 l-14 190',stroke:'#ffd0e8','stroke-width':5,fill:'none','stroke-linecap':'round',opacity:.75,'stroke-dasharray':'9 11'},svg);
+  E('path',{d:'M95 70 L205 70 L192 258 L108 258 Z',fill:'#fff',opacity:.18},svg);
+  E('path',{d:'M95 70 L205 70 L192 258 L108 258 Z',fill:'none',stroke:'#201540','stroke-width':5,'stroke-linejoin':'round'},svg);
+  E('ellipse',{cx:150,cy:70,rx:55,ry:10,fill:'none',stroke:'#201540','stroke-width':5},svg);
+  E('path',{d:'M116 88 L110 240',stroke:'#fff','stroke-width':7,opacity:.5,'stroke-linecap':'round'},svg);
+  var eyeL=E('circle',{cx:132,cy:170,r:7,fill:'#201540'},svg),eyeR=E('circle',{cx:168,cy:170,r:7,fill:'#201540'},svg);
+  E('circle',{cx:130,cy:168,r:2.4,fill:'#fff'},svg); E('circle',{cx:166,cy:168,r:2.4,fill:'#fff'},svg);
+  var mouth=E('path',{d:'M134 192 q16 14 32 0',stroke:'#201540','stroke-width':5,fill:'none','stroke-linecap':'round'},svg);
+  E('circle',{cx:118,cy:186,r:8,fill:'#ff9ec2',opacity:.55},svg); E('circle',{cx:182,cy:186,r:8,fill:'#ff9ec2',opacity:.55},svg);
+  E('path',{d:'M118 276 q32 -12 64 0',stroke:'#201540','stroke-width':5,fill:'none','stroke-linecap':'round'},svg);
+  function setLevel(v){ level=v; milk.setAttribute('y',v); surf.setAttribute('cy',v); var gone=v>=EMPTY-2; surf.style.opacity=gone?0:1; mouth.setAttribute('d',gone?'M134 196 q16 -14 32 0':'M134 192 q16 14 32 0'); }
+  function bubbles(){ for(var i=0;i<5;i++)(function(i){ setTimeout(function(){ var b=E('circle',{cx:158-rnd(0,6),cy:level+rnd(6,30),r:rnd(2.5,5),fill:'#fff',opacity:.75},bubG);
+    b.style.transition='transform .8s ease-out,opacity .8s'; requestAnimationFrame(function(){ b.style.transform='translate(4px,-'+rnd(24,48)+'px)'; b.style.opacity=0; }); setTimeout(function(){ b.remove(); },900); },i*90); })(i); }
+  svg.addEventListener('pointerdown',function(){ if(level>=EMPTY-2){ SND.oops(); tip('milkTip','All gone! Tap "Fill it back up". 🍫'); say('All gone!'); return; }
+    setLevel(Math.min(EMPTY,level+19)); SND.slurp&&SND.slurp(); SND.slide(210,420,0.3,'sawtooth',0.05); bubbles();
+    eyeL.setAttribute('r',4); eyeR.setAttribute('r',4); setTimeout(function(){ eyeL.setAttribute('r',7); eyeR.setAttribute('r',7); },200);
+    var y=pick(['Mmmm!','Yummy!','So good!','Chocolatey!','Slurp!']); tip('milkTip',y); if(Math.random()<.5) say(y); });
+  milk.style.transition='y .35s ease-out'; surf.style.transition='cy .35s ease-out'; setLevel(FULL);
+  $('milkFill').addEventListener('click',function(){ setLevel(FULL); SND.win(); P.sparkleAt(svg.getBoundingClientRect().left+150,svg.getBoundingClientRect().top+150,16); tip('milkTip','Filled to the top! Tap to sip. 🥛'); });
+})();
 
-  /* every now and then she does something daft on her own */
-  function move(cls, ms, line){
-    pcat.classList.add(cls);
-    if (line) speak(line);
-    setTimeout(function(){ pcat.classList.remove(cls); }, ms);
-  }
-  window.PWmove = move;
+/* ── 4. SPARKLE CATCH — with speed picker ── */
+(function(){
+  toy('✨ Sparkle catch','<svg id="catch" viewBox="0 0 400 300" role="img" aria-label="Catch the falling sparkles"></svg><div class="tools" id="catchLv"></div>'+
+    '<div class="tools"><button class="pgb gr" id="catchStart" type="button">▶ Start</button><button class="pgb" id="catchLeft" type="button" aria-label="Move left">◀</button><button class="pgb" id="catchRight" type="button" aria-label="Move right">▶</button></div><p class="tip" id="catchTip">Slide the basket and catch the color it asks for.</p>');
+  var svg=$('catch'),CC=[{n:'pink',c:'#ff4d9d'},{n:'yellow',c:'#ffc53d'},{n:'green',c:'#3fe0a4'},{n:'blue',c:'#17c7e8'},{n:'purple',c:'#8b3dff'}],speed=1;
+  E('rect',{width:400,height:300,fill:'#1a0f33',rx:18},svg); for(var s=0;s<30;s++) E('circle',{cx:rnd(6,394),cy:rnd(6,250),r:rnd(.7,1.9),fill:'#fff',opacity:rnd(.2,.7)},svg);
+  var label=E('text',{x:200,y:30,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':22,'font-weight':700,fill:'#fff'},svg),
+      scoreT=E('text',{x:200,y:54,'text-anchor':'middle','font-family':'Nunito,sans-serif','font-size':17,'font-weight':800,fill:'#ffc53d'},svg),
+      fallG=E('g',null,svg), basket=E('g',null,svg);
+  E('path',{d:'M-34 -16 L34 -16 L26 20 L-26 20 Z',fill:'#c98a4a',stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},basket);
+  E('path',{d:'M-34 -8 L34 -8 M-30 4 L30 4',stroke:'#8a5a2b','stroke-width':3},basket); E('path',{d:'M-30 -16 q30 -26 60 0',stroke:'#c98a4a','stroke-width':5,fill:'none'},basket);
+  var bx=200,target=pick(CC),score=0,items=[],running=false,raf=null,spawnT=null;
+  function paint(){ basket.setAttribute('transform','translate('+bx+',262)'); } paint();
+  function setTarget(){ target=pick(CC); label.textContent='Catch the '+target.n+' sparkles!'; label.setAttribute('fill',target.c); }
+  function upd(){ scoreT.textContent='⭐ '+score; } setTarget(); upd();
+  function spawn(){ var c=pick(CC),x=rnd(28,372),g=E('g',null,fallG); E('circle',{r:11,fill:c.c,stroke:'#fff','stroke-width':2},g);
+    E('path',{d:'M0 -18 L4 -5 L18 0 L4 5 L0 18 L-4 5 L-18 0 L-4 -5 Z',fill:c.c,opacity:.85},g); items.push({x:x,y:70,vy:rnd(1.2,2.4)*speed,c:c,el:g}); }
+  function step(){ if(!running) return; for(var i=items.length-1;i>=0;i--){ var o=items[i]; o.y+=o.vy; o.el.setAttribute('transform','translate('+o.x.toFixed(1)+','+o.y.toFixed(1)+') rotate('+(o.y*2).toFixed(0)+')');
+    if(o.y>244&&o.y<280&&Math.abs(o.x-bx)<40){ if(o.c.n===target.n){ score++; SND.ding(); if(score%5===0){ setTarget(); say('Now catch the '+target.n+' ones'); } } else { SND.oops(); } upd(); o.el.remove(); items.splice(i,1); continue; }
+    if(o.y>310){ o.el.remove(); items.splice(i,1); } } raf=requestAnimationFrame(step); }
+  function start(){ if(running) return; running=true; spawnT=setInterval(spawn,720/speed); raf=requestAnimationFrame(step); $('catchStart').textContent='⏸ Pause'; tip('catchTip','Slide the basket left and right!'); }
+  function pause(){ running=false; clearInterval(spawnT); cancelAnimationFrame(raf); $('catchStart').textContent='▶ Start'; }
+  [['Slow',.7],['Normal',1],['Fast',1.6],['Zoom!',2.4]].forEach(function(l,i){ var b=H('button',{type:'button','class':'pill','aria-pressed':i===1?'true':'false',text:l[0]},$('catchLv'));
+    b.addEventListener('click',function(){ speed=l[1]; $('catchLv').querySelectorAll('.pill').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); if(running){ pause(); start(); } SND.tap(); }); });
+  $('catchStart').addEventListener('click',function(){ running?pause():start(); });
+  $('catchLeft').addEventListener('click',function(){ bx=Math.max(40,bx-36); paint(); SND.tap(); }); $('catchRight').addEventListener('click',function(){ bx=Math.min(360,bx+36); paint(); SND.tap(); });
+  var drag=false; svg.addEventListener('pointerdown',function(e){ drag=true; var p=pt(svg,e,400,300); bx=Math.max(40,Math.min(360,p.x)); paint(); if(!running) start(); e.preventDefault(); });
+  svg.addEventListener('pointermove',function(e){ if(!drag) return; var p=pt(svg,e,400,300); bx=Math.max(40,Math.min(360,p.x)); paint(); e.preventDefault(); });
+  svg.addEventListener('pointerup',function(){ drag=false; }); svg.addEventListener('pointercancel',function(){ drag=false; });
+  D.addEventListener('visibilitychange',function(){ if(D.hidden&&running) pause(); });
+})();
 
-  var ANTICS = [
-    function(){ move('stretching', 2600,
-      "Stretch break! 🙆 Reach up and touch the sky with me… stretch taaaall… and relax. Your body likes that."); },
-    function(){ move('toetouch', 2600,
-      "Bend down and touch your toes with me! 🤸 Slowly now. Did you stretch today?"); },
-    function(){ move('wiggling', 2200,
-      "WIGGLE TIME! 🕺 Shake your arms, shake your legs, shake your whole self. Now giggle. It is the rules."); },
-    function(){ move('flipping', 1300, "Watch this! 🤸 <b>FLIP!</b>"); },
-    function(){ speak("Quick question — how long have you been on the screen? ⏰ Have a stretch, drink some water, and go outside if your grown-up says it is okay. I will be here after."); },
+/* ── 5. MEMORY MATCH — with level picker ── */
+(function(){
+  toy('🧠 Memory match','<svg id="memory" viewBox="0 0 400 300" role="img" aria-label="Flip cards to find matching pairs"></svg><div class="tools" id="memLv"></div><div class="tools"><button class="pgb pink" id="memNew" type="button">🔁 Shuffle again</button></div><p class="tip" id="memTip">Flip two cards. Find the pairs.</p>');
+  var svg=$('memory'),FACES=['🐱','🦄','🌈','⭐','🍓','🚀','🐸','🌸','🦋','🍦','🐢','🎈'],pairs=6,cards=[],open=[],lock=false,found=0,flips=0;
+  function deal(){ clear(svg); cards=[]; open=[]; found=0; lock=false; flips=0;
+    E('rect',{width:400,height:300,fill:'#f4ecff',rx:18},svg);
+    var cols=pairs<=4?4:pairs<=6?4:pairs<=8?4:6, rows=Math.ceil(pairs*2/cols), cw=(400-16)/cols-8, ch=(300-16)/rows-8;
+    var set=FACES.slice().sort(function(){ return Math.random()-.5; }).slice(0,pairs), deck=set.concat(set).sort(function(){ return Math.random()-.5; });
+    deck.forEach(function(face,i){ var cx=12+(i%cols)*(cw+8),cy=12+Math.floor(i/cols)*(ch+8);
+      var g=E('g',{style:'cursor:pointer',role:'button',tabindex:0,'aria-label':'Card '+(i+1)},svg), back=E('g',null,g);
+      E('rect',{x:cx,y:cy,width:cw,height:ch,rx:12,fill:'#8b3dff',stroke:'#201540','stroke-width':4},back);
+      E('text',{x:cx+cw/2,y:cy+ch/2+ch*.15,'text-anchor':'middle','font-size':ch*.45},back).textContent='❓';
+      var front=E('g',{opacity:0},g); E('rect',{x:cx,y:cy,width:cw,height:ch,rx:12,fill:'#fff',stroke:'#201540','stroke-width':4},front);
+      E('text',{x:cx+cw/2,y:cy+ch/2+ch*.17,'text-anchor':'middle','font-size':ch*.5},front).textContent=face;
+      var c={face:face,back:back,front:front,up:false,done:false,g:g}; cards.push(c);
+      function flip(){ if(lock||c.up||c.done) return; c.up=true; back.style.opacity=0; front.style.opacity=1; g.classList.remove('popin'); void g.offsetWidth; g.classList.add('popin'); SND.tap(); open.push(c); flips++;
+        if(open.length===2){ lock=true; setTimeout(function(){ if(open[0].face===open[1].face){ open.forEach(function(x){ x.done=true; x.front.style.opacity=.55; }); found++; SND.ding(); tip('memTip','Match! '+found+' of '+pairs+' found.');
+          if(found===pairs){ SND.win(); P.confetti(70); say('You found them all in '+flips+' flips!'); tip('memTip','All '+pairs+' pairs in '+flips+' flips! 🎉'); } }
+          else { open.forEach(function(x){ x.up=false; x.back.style.opacity=1; x.front.style.opacity=0; }); SND.oops(); tip('memTip','Not a pair. Try again!'); } open=[]; lock=false; },720); } }
+      g.addEventListener('click',flip); g.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ flip(); e.preventDefault(); } }); });
+    tip('memTip','Find all '+pairs+' pairs.'); }
+  [['Easy',4],['Medium',6],['Hard',8],['Expert',12]].forEach(function(l,i){ var b=H('button',{type:'button','class':'pill','aria-pressed':i===1?'true':'false',text:l[0]+' ('+l[1]+')'},$('memLv'));
+    b.addEventListener('click',function(){ pairs=l[1]; $('memLv').querySelectorAll('.pill').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); deal(); SND.whoosh(); }); });
+  $('memNew').addEventListener('click',function(){ deal(); SND.whoosh(); }); deal();
+})();
 
-    function(){ speak("Bubble time! 🫧"); blowBubbles(); },
-    function(){ speak("🎈 Blowing up a balloon… and… letting it GO! Wheeee!"); },
-    function(){ speak("Wormy says hello! 🐛 He is reading a book about clouds."); }
-  ];
-  function blowBubbles(){
-    for (var i=0;i<10;i++){
-      (function(i){
-        setTimeout(function(){
-          var b=D.createElement('b');
-          b.className='floatbub';
-          b.style.left=(10+Math.random()*80)+'vw';
-          b.style.width=b.style.height=(16+Math.random()*40)+'px';
-          b.style.animationDuration=(4+Math.random()*4)+'s';
-          D.body.appendChild(b);
-          setTimeout(function(){ b.remove(); }, 8000);
-        }, i*140);
-      })(i);
-    }
-  }
-  setInterval(function(){
-    if (host.classList.contains('mini') && !host.classList.contains('gone') && Math.random()<0.5)
-      ANTICS[Math.floor(Math.random()*ANTICS.length)]();
-  }, 30000);
+/* ── 6. BALLOON POP COUNTING ── */
+(function(){
+  toy('🎈 Balloon pop counting','<svg id="balloon" viewBox="0 0 400 300" role="img" aria-label="Pop the balloons and count"></svg><div class="tools"><button class="pgb cy" id="balNew" type="button">🎈 More balloons</button></div><p class="tip" id="balTip">Pop them one at a time and count down with me.</p>');
+  var svg=$('balloon'),BC=BOW,left=0,total=0,countT;
+  function build(){ clear(svg); E('rect',{width:400,height:300,fill:'#e8f6ff',rx:18},svg); E('path',{d:'M0 248 q100 -18 200 0 t200 -6 V300 H0z',fill:'#b6e8c2'},svg);
+    countT=E('text',{x:200,y:36,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':26,'font-weight':700,fill:'#201540'},svg);
+    var bg=E('g',null,svg); total=left=ri(4,9);
+    for(var i=0;i<total;i++)(function(i){ var x=40+i*(320/Math.max(1,total-1)),y=rnd(90,180),c=BC[i%BC.length];
+      var g=E('g',{style:'cursor:pointer',role:'button',tabindex:0,'aria-label':'Balloon '+(i+1)},bg);
+      E('path',{d:'M'+x+' '+(y+34)+' q10 22 -2 44',stroke:'#8a7fa6','stroke-width':2.5,fill:'none'},g);
+      E('ellipse',{cx:x,cy:y,rx:26,ry:32,fill:c,stroke:'#201540','stroke-width':4},g); E('ellipse',{cx:x-9,cy:y-11,rx:7,ry:10,fill:'#fff',opacity:.55},g);
+      E('path',{d:'M'+(x-6)+' '+(y+32)+' l6 8 6 -8 z',fill:c,stroke:'#201540','stroke-width':3,'stroke-linejoin':'round'},g);
+      E('text',{x:x,y:y+9,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':24,'font-weight':700,fill:'#201540',opacity:.65},g).textContent=(i+1);
+      g.style.animation='bobby '+(2.4+i*.25).toFixed(1)+'s ease-in-out infinite';
+      function pop(){ if(g.dataset.gone) return; g.dataset.gone='1'; left--; countT.textContent='Balloons left: '+left; SND.pop(); var r=g.getBoundingClientRect(); P.sparkleAt(r.left+r.width/2,r.top+r.height/2,16,[c]);
+        g.style.transition='transform .18s,opacity .18s'; g.style.transform='scale(1.5)'; g.style.opacity='0'; setTimeout(function(){ g.remove(); },200); say(left===0?'All popped!':String(left)+' left');
+        if(left===0){ SND.win(); P.confetti(60); tip('balTip','You popped all '+total+'! Tap for more. 🎈'); } else tip('balTip',left+' balloon'+(left===1?'':'s')+' to go.'); }
+      g.addEventListener('click',pop); g.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ pop(); e.preventDefault(); } }); })(i);
+    countT.textContent='Balloons left: '+left; tip('balTip','There are '+total+' balloons. Pop them and count down!'); }
+  $('balNew').addEventListener('click',function(){ build(); SND.whoosh(); }); build();
+})();
 
-  window.PWprincess = { bubbles:blowBubbles, toCorner:toCorner, goodbye:goodbye, setAge:setAge, speak:speak, ask:answer };
+/* shared drag helper for the drag-and-drop toys */
+function dragify(svg,vw,vh,node,set,onDrop,guard){ var on=false;
+  node.addEventListener('pointerdown',function(e){ if(guard&&!guard()) return; on=true; if(node.parentNode) node.parentNode.appendChild(node); try{svg.setPointerCapture(e.pointerId);}catch(x){} SND.tap(); e.preventDefault(); });
+  svg.addEventListener('pointermove',function(e){ if(!on) return; if(node.isConnected===false){ on=false; return; } var p=pt(svg,e,vw,vh); set(p.x,p.y); e.preventDefault(); });
+  function up(){ if(!on) return; on=false; if(onDrop) onDrop(); } svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up); }
+
+/* ── 7. SHAPE SORTER ── */
+(function(){
+  toy('🔺 Shape sorter','<svg id="shapes" viewBox="0 0 400 300" role="img" aria-label="Drag each shape into its matching hole"></svg><div class="tools"><button class="pgb" id="shapeNew" type="button">🔁 Mix them up</button></div><p class="tip" id="shapeTip">Drag each shape to the hole that matches it.</p>');
+  var svg=$('shapes'),TYPES=[{id:'circle',col:'#ff4d9d'},{id:'square',col:'#17c7e8'},{id:'triangle',col:'#3fe0a4'},{id:'star',col:'#ffc53d'},{id:'heart',col:'#8b3dff'}];
+  function shape(g,t,s,fill,stroke){ var st=stroke||'#201540';
+    if(t==='circle') E('circle',{r:s,fill:fill,stroke:st,'stroke-width':4},g);
+    else if(t==='square') E('rect',{x:-s,y:-s,width:s*2,height:s*2,rx:6,fill:fill,stroke:st,'stroke-width':4},g);
+    else if(t==='triangle') E('path',{d:'M0 '+(-s*1.1)+' L'+(s*1.05)+' '+(s*.8)+' L'+(-s*1.05)+' '+(s*.8)+' Z',fill:fill,stroke:st,'stroke-width':4,'stroke-linejoin':'round'},g);
+    else if(t==='heart') E('path',{d:'M0 '+(s*.9)+' C'+(-s*1.3)+' 0 '+(-s*1.1)+' '+(-s)+' '+(-s*.45)+' '+(-s)+' C'+(-s*.15)+' '+(-s)+' 0 '+(-s*.7)+' 0 '+(-s*.5)+' C0 '+(-s*.7)+' '+(s*.15)+' '+(-s)+' '+(s*.45)+' '+(-s)+' C'+(s*1.1)+' '+(-s)+' '+(s*1.3)+' 0 0 '+(s*.9)+'Z',fill:fill,stroke:st,'stroke-width':4,'stroke-linejoin':'round'},g);
+    else { var d='',i,a,rr; for(i=0;i<10;i++){ a=-Math.PI/2+i*Math.PI/5; rr=i%2?s*.46:s*1.12; d+=(i?'L':'M')+(Math.cos(a)*rr).toFixed(1)+' '+(Math.sin(a)*rr).toFixed(1)+' '; } E('path',{d:d+'Z',fill:fill,stroke:st,'stroke-width':4,'stroke-linejoin':'round'},g); } }
+  function build(){ clear(svg); E('rect',{width:400,height:300,fill:'#fff6e8',rx:18},svg); E('rect',{x:16,y:30,width:368,height:106,rx:16,fill:'#e8c99a',stroke:'#b8935f','stroke-width':5},svg);
+    E('text',{x:200,y:22,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':17,'font-weight':700,fill:'#8a6a3a'},svg).textContent='Drop each shape in its hole';
+    var holes=[],slots=TYPES.slice().sort(function(){ return Math.random()-.5; });
+    slots.forEach(function(t,i){ var hx=52+i*74,hy=83,g=E('g',{transform:'translate('+hx+','+hy+')',opacity:.55},svg); shape(g,t.id,24,'#7a5a33','#6a4a26'); holes.push({t:t.id,x:hx,y:hy,filled:false}); });
+    var pool=TYPES.slice().sort(function(){ return Math.random()-.5; }),done=0;
+    pool.forEach(function(t,i){ var hx=52+i*74,hy=232,g=E('g',{style:'cursor:grab',transform:'translate('+hx+','+hy+')'},svg); shape(g,t.id,23,t.col); var st={x:hx,y:hy,locked:false};
+      dragify(svg,400,300,g,function(x,y){ st.x=x; st.y=y; g.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+') scale(1.12)'); },function(){ var best=null,bd=1e9;
+        holes.forEach(function(h){ var d=Math.hypot(st.x-h.x,st.y-h.y); if(d<bd){ bd=d; best=h; } });
+        if(best&&bd<48&&!best.filled&&best.t===t.id){ best.filled=true; st.locked=true; done++; g.style.transition='transform .28s cubic-bezier(.3,1.6,.5,1)'; g.setAttribute('transform','translate('+best.x+','+best.y+')'); SND.ding(); say('That is a '+t.id); tip('shapeTip','Yes! That is a '+t.id+'.');
+          if(done===TYPES.length){ SND.win(); P.confetti(70); say('All five! Great job!'); tip('shapeTip','All five shapes! Amazing. 🔺⭐💜'); } }
+        else { g.style.transition='transform .3s ease-out'; g.setAttribute('transform','translate('+hx+','+hy+')'); st.x=hx; st.y=hy; SND.oops(); tip('shapeTip','Not that hole. Find the '+t.id+' hole.'); }
+        setTimeout(function(){ g.style.transition=''; },320); },function(){ return !st.locked; }); });
+    tip('shapeTip','Drag each shape to the hole that matches it.'); }
+  $('shapeNew').addEventListener('click',function(){ build(); SND.whoosh(); }); build();
+})();
+
+/* ── 8. FEED PRINCESS PHOENIX ── */
+(function(){
+  toy('🐱 Feed Princess Phoenix','<svg id="feed" viewBox="0 0 400 300" role="img" aria-label="Drag a snack to the kitten"></svg><div class="tools"><button class="pgb gr" id="feedMore" type="button">🍓 More snacks</button></div><p class="tip" id="feedTip">Drag a snack up to her mouth.</p>');
+  var svg=$('feed'),SN=[{e:'🍓',n:'a strawberry'},{e:'🐟',n:'a fish'},{e:'🍪',n:'a cookie'},{e:'🧀',n:'cheese'},{e:'🥛',n:'milk'},{e:'🍌',n:'a banana'},{e:'🥕',n:'a carrot'},{e:'🍇',n:'grapes'}],mouth,eaten;
+  function build(){ clear(svg); eaten=0; E('rect',{width:400,height:300,fill:'#ffeefb',rx:18},svg); E('path',{d:'M0 214 q100 -16 200 0 t200 -8 V300 H0z',fill:'#ffd9f0'},svg);
+    var k=E('g',null,svg); E('ellipse',{cx:200,cy:196,rx:56,ry:40,fill:'#fff',stroke:'#201540','stroke-width':4},k);
+    E('path',{d:'M162 98 l-8 -40 34 18 z',fill:'#fff',stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},k); E('path',{d:'M238 98 l8 -40 -34 18 z',fill:'#fff',stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},k);
+    E('path',{d:'M166 96 l-4 -22 18 10 z',fill:'#ffb6d5'},k); E('path',{d:'M234 96 l4 -22 -18 10 z',fill:'#ffb6d5'},k);
+    E('circle',{cx:200,cy:120,r:52,fill:'#fff',stroke:'#201540','stroke-width':4},k);
+    E('path',{d:'M172 66 l10 -16 8 14 8 -18 8 18 8 -14 10 16 z',fill:'#ffd84d',stroke:'#c9a01a','stroke-width':3,'stroke-linejoin':'round'},k);
+    E('circle',{cx:182,cy:114,r:9,fill:'#17c7e8',stroke:'#201540','stroke-width':3},k); E('circle',{cx:218,cy:114,r:9,fill:'#8b3dff',stroke:'#201540','stroke-width':3},k);
+    E('circle',{cx:180,cy:111,r:3,fill:'#fff'},k); E('circle',{cx:216,cy:111,r:3,fill:'#fff'},k);
+    E('path',{d:'M194 132 l6 6 6 -6 z',fill:'#ff9ec2',stroke:'#201540','stroke-width':2.5,'stroke-linejoin':'round'},k);
+    mouth=E('ellipse',{cx:200,cy:148,rx:9,ry:5,fill:'#e8577f',stroke:'#201540','stroke-width':3},k);
+    E('circle',{cx:166,cy:134,r:9,fill:'#ff9ec2',opacity:.6},k); E('circle',{cx:234,cy:134,r:9,fill:'#ff9ec2',opacity:.6},k);
+    E('path',{d:'M150 128 h-22 M150 138 h-24 M250 128 h22 M250 138 h24',stroke:'#201540','stroke-width':2.5,'stroke-linecap':'round'},k);
+    SN.slice().sort(function(){ return Math.random()-.5; }).slice(0,4).forEach(function(s,i){ var hx=62+i*92,hy=262,g=E('g',{style:'cursor:grab',transform:'translate('+hx+','+hy+')'},svg);
+      E('circle',{r:26,fill:'#fff',stroke:'#201540','stroke-width':4},g); E('text',{y:11,'text-anchor':'middle','font-size':30},g).textContent=s.e; var st={x:hx,y:hy,gone:false};
+      dragify(svg,400,300,g,function(x,y){ st.x=x; st.y=y; g.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+')'); },function(){
+        if(Math.hypot(st.x-200,st.y-148)<62){ st.gone=true; eaten++; mouth.setAttribute('ry',16); mouth.setAttribute('rx',15); g.style.transition='transform .25s,opacity .25s'; g.setAttribute('transform','translate(200,148) scale(0.2)'); g.style.opacity='0';
+          SND.slide(210,420,0.3,'sawtooth',0.05); say('Mmm, '+s.n+'! Thank you!'); tip('feedTip','Mmm, '+s.n+'! 😻'); setTimeout(function(){ mouth.setAttribute('ry',5); mouth.setAttribute('rx',9); g.remove(); },400); P.sparkleAt(svg.getBoundingClientRect().left+200,svg.getBoundingClientRect().top+150,10);
+          if(eaten===4){ SND.win(); P.confetti(60); tip('feedTip','She is full and very happy. Purrrr. 💖'); say('Purrrr. Thank you for feeding me!'); } }
+        else { g.style.transition='transform .3s ease-out'; g.setAttribute('transform','translate('+hx+','+hy+')'); st.x=hx; st.y=hy; setTimeout(function(){ g.style.transition=''; },320); tip('feedTip','Drag it right up to her mouth.'); } },function(){ return !st.gone; }); });
+    tip('feedTip','Drag a snack up to her mouth.'); }
+  $('feedMore').addEventListener('click',function(){ build(); SND.whoosh(); }); build();
+})();
+
+/* ── 9. CONNECT THE DOTS ── */
+(function(){
+  toy('🔗 Connect the dots','<svg id="dots" viewBox="0 0 400 300" role="img" aria-label="Tap the numbered dots in order"></svg><div class="tools"><button class="pgb pink" id="dotsNew" type="button">🔁 New picture</button></div><p class="tip" id="dotsTip">Tap number 1, then 2, then 3…</p>');
+  var svg=$('dots'),PICS=[{n:'a star',c:'#ffc53d',p:[[200,40],[222,108],[294,108],[236,150],[258,218],[200,176],[142,218],[164,150],[106,108],[178,108]]},
+    {n:'a house',c:'#ff8ad1',p:[[200,46],[300,120],[300,244],[236,244],[236,190],[164,190],[164,244],[100,244],[100,120]]},
+    {n:'a boat',c:'#17c7e8',p:[[196,40],[196,180],[286,180],[196,46],[110,180],[76,200],[324,200],[300,246],[100,246]]},
+    {n:'a cat',c:'#8b3dff',p:[[150,80],[164,40],[196,74],[230,40],[244,80],[262,120],[250,180],[200,204],[150,180],[138,120]]},
+    {n:'a heart',c:'#ff4d9d',p:[[200,90],[150,44],[100,80],[100,140],[200,250],[300,140],[300,80],[250,44]]}];
+  function build(){ var cur=pick(PICS); clear(svg); E('rect',{width:400,height:300,fill:'#f6fbff',rx:18},svg); var lineG=E('g',null,svg),dotG=E('g',null,svg),next=0,pts=cur.p,nodes=[];
+    pts.forEach(function(pos,i){ var g=E('g',{style:'cursor:pointer',role:'button',tabindex:0,'aria-label':'Dot '+(i+1)},dotG); var c=E('circle',{cx:pos[0],cy:pos[1],r:14,fill:i===0?'#3fe0a4':'#fff',stroke:'#201540','stroke-width':4},g);
+      E('text',{x:pos[0],y:pos[1]+6,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':16,'font-weight':700,fill:'#201540'},g).textContent=i+1; nodes.push({g:g,c:c});
+      function hit(){ if(i!==next){ SND.oops(); tip('dotsTip','Find number '+(next+1)+' next.'); return; } c.setAttribute('fill',cur.c); SND.tone(330+i*44,0.18,'sine',0.09);
+        if(i>0) E('line',{x1:pts[i-1][0],y1:pts[i-1][1],x2:pos[0],y2:pos[1],stroke:'#201540','stroke-width':5,'stroke-linecap':'round'},lineG); next++;
+        if(next<pts.length){ nodes[next].c.setAttribute('fill','#3fe0a4'); tip('dotsTip','Now tap number '+(next+1)+'.'); }
+        else { E('line',{x1:pts[pts.length-1][0],y1:pts[pts.length-1][1],x2:pts[0][0],y2:pts[0][1],stroke:'#201540','stroke-width':5,'stroke-linecap':'round'},lineG);
+          var fill=E('path',{d:pts.map(function(q,k){ return (k?'L':'M')+q[0]+' '+q[1]; }).join(' ')+' Z',fill:cur.c,opacity:0},lineG); lineG.insertBefore(fill,lineG.firstChild); fill.style.transition='opacity .8s'; requestAnimationFrame(function(){ fill.style.opacity='.85'; });
+          dotG.style.transition='opacity .8s'; dotG.style.opacity='.25'; SND.win(); P.confetti(60); say('You made '+cur.n+'!'); tip('dotsTip','You made '+cur.n+'! 🎉'); } }
+      g.addEventListener('click',hit); g.addEventListener('keydown',function(e){ if(e.key===' '||e.key==='Enter'){ hit(); e.preventDefault(); } }); });
+    tip('dotsTip','Tap number 1 to start.'); }
+  $('dotsNew').addEventListener('click',function(){ build(); SND.whoosh(); }); build();
+})();
+
+/* ── 10. DECORATE THE ROOM ── */
+(function(){
+  toy('🛏️ Decorate the room','<svg id="room" viewBox="0 0 400 300" role="img" aria-label="Drag the furniture and paint the walls"></svg><div class="tools" id="roomCols"></div><p class="tip" id="roomTip">Drag the furniture. Tap a color to paint the wall.</p>');
+  var svg=$('room'),WALLS=['#ffd0e8','#cfe9ff','#d6ffd9','#fff0c2','#e9d8ff','#ffe0cc'],wall;
+  function bed(g){ E('rect',{x:-46,y:-4,width:92,height:30,rx:6,fill:'#8b3dff',stroke:'#201540','stroke-width':4},g); E('rect',{x:-50,y:-30,width:22,height:30,rx:6,fill:'#7f3fd6',stroke:'#201540','stroke-width':4},g); E('rect',{x:-24,y:-12,width:34,height:16,rx:6,fill:'#fff',stroke:'#201540','stroke-width':3},g); }
+  function rug(g){ E('ellipse',{rx:46,ry:20,fill:'#ffc53d',stroke:'#201540','stroke-width':4},g); E('ellipse',{rx:28,ry:11,fill:'#ff4d9d'},g); }
+  function lamp(g){ E('path',{d:'M0 0 v-38',stroke:'#8a5a33','stroke-width':5},g); E('path',{d:'M-20 -38 L20 -38 L13 -60 L-13 -60 Z',fill:'#ffc53d',stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},g); E('ellipse',{cy:2,rx:16,ry:6,fill:'#8a5a33',stroke:'#201540','stroke-width':3},g); }
+  function toybox2(g){ E('rect',{x:-28,y:-26,width:56,height:30,rx:5,fill:'#17c7e8',stroke:'#201540','stroke-width':4},g); E('rect',{x:-31,y:-34,width:62,height:11,rx:4,fill:'#0b8fa9',stroke:'#201540','stroke-width':4},g); E('circle',{cy:-28,r:3.5,fill:'#ffc53d'},g); }
+  function plant(g){ E('path',{d:'M-13 0 L13 0 L9 -22 L-9 -22 Z',fill:'#e0844a',stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},g); E('path',{d:'M0 -22 q-18 -10 -14 -30 q14 4 14 22 q0 -20 16 -24 q4 22 -16 32z',fill:'#3fe0a4',stroke:'#201540','stroke-width':3},g); }
+  function cat(g){ E('ellipse',{cy:6,rx:26,ry:20,fill:'#ffb15c',stroke:'#201540','stroke-width':4},g); E('circle',{cx:-2,cy:-18,r:17,fill:'#ffb15c',stroke:'#201540','stroke-width':4},g); E('path',{d:'M-16 -30 l-3 -15 l14 8z M12 -30 l3 -15 l-14 8z',fill:'#ffb15c',stroke:'#201540','stroke-width':4,'stroke-linejoin':'round'},g); E('circle',{cx:-8,cy:-19,r:2.6,fill:'#201540'},g); E('circle',{cx:5,cy:-19,r:2.6,fill:'#201540'},g); E('path',{d:'M24 4 q22 -6 16 -24',stroke:'#ffb15c','stroke-width':9,fill:'none','stroke-linecap':'round'},g); }
+  clear(svg); wall=E('rect',{width:400,height:214,fill:WALLS[0],rx:18},svg); E('rect',{y:210,width:400,height:90,fill:'#d9b184'},svg);
+  for(var i=0;i<9;i++) E('line',{x1:0,y1:220+i*9,x2:400,y2:220+i*9,stroke:'#c79b6d','stroke-width':2},svg);
+  E('rect',{x:236,y:34,width:112,height:84,rx:8,fill:'#bfeaff',stroke:'#201540','stroke-width':5},svg); E('path',{d:'M292 34 v84 M236 76 h112',stroke:'#201540','stroke-width':5},svg); E('circle',{cx:268,cy:56,r:9,fill:'#ffd84d'},svg);
+  E('path',{d:'M40 40 h96 v62 h-96z',fill:'#fff',stroke:'#201540','stroke-width':5},svg); E('text',{x:88,y:82,'text-anchor':'middle','font-size':34},svg).textContent='🌈';
+  [{f:bed,x:100,y:246},{f:rug,x:230,y:262},{f:lamp,x:334,y:240},{f:toybox2,x:300,y:262},{f:plant,x:48,y:262},{f:cat,x:180,y:224}].forEach(function(item){ var g=E('g',{style:'cursor:grab',transform:'translate('+item.x+','+item.y+')'},svg); item.f(g); var st={x:item.x,y:item.y};
+    dragify(svg,400,300,g,function(x,y){ st.x=Math.max(30,Math.min(370,x)); st.y=Math.max(216,Math.min(288,y)); g.setAttribute('transform','translate('+st.x.toFixed(1)+','+st.y.toFixed(1)+')'); },function(){ SND.tone(280,0.12,'triangle',0.06); tip('roomTip','Looking good! Move anything you like.'); }); });
+  var sw=$('roomCols'); WALLS.forEach(function(c,i){ var b=H('button',{type:'button','class':'sw','aria-label':'Wall color '+(i+1),'aria-pressed':i===0?'true':'false'},sw); b.style.background=c;
+    b.addEventListener('click',function(){ wall.setAttribute('fill',c); sw.querySelectorAll('.sw').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); SND.ding(); tip('roomTip','New wall color! 🎨'); }); });
+})();
+
+/* ── 11. MARBLE MAZE — three levels ── */
+(function(){
+  var MAZES=[{name:'Easy',w:5,h:4,cells:{"0,0":["E"],"1,0":["S","W"],"2,0":["E"],"3,0":["E","S","W"],"4,0":["S","W"],"0,1":["S"],"1,1":["E","N"],"2,1":["E","W"],"3,1":["N","W"],"4,1":["N","S"],"0,2":["E","N","S"],"1,2":["E","W"],"2,2":["E","W"],"3,2":["S","W"],"4,2":["N","S"],"0,3":["E","N"],"1,3":["E","W"],"2,3":["W"],"3,3":["E","N"],"4,3":["N","W"]}},
+  {name:'Medium',w:7,h:5,cells:{"0,0":["S"],"1,0":["E","S"],"2,0":["E","W"],"3,0":["E","W"],"4,0":["S","W"],"5,0":["E","S"],"6,0":["S","W"],"0,1":["N","S"],"1,1":["N","S"],"2,1":["S"],"3,1":["E","S"],"4,1":["N","W"],"5,1":["N"],"6,1":["N","S"],"0,2":["N","S"],"1,2":["N","S"],"2,2":["E","N","S"],"3,2":["N","W"],"4,2":["E","S"],"5,2":["E","W"],"6,2":["N","S","W"],"0,3":["E","N"],"1,3":["N","W"],"2,3":["N","S"],"3,3":["E","S"],"4,3":["N","W"],"5,3":["E","S"],"6,3":["N","W"],"0,4":["E"],"1,4":["E","W"],"2,4":["E","N","W"],"3,4":["N","W"],"4,4":["E"],"5,4":["E","N","W"],"6,4":["W"]}},
+  {name:'Tricky',w:9,h:6,cells:{"0,0":["S"],"1,0":["E"],"2,0":["E","W"],"3,0":["S","W"],"4,0":["E","S"],"5,0":["E","S","W"],"6,0":["E","W"],"7,0":["E","W"],"8,0":["S","W"],"0,1":["E","N"],"1,1":["E","W"],"2,1":["S","W"],"3,1":["E","N"],"4,1":["N","W"],"5,1":["E","N","S"],"6,1":["S","W"],"7,1":["E","S"],"8,1":["N","W"],"0,2":["E","S"],"1,2":["S","W"],"2,2":["E","N"],"3,2":["E","W"],"4,2":["S","W"],"5,2":["N"],"6,2":["N","S"],"7,2":["N","S"],"8,2":["S"],"0,3":["N","S"],"1,3":["E","N"],"2,3":["E","W"],"3,3":["S","W"],"4,3":["E","N"],"5,3":["E","W"],"6,3":["N","W"],"7,3":["E","N"],"8,3":["N","S","W"],"0,4":["E","N"],"1,4":["S","W"],"2,4":["E","S"],"3,4":["E","N","W"],"4,4":["E","W"],"5,4":["E","W"],"6,4":["E","W"],"7,4":["W"],"8,4":["N","S"],"0,5":["E"],"1,5":["N","W"],"2,5":["E","N"],"3,5":["E","W"],"4,5":["E","W"],"5,5":["E","W"],"6,5":["E","W"],"7,5":["E","W"],"8,5":["N","W"]}}];
+  toy('⚪ Marble maze','<svg id="maze" viewBox="0 0 400 300" role="img" aria-label="Drag the marble to the star"></svg><div class="tools" id="mazeLv"></div><p class="tip" id="mazeTip">Drag the silver marble all the way to the gold star.</p>');
+  var svg=$('maze'),idx=0,M,S,ox,oy,r,mx=0,my=0,goalC,won=false,marble=null,on=false;
+  function open(cx,cy){ return M.cells[cx+','+cy]||[]; }
+  function cellOf(x,y){ return [Math.max(0,Math.min(M.w-1,Math.floor((x-ox)/S))),Math.max(0,Math.min(M.h-1,Math.floor((y-oy)/S)))]; }
+  function settle(){ var c=cellOf(mx,my),o=open(c[0],c[1]),L=ox+c[0]*S,T=oy+c[1]*S; if(o.indexOf('W')<0) mx=Math.max(mx,L+r); if(o.indexOf('E')<0) mx=Math.min(mx,L+S-r); if(o.indexOf('N')<0) my=Math.max(my,T+r); if(o.indexOf('S')<0) my=Math.min(my,T+S-r); }
+  function axis(dx,dy){ if(!dx&&!dy) return; var nx=mx+dx,ny=my+dy; nx=Math.max(ox+r,Math.min(ox+M.w*S-r,nx)); ny=Math.max(oy+r,Math.min(oy+M.h*S-r,ny)); var c0=cellOf(mx,my),c1=cellOf(nx,ny);
+    if(c1[0]!==c0[0]||c1[1]!==c0[1]){ var d=dx>0?'E':dx<0?'W':dy>0?'S':'N',far=Math.abs(c1[0]-c0[0])>1||Math.abs(c1[1]-c0[1])>1; if(far||open(c0[0],c0[1]).indexOf(d)<0){ var L=ox+c0[0]*S,T=oy+c0[1]*S; if(d==='E') nx=L+S-r; else if(d==='W') nx=L+r; else if(d==='S') ny=T+S-r; else ny=T+r; } } mx=nx; my=ny; settle(); }
+  function moveTo(tx,ty){ var n=Math.max(1,Math.ceil(Math.hypot(tx-mx,ty-my)/(r*.35))); for(var i=0;i<n;i++){ var left=n-i; axis((tx-mx)/left,0); axis(0,(ty-my)/left); } paint(); if(!won&&Math.hypot(mx-goalC.x,my-goalC.y)<S*.42) win(); }
+  function paint(){ if(marble) marble.setAttribute('transform','translate('+mx.toFixed(1)+','+my.toFixed(1)+')'); }
+  function win(){ won=true; SND.win(); P.confetti(70); say('You did it!'); tip('mazeTip','You made it to the star! Try a harder one.'); }
+  function build(){ M=MAZES[idx]; won=false; on=false; clear(svg); E('rect',{width:400,height:300,fill:'#efe6ff',rx:18},svg); S=Math.floor(Math.min(356/M.w,236/M.h)); ox=Math.round((400-M.w*S)/2); oy=Math.round((300-M.h*S)/2)+6; r=Math.max(6,S*.26);
+    E('rect',{x:ox-6,y:oy-6,width:M.w*S+12,height:M.h*S+12,rx:12,fill:'#fff',stroke:'#201540','stroke-width':5},svg); var wallG=E('g',{stroke:'#6a4fa8','stroke-width':5,'stroke-linecap':'round'},svg);
+    for(var y=0;y<M.h;y++)for(var x=0;x<M.w;x++){ var o=open(x,y),L=ox+x*S,T=oy+y*S; if(o.indexOf('N')<0) E('line',{x1:L,y1:T,x2:L+S,y2:T},wallG); if(o.indexOf('W')<0) E('line',{x1:L,y1:T,x2:L,y2:T+S},wallG); if(y===M.h-1&&o.indexOf('S')<0) E('line',{x1:L,y1:T+S,x2:L+S,y2:T+S},wallG); if(x===M.w-1&&o.indexOf('E')<0) E('line',{x1:L+S,y1:T,x2:L+S,y2:T+S},wallG); }
+    goalC={x:ox+(M.w-.5)*S,y:oy+(M.h-.5)*S}; var d='',i,a,rr; for(i=0;i<10;i++){ a=-Math.PI/2+i*Math.PI/5; rr=i%2?S*.16:S*.34; d+=(i?'L':'M')+(goalC.x+Math.cos(a)*rr).toFixed(1)+' '+(goalC.y+Math.sin(a)*rr).toFixed(1)+' '; }
+    var star=E('path',{d:d+'Z',fill:'#ffd84d',stroke:'#c9a01a','stroke-width':3},svg); star.style.animation='bobby 2.4s ease-in-out infinite';
+    marble=E('g',{style:'cursor:grab'},svg); E('circle',{r:r,fill:'#cfd8e3',stroke:'#201540','stroke-width':3},marble); E('circle',{cx:-r*.3,cy:-r*.3,r:r*.3,fill:'#fff',opacity:.9},marble); mx=ox+S/2; my=oy+S/2; paint(); tip('mazeTip','Drag the silver marble to the gold star.'); }
+  svg.addEventListener('pointerdown',function(e){ var p=pt(svg,e,400,300); if(Math.hypot(p.x-mx,p.y-my)<r*3){ on=true; try{svg.setPointerCapture(e.pointerId);}catch(x){} e.preventDefault(); } });
+  svg.addEventListener('pointermove',function(e){ if(!on) return; var p=pt(svg,e,400,300); moveTo(p.x,p.y); e.preventDefault(); }); svg.addEventListener('pointerup',function(){ on=false; }); svg.addEventListener('pointercancel',function(){ on=false; });
+  MAZES.forEach(function(m,i){ var b=H('button',{type:'button','class':'pill','aria-pressed':i===0?'true':'false',text:m.name},$('mazeLv')); b.addEventListener('click',function(){ idx=i; $('mazeLv').querySelectorAll('.pill').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); b.setAttribute('aria-pressed','true'); build(); SND.tap(); }); });
+  build();
+})();
+
+/* ── 12. LETTER BLOCKS ── */
+(function(){
+  toy('🔤 Letter blocks','<svg id="blocks" viewBox="0 0 400 300" role="img" aria-label="Drag the letter blocks onto the shelf"></svg><div class="tools"><button class="pgb" id="blockNew" type="button">🔁 New word</button></div><p class="tip" id="blockTip">Drag the letters onto the shelf to spell it.</p>');
+  var svg=$('blocks'),WORDS=['CAT','DOG','SUN','HAT','BUS','FOX','PIG','CUP','BED','MOM','DAD','STAR','MOON','CAKE','LOVE','KIND','BRAVE'];
+  function build(){ var word=pick(WORDS); clear(svg); E('rect',{width:400,height:300,fill:'#fff8ec',rx:18},svg);
+    E('text',{x:200,y:32,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':22,'font-weight':700,fill:'#201540'},svg).textContent='Spell:  '+word.split('').join(' ');
+    var n=word.length,bw=Math.min(58,320/n),gap=8,totalW=n*bw+(n-1)*gap,startX=(400-totalW)/2+bw/2,slotY=196,slots=[];
+    for(var i=0;i<n;i++){ var sx=startX+i*(bw+gap); E('rect',{x:sx-bw/2,y:slotY-bw/2,width:bw,height:bw,rx:10,fill:'none',stroke:'#c9b79a','stroke-width':4,'stroke-dasharray':'8 7'},svg); slots.push({x:sx,y:slotY,filled:false,letter:word[i]}); }
+    E('rect',{x:30,y:slotY+bw/2+2,width:340,height:12,rx:6,fill:'#c9a26a',stroke:'#201540','stroke-width':4},svg);
+    var order=word.split('').map(function(l,i){ return {l:l,i:i}; }).sort(function(){ return Math.random()-.5; }),done=0;
+    order.forEach(function(item,k){ var hx=52+k*(296/Math.max(1,n-1)),hy=96,g=E('g',{style:'cursor:grab'},svg),c=BOW[k%BOW.length];
+      E('rect',{x:-bw/2,y:-bw/2,width:bw,height:bw,rx:10,fill:c,stroke:'#201540','stroke-width':4},g); E('rect',{x:-bw/2+5,y:-bw/2+5,width:bw-10,height:bw*.3,rx:6,fill:'#fff',opacity:.35},g);
+      E('text',{y:bw*.19,'text-anchor':'middle','font-family':'Fredoka,sans-serif','font-size':bw*.58,'font-weight':700,fill:'#201540'},g).textContent=item.l; var st={x:hx,y:hy,locked:false}; g.setAttribute('transform','translate('+hx.toFixed(1)+','+hy.toFixed(1)+')');
+      dragify(svg,400,300,g,function(x,y){ st.x=x; st.y=y; g.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+') scale(1.08)'); },function(){ var best=null,bd=1e9; slots.forEach(function(s){ var d=Math.hypot(st.x-s.x,st.y-s.y); if(d<bd){ bd=d; best=s; } });
+        if(best&&bd<46&&!best.filled&&best.letter===item.l){ best.filled=true; st.locked=true; done++; g.style.transition='transform .25s cubic-bezier(.3,1.6,.5,1)'; g.setAttribute('transform','translate('+best.x.toFixed(1)+','+best.y+')'); SND.ding(); say(item.l); tip('blockTip',item.l+'! '+done+' of '+n+'.');
+          if(done===n){ SND.win(); P.confetti(70); say('You spelled '+word+'!'); tip('blockTip','You spelled '+word+'! 🎉'); } }
+        else { g.style.transition='transform .3s ease-out'; g.setAttribute('transform','translate('+hx.toFixed(1)+','+hy.toFixed(1)+')'); st.x=hx; st.y=hy; SND.oops(); tip('blockTip','That letter goes somewhere else. Keep trying!'); }
+        setTimeout(function(){ g.style.transition=''; },320); },function(){ return !st.locked; }); });
+    tip('blockTip','Drag the letters onto the shelf to spell '+word+'.'); }
+  $('blockNew').addEventListener('click',function(){ build(); SND.whoosh(); }); build();
+})();
+
+/* ── 13. BUBBLE BLOWER — with Wormy the Worm ── */
+(function(){
+  toy('🫧 Bubble blower','<svg id="bubbles" viewBox="0 0 400 260" role="img" aria-label="Tap to blow bubbles, then pop them"></svg><div class="tools"><button class="pgb cy" id="bubBlow" type="button">🫧 Blow lots of bubbles</button></div><p class="tip" id="bubTip">Tap anywhere to blow bubbles. Tap a bubble to pop it. Say hi to Wormy.</p>');
+  var svg=$('bubbles'),defs=E('defs',null,svg),rg=E('radialGradient',{id:'bubG',cx:.34,cy:.3,r:.8},defs);
+  E('stop',{offset:0,'stop-color':'#fff','stop-opacity':.95},rg); E('stop',{offset:.55,'stop-color':'#bfe9ff','stop-opacity':.45},rg); E('stop',{offset:1,'stop-color':'#8ad0ff','stop-opacity':.3},rg);
+  E('rect',{width:400,height:260,fill:'#e9f8ff',rx:18},svg); E('path',{d:'M0 224 q100 -14 200 0 t200 -6 V260 H0z',fill:'#c9edd6'},svg);
+  var worm=E('g',{style:'cursor:pointer'},svg); [0,1,2,3,4].forEach(function(i){ E('circle',{cx:i*22,cy:i%2?-6:0,r:15-i*.8,fill:BOW[i],stroke:'#201540','stroke-width':4},worm); });
+  E('circle',{cx:-6,cy:-14,r:9,fill:'#fff',stroke:'#201540','stroke-width':4},worm); E('circle',{cx:10,cy:-14,r:9,fill:'#fff',stroke:'#201540','stroke-width':4},worm); E('circle',{cx:-5,cy:-14,r:4,fill:'#201540'},worm); E('circle',{cx:11,cy:-14,r:4,fill:'#201540'},worm);
+  E('path',{d:'M-15 -14 h-6 M19 -14 h6',stroke:'#201540','stroke-width':3},worm); E('path',{d:'M-2 2 q8 6 14 0',stroke:'#201540','stroke-width':3,fill:'none','stroke-linecap':'round'},worm);
+  var wt=0; setInterval(function(){ if(D.hidden||D.body.classList.contains('calm')) return; wt+=.012; worm.setAttribute('transform','translate('+(60+Math.sin(wt)*230)+','+(214+Math.sin(wt*3)*5)+') scale('+(Math.cos(wt)>=0?1:-1)+',1)'); },40);
+  worm.addEventListener('click',function(e){ e.stopPropagation(); say(pick(['Hello! I am Wormy the Worm, the royal study partner.','My glasses are for reading. I read about everything.','Worms make tunnels so roots can drink. Useful, me.'])); tip('bubTip','You found Wormy! 🐛'); SND.boing(); });
+  var bg=E('g',null,svg),count=0;
+  function blow(x,y){ if(bg.childNodes.length>46) return; var r=rnd(10,30),g=E('g',{style:'cursor:pointer'},bg); E('circle',{r:r,fill:'url(#bubG)',stroke:'rgba(255,255,255,.9)','stroke-width':2.5},g); E('ellipse',{cx:-r*.32,cy:-r*.34,rx:r*.22,ry:r*.15,fill:'#fff',opacity:.9},g);
+    g.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+')'); g.style.transition='transform '+rnd(4,8)+'s linear,opacity .35s'; requestAnimationFrame(function(){ g.setAttribute('transform','translate('+(x+rnd(-50,50)).toFixed(1)+',-60)'); });
+    var t=setTimeout(function(){ g.remove(); },8500); g.addEventListener('pointerdown',function(e){ e.stopPropagation(); clearTimeout(t); SND.pop(); count++; g.style.transform='scale(1.5)'; g.style.opacity='0'; var rr=g.getBoundingClientRect(); P.sparkleAt(rr.left+rr.width/2,rr.top+rr.height/2,8,['#bfe9ff','#fff','#8ad0ff']); tip('bubTip','Pop! You popped '+count+' bubble'+(count===1?'':'s')+'.'); setTimeout(function(){ g.remove(); },260); }); SND.tone(rnd(700,1200),0.07,'sine',0.03); }
+  svg.addEventListener('pointerdown',function(e){ var p=pt(svg,e,400,260); for(var i=0;i<3;i++) setTimeout(function(){ blow(p.x+rnd(-24,24),p.y+rnd(-12,12)); },i*80); });
+  $('bubBlow').addEventListener('click',function(){ for(var i=0;i<20;i++) setTimeout(function(){ blow(rnd(30,370),rnd(180,250)); },i*70); SND.whoosh(); tip('bubTip','So many bubbles! Pop them all.'); });
+})();
+
+/* ── 14. STICKER STORY — drag stickers onto a scene and it reads it back ── */
+(function(){
+  toy('📸 Sticker scene','<svg id="scene" viewBox="0 0 400 300" role="img" aria-label="Drag stickers onto the scene"></svg><div class="tools" id="sceneTray"></div><div class="tools"><button class="pgb gr" id="sceneRead" type="button">🗣️ Read my scene</button><button class="pgb" id="sceneClear" type="button">🧽 Clear</button></div><p class="tip" id="sceneTip">Tap a sticker, then tap the scene to place it. Then let me read your story.</p>');
+  var svg=$('scene'),STK=[['🐱','a cat'],['🐶','a dog'],['🌈','a rainbow'],['☀️','the sun'],['🏠','a house'],['🌳','a tree'],['🦄','a unicorn'],['🚗','a car'],['👑','a crown'],['🍦','an ice cream'],['🐸','a frog'],['⭐','a star']],cur=null,placed=[];
+  E('rect',{width:400,height:190,fill:'#bfeaff',rx:18},svg); E('path',{d:'M0 180 q100 -30 200 0 t200 -4 V300 H0z',fill:'#8fdc8f'},svg); E('rect',{y:280,width:400,height:20,fill:'#5fbe6a'},svg);
+  var layer=E('g',null,svg); var tray=$('sceneTray');
+  STK.forEach(function(s){ var b=H('button',{type:'button','class':'stamp','aria-pressed':'false',text:s[0]},tray); b.addEventListener('click',function(){ cur=(cur&&cur[0]===s[0])?null:s; tray.querySelectorAll('.stamp').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); if(cur) b.setAttribute('aria-pressed','true'); SND.tap(); tip('sceneTip',cur?'Now tap the scene to place '+s[1]+'.':'Pick a sticker.'); }); });
+  svg.addEventListener('pointerdown',function(e){ if(!cur) return; var p=pt(svg,e,400,300); var t=E('text',{x:p.x,y:p.y,'text-anchor':'middle','font-size':40,style:'cursor:grab'},layer); t.textContent=cur[0]; t.classList.add('popin'); placed.push(cur[1]); SND.pop();
+    var st={x:p.x,y:p.y}; dragify(svg,400,300,t,function(x,y){ st.x=x; st.y=y; t.setAttribute('x',x); t.setAttribute('y',y); }); });
+  $('sceneRead').addEventListener('click',function(){ if(!placed.length){ tip('sceneTip','Put some stickers on first!'); return; } var story='Once upon a time there was '+placed.slice(0,-1).join(', ')+(placed.length>1?' and ':'')+placed[placed.length-1]+'. And they were all friends. The end!'; say(story); tip('sceneTip',story); SND.ding(); });
+  $('sceneClear').addEventListener('click',function(){ clear(layer); placed=[]; SND.whoosh(); tip('sceneTip','Fresh scene. Make a new story!'); });
+})();
+
+/* backwards-compat for anything expecting the old FX names */
+window.PWfx = window.PWfx || {};
+window.PWfx.splash = function(){ var b=D.querySelector('#bigRed'); if(b) b.parentNode.querySelector('.t-grape') && b.parentNode.querySelector('.t-grape').click(); };
+
 })();
