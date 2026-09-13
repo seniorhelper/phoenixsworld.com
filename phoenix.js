@@ -89,13 +89,16 @@
   host.innerHTML =
       '<div class="stage" id="stage">'
     +   '<div class="poof" id="poof"></div>'
-    +   '<div class="slide" id="slide"><svg viewBox="0 0 900 420" aria-hidden="true">'
-    +     '<path d="M40 40 Q470 40 780 360" stroke="#ff2d95" stroke-width="30" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M40 72 Q470 72 780 392" stroke="#ff7a00" stroke-width="30" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M40 104 Q470 104 780 424" stroke="#ffd400" stroke-width="30" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M40 136 Q470 136 780 456" stroke="#00ff9d" stroke-width="30" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M40 168 Q470 168 780 488" stroke="#00e5ff" stroke-width="30" fill="none" stroke-linecap="round"/>'
-    +     '<path d="M40 40 Q470 40 780 360" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".55"/>'
+    +   '<div class="slide" id="slide"><svg viewBox="0 0 1000 520" aria-hidden="true">'
+    +     '<path d="M30 30 Q520 30 880 440" stroke="#ff2d95" stroke-width="46" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M30 76 Q520 76 880 486" stroke="#ff7a00" stroke-width="46" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M30 122 Q520 122 880 532" stroke="#ffd400" stroke-width="46" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M30 168 Q520 168 880 578" stroke="#00ff9d" stroke-width="46" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M30 214 Q520 214 880 624" stroke="#00e5ff" stroke-width="46" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M30 18 Q520 18 880 428" stroke="#ffffff" stroke-width="10" fill="none" stroke-linecap="round" opacity=".7"/>'
+    +     '<circle cx="120" cy="34" r="9" fill="#fff" opacity=".9"/>'
+    +     '<circle cx="330" cy="42" r="7" fill="#fff" opacity=".8"/>'
+    +     '<circle cx="560" cy="96" r="8" fill="#fff" opacity=".75"/>'
     +   '</svg></div>'
     +   SVG
     +   '<div class="uni" id="uni">' + UNICORN + '</div>'
@@ -552,6 +555,16 @@
      "Balloons! Here is a good one: a balloon flies about when you let it go because the air rushing out pushes it the other way. That is the same idea that makes a rocket work! 🎈"]},
    {id:'bubble', k:'bubble,bubbles,soap', r:[
      "Bubbles are my favourite. A bubble is just air wearing a very thin coat of soapy water — and it is always a ball shape, because that is the shape that uses the least skin!"]},
+   {id:'stretch', w:2.6, k:'stretch,stretching,tired body,sore,sit too long,my legs,exercise break', r:[
+     "Stretch with me! 🙆 Reach up and touch the sky… hold it… now bend down and touch your toes. Your muscles say thank you.",
+     "Standing up and stretching every so often is good for your body AND helps your brain think better. Come on — arms up!"]},
+   {id:'screentime', w:2.6, k:'how long,screen time,too much screen,tablet time,been on here,time limit,ipad time', r:[
+     "Good question to ask yourself! ⏰ Do you have a time limit from your grown-up? When it is up, go outside and run about. Screens are fun, but bodies are for using.",
+     "Here is my rule: some screen, then some stretching, then some outside. All three every day. What have you done outside today?"]},
+   {id:'outside', w:2.4, k:'outside,go outside,playground,fresh air,park time,run around', r:[
+     "YES! Go outside. Ask your grown-up first, then run, climb, dig, look for bugs. Outside makes you strong AND happy. Come back and tell me what you found!"]},
+   {id:'wiggle', k:'wiggle,dance,shake,silly dance,giggle,laugh with me', r:[
+     "WIGGLE AND GIGGLE TIME! 🕺 Shake your arms. Shake your legs. Shake your whole self. Now giggle as loud as you are allowed!"]},
    {id:'dino2', k:'ride a dinosaur,dinosaur ride,unicorn,ride,fly', r:[
      "Hop on! 🦕 Today we are riding a dinosaur to the top of the tallest hill in the kingdom. Hold onto my crown. Where shall we go?"]}
   );
@@ -736,15 +749,22 @@
   function goodbye(){
     if (host.classList.contains('gone')) return;
     say.innerHTML = "Bye for now! Watch me fly! 🦄👑";
-    puff(24);
-    var trail = setInterval(function(){ sparks(5); }, 420);
-    setTimeout(function(){ clearInterval(trail); }, 20000);
-    host.classList.remove('mini'); host.classList.add('big','riding');
+    puff(26);
+    host.classList.remove('mini');
+    host.classList.add('big','riding');
+    var trail = setInterval(function(){ sparks(6); }, 380);
+    /* the tornado finish */
     setTimeout(function(){
+      host.classList.add('tornado');
+      sparks(60);
+      puff(40);
+    }, 20500);
+    setTimeout(function(){
+      clearInterval(trail);
       host.classList.add('gone');
-      host.classList.remove('riding');
+      host.classList.remove('riding','tornado','big');
       reopen.classList.add('on');
-    }, 22500);
+    }, 23000);
   }
   D.getElementById('closeme').onclick=goodbye;
   reopen.onclick=function(){
@@ -772,9 +792,23 @@
   setTimeout(toCorner, 9000);
 
   /* every now and then she does something daft on her own */
+  function move(cls, ms, line){
+    pcat.classList.add(cls);
+    if (line) speak(line);
+    setTimeout(function(){ pcat.classList.remove(cls); }, ms);
+  }
+  window.PWmove = move;
+
   var ANTICS = [
-    function(){ speak("Watch this! 🤸 <b>FLIP!</b>"); pcat.classList.add('flipping');
-      setTimeout(function(){ pcat.classList.remove('flipping'); }, 1300); },
+    function(){ move('stretching', 2600,
+      "Stretch break! 🙆 Reach up and touch the sky with me… stretch taaaall… and relax. Your body likes that."); },
+    function(){ move('toetouch', 2600,
+      "Bend down and touch your toes with me! 🤸 Slowly now. Did you stretch today?"); },
+    function(){ move('wiggling', 2200,
+      "WIGGLE TIME! 🕺 Shake your arms, shake your legs, shake your whole self. Now giggle. It is the rules."); },
+    function(){ move('flipping', 1300, "Watch this! 🤸 <b>FLIP!</b>"); },
+    function(){ speak("Quick question — how long have you been on the screen? ⏰ Have a stretch, drink some water, and go outside if your grown-up says it is okay. I will be here after."); },
+
     function(){ speak("Bubble time! 🫧"); blowBubbles(); },
     function(){ speak("🎈 Blowing up a balloon… and… letting it GO! Wheeee!"); },
     function(){ speak("Wormy says hello! 🐛 He is reading a book about clouds."); }
@@ -797,7 +831,7 @@
   setInterval(function(){
     if (host.classList.contains('mini') && !host.classList.contains('gone') && Math.random()<0.5)
       ANTICS[Math.floor(Math.random()*ANTICS.length)]();
-  }, 42000);
+  }, 30000);
 
   window.PWprincess = { bubbles:blowBubbles, toCorner:toCorner, goodbye:goodbye, setAge:setAge, speak:speak, ask:answer };
 })();
