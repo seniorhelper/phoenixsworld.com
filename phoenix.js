@@ -671,8 +671,8 @@
       picks.appendChild(b);
     });
   }
-  var MAIN=['Tell me a joke','Study with me! 📚','Repeat after me!','What games are there?',
-            'Tell me about cats','I feel sad','Find me a page','Let us count'];
+  var MAIN=['Tell me a joke','Study with me! 📚','Repeat after me!',
+            'What games are there?','Find me a page','I feel sad'];
   function mainChips(){
     chips(MAIN.map(function(t){ return {label:t, go:function(){ speak(answer(t)); }}; }));
   }
