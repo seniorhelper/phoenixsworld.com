@@ -292,3 +292,64 @@
   90%{transform:translate(32vw,-60vh) rotate(-1470deg) scale(.48)}
   96%{opacity:1;transform:translate(10vw,-86vh) rotate(-1478deg) scale(.3)}
   100%{opacity:0;transform:translate(58vw,-106vh) rotate(-1484deg) scale(.12)}}
+
+
+/* ══════ v6: the X while big, riding together, tornado, stretch moves ══════ */
+
+/* she can always be closed, big or small */
+#phoenix.big .closeme{display:grid!important;place-items:center;position:fixed;
+  top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;width:46px;height:46px;
+  font-size:24px;z-index:9;border-width:5px}
+@media(max-width:640px){#phoenix.big .closeme{width:42px;height:42px;top:10px;right:10px}}
+
+/* ── SHE RIDES THE UNICORN. Both sit in one wrapper that flies as a unit ── */
+#phoenix.riding .stage{position:fixed;left:50%;bottom:14vh;width:min(76vw,340px);
+  margin-left:calc(min(76vw,340px) / -2);animation:flightPath 20.5s cubic-bezier(.42,.05,.5,.95) both}
+#phoenix.riding .uni{position:absolute;left:0;top:22%;width:100%;margin:0;opacity:1;
+  animation:none;z-index:1}
+#phoenix.riding .pcat{position:absolute;left:26%;top:-34%;width:54%;z-index:2;
+  animation:riderBob 1.15s ease-in-out infinite}
+#phoenix.riding .slide,#phoenix.riding .poof{display:none}
+@keyframes riderBob{0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-9px) rotate(3deg)}}
+@keyframes flightPath{
+  0%{opacity:0;transform:translate(-150%,10vh) scale(.55) rotate(0)}
+  7%{opacity:1;transform:translate(-30%,2vh) scale(1) rotate(0)}
+  14%{transform:translate(0,0) scale(1) rotate(0)}
+  23%{transform:translate(-34vw,-14vh) scale(.96) rotate(-7deg)}
+  31%{transform:translate(-18vw,-30vh) scale(.9) rotate(-366deg)}
+  41%{transform:translate(24vw,-20vh) scale(.94) rotate(-374deg)}
+  50%{transform:translate(38vw,-38vh) scale(.86) rotate(-734deg)}
+  61%{transform:translate(-2vw,-48vh) scale(.8) rotate(-746deg)}
+  71%{transform:translate(-36vw,-38vh) scale(.76) rotate(-1102deg)}
+  81%{transform:translate(-10vw,-58vh) scale(.66) rotate(-1112deg)}
+  91%{transform:translate(28vw,-52vh) scale(.56) rotate(-1470deg)}
+  100%{opacity:1;transform:translate(6vw,-64vh) scale(.5) rotate(-1478deg)}}
+
+/* ── the tornado finish ── */
+#phoenix.tornado .stage{animation:tornado 2.4s cubic-bezier(.4,0,.7,1) both}
+@keyframes tornado{
+  0%{opacity:1;transform:translate(6vw,-64vh) scale(.5) rotate(0)}
+  35%{transform:translate(2vw,-58vh) scale(.42) rotate(760deg)}
+  70%{opacity:1;transform:translate(-2vw,-46vh) scale(.2) rotate(1720deg)}
+  100%{opacity:0;transform:translate(0,-38vh) scale(.02) rotate(2600deg)}}
+
+/* ── stretching, toe touching and wiggling ── */
+.pcat.stretching .afcb-wave,.pcat.stretching .afcb-armA{animation:armsUp 2.6s ease-in-out both}
+.pcat.stretching .p-body{animation:tallStretch 2.6s ease-in-out both}
+@keyframes armsUp{0%,100%{transform:rotate(0)}30%,70%{transform:rotate(-150deg)}}
+@keyframes tallStretch{0%,100%{transform:scaleY(1)}40%,60%{transform:scaleY(1.07) translateY(-8px)}}
+.pcat.toetouch .p-body{animation:bendDown 2.6s ease-in-out both}
+@keyframes bendDown{0%,100%{transform:rotate(0) translateY(0)}
+  35%,65%{transform:rotate(24deg) translateY(26px) scaleY(.88)}}
+.pcat.toetouch .p-head{animation:headDown 2.6s ease-in-out both}
+@keyframes headDown{0%,100%{transform:rotate(0)}35%,65%{transform:rotate(16deg) translateY(10px)}}
+.pcat.wiggling .p-body{animation:wiggleIt .28s ease-in-out 8}
+@keyframes wiggleIt{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.pcat.wiggling .p-head{animation:wiggleHead .22s ease-in-out 10}
+@keyframes wiggleHead{0%,100%{transform:rotate(9deg) translateY(0)}
+  50%{transform:rotate(-9deg) translateY(-6px)}}
+
+/* ── a bolder rainbow slide, easier to see on a phone ── */
+#phoenix.big .slide{top:30%;width:min(150vw,1000px);
+  margin-left:calc(min(150vw,1000px) / -2);filter:drop-shadow(0 10px 18px rgba(120,60,160,.3))}
