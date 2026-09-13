@@ -82,6 +82,20 @@ body{font:18px/1.55 "Trebuchet MS",Verdana,system-ui,sans-serif;color:#2b1b45;ba
 .lv.on{background:#c9f04b}
 
 
+
+  /* control panel */
+  .ctrl{position:relative;z-index:2;max-width:min(96vw,780px);margin:10px auto 4px;padding:0 8px}
+  .ctrl h2{text-align:center;font-size:clamp(21px,4.8vw,28px);margin:4px 0 8px;color:#5a3d86}
+  #panel{width:100%;height:auto;display:block;border:6px solid #2b1b45;border-radius:26px;
+    box-shadow:0 10px 0 rgba(43,27,69,.28);touch-action:manipulation;
+    background:linear-gradient(180deg,#3b2a63,#241640);min-height:140px}
+  /* the wobble slider */
+  :root{--wob:0deg}
+  body.wobbly .band,body.wobbly .panel,body.wobbly .nb{
+    animation:wobbleAll 1.1s ease-in-out infinite}
+  @keyframes wobbleAll{0%,100%{transform:rotate(calc(var(--wob) * -1))}
+    50%{transform:rotate(var(--wob))}}
+
   /* magic buttons */
   .magicbar{position:relative;z-index:2;text-align:center;padding:16px 10px 6px}
   .magicbar h2{font-size:clamp(20px,4.6vw,28px);margin:0 0 10px;color:#5a3d86}
@@ -147,6 +161,14 @@ footer{position:relative;z-index:1;text-align:center;padding:18px 16px 40px;colo
 
 
 <!-- ══════════ MAGIC BUTTONS ══════════ -->
+
+<!-- ══════════ CONTROL PANEL — right at the top for phones ══════════ -->
+<section class="ctrl">
+  <h2>🕹️ The Control Panel</h2>
+  <svg id="panel" viewBox="0 0 760 300" aria-label="Levers, switches, dials and buttons"></svg>
+  <p class="note" id="panelTip">Pull the lever. Flip the switches. Turn the dial!</p>
+</section>
+
 <section class="magicbar">
   <h2>🪄 Press a magic button!</h2>
   <div class="magicrow" id="magicBtns"></div>
