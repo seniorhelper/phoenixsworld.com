@@ -89,9 +89,13 @@
   host.innerHTML =
       '<div class="stage" id="stage">'
     +   '<div class="poof" id="poof"></div>'
-    +   '<div class="slide" id="slide"><svg viewBox="0 0 300 200" aria-hidden="true">'
-    +     '<path d="M18 26 L250 178" stroke="#c9a2ff" stroke-width="16" stroke-linecap="round"/>'
-    +     '<path d="M18 26 L250 178" stroke="#ffd0e8" stroke-width="8" stroke-linecap="round"/>'
+    +   '<div class="slide" id="slide"><svg viewBox="0 0 900 420" aria-hidden="true">'
+    +     '<path d="M40 40 Q470 40 780 360" stroke="#ff2d95" stroke-width="30" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M40 72 Q470 72 780 392" stroke="#ff7a00" stroke-width="30" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M40 104 Q470 104 780 424" stroke="#ffd400" stroke-width="30" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M40 136 Q470 136 780 456" stroke="#00ff9d" stroke-width="30" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M40 168 Q470 168 780 488" stroke="#00e5ff" stroke-width="30" fill="none" stroke-linecap="round"/>'
+    +     '<path d="M40 40 Q470 40 780 360" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".55"/>'
     +   '</svg></div>'
     +   SVG
     +   '<div class="uni" id="uni">' + UNICORN + '</div>'
@@ -678,37 +682,43 @@
 
   /* ── arrival: down the slide small, grow, say hello, then poof to the
         corner as a little helper ───────────────────────────────────────── */
-  function puff(){
-    poof.innerHTML='';
-    for (var i=0;i<14;i++){
+  function puff(n){
+    n = n || 26;
+    for (var i=0;i<n;i++){
       var p=D.createElement('b');
-      p.style.setProperty('--tx',(Math.random()*260-130)+'px');
-      p.style.setProperty('--ty',(Math.random()*220-140)+'px');
-      p.style.animationDelay=(Math.random()*0.25)+'s';
-      p.style.width=p.style.height=(26+Math.random()*46)+'px';
+      p.style.setProperty('--tx',(Math.random()*420-210)+'px');
+      p.style.setProperty('--ty',(Math.random()*360-230)+'px');
+      p.style.animationDelay=(Math.random()*0.45)+'s';
+      p.style.width=p.style.height=(34+Math.random()*86)+'px';
+      p.style.background=['#fff','#ffe9fb','#eaf6ff','#fff6d6'][Math.floor(Math.random()*4)];
       poof.appendChild(p);
     }
     poof.classList.add('go');
-    setTimeout(function(){ poof.classList.remove('go'); poof.innerHTML=''; }, 1400);
+    setTimeout(function(){ poof.classList.remove('go'); poof.innerHTML=''; }, 2200);
   }
 
   function toCorner(){
     if (host.classList.contains('mini')) return;
-    speak("Watch this! ✨");
-    pcat.classList.add('casting');
-    setTimeout(puff, 620);
+    speak("Watch this! ✨ Down the rainbow slide I go…");
+    pcat.classList.add('casting');            /* wand wave */
     setTimeout(function(){
+      host.classList.add('sliding');          /* rainbow slide appears, she rides it */
+    }, 700);
+    setTimeout(function(){ puff(30); }, 2500);  /* big puff of smoke at the bottom */
+    setTimeout(function(){
+      host.classList.remove('big', 'sliding');
       host.classList.add('mini');
       pcat.classList.remove('casting');
-      speak("I am here to help you! What do you want to learn about?");
+      puff(18);                                /* and another one as she reappears small */
+      speak("Ta-daaa! ✨ I am here to help you. What do you want to learn about?");
       mainChips();
-    }, 1000);
+    }, 3100);
   }
 
   function goodbye(){
     if (host.classList.contains('gone')) return;
     say.innerHTML = "Bye for now! Go be amazing. 👑";
-    host.classList.add('riding');
+    host.classList.remove('mini'); host.classList.add('big','riding');
     setTimeout(function(){
       host.classList.add('gone');
       host.classList.remove('riding');
@@ -733,9 +743,11 @@
     return;
   }
   speak("Welcome to <b>Phoenix's World</b>, where <i>kids make rulz</i>! 😋<br>I am <b>Princess Phoenix Sparkles</b>. Let us learn something and have some fun!");
-  host.classList.add('arriving');
-  setTimeout(function(){ host.classList.remove('arriving'); }, 3000);
-  setTimeout(toCorner, 8200);
+  /* She lands centre-screen as a fixed overlay, so she is on screen the
+     instant the page opens no matter how far down the page sits. */
+  host.classList.add('big', 'arriving');
+  setTimeout(function(){ host.classList.remove('arriving'); }, 3200);
+  setTimeout(toCorner, 9000);
 
   /* every now and then she does something daft on her own */
   var ANTICS = [
