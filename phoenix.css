@@ -160,3 +160,32 @@
   #phoenix.mini .say{font-size:15px;max-width:80vw}
   .reopen{font-size:13px;padding:10px 14px}
 }
+
+
+/* ══ bigger, wobblier corner princess ══════════════════════════════════ */
+#phoenix.mini .stage{width:178px}
+#phoenix.mini .pcat{width:178px}
+#phoenix.mini .p-head{animation:bobBig 2.6s ease-in-out infinite}
+@keyframes bobBig{0%,100%{transform:translateY(0) rotate(-5deg)}
+  50%{transform:translateY(-14px) rotate(5deg)}}
+#phoenix.mini .say{font-size:17px;max-width:min(90vw,340px)}
+@media(max-width:640px){
+  #phoenix.mini .stage,#phoenix.mini .pcat{width:132px}
+  #phoenix.mini .say{font-size:15.5px;max-width:82vw}
+}
+
+/* she flips across the corner now and then */
+.pcat.flipping{animation:doFlip 1.3s cubic-bezier(.3,.4,.3,1)}
+@keyframes doFlip{
+  0%{transform:translate(0,0) rotate(0) scale(1)}
+  25%{transform:translate(-40px,-70px) rotate(-180deg) scale(.9)}
+  55%{transform:translate(-90px,-40px) rotate(-360deg) scale(.9)}
+  80%{transform:translate(-30px,10px) rotate(-540deg) scale(1.05)}
+  100%{transform:translate(0,0) rotate(-720deg) scale(1)}}
+
+/* bubbles she blows drift up the whole page */
+.floatbub{position:fixed;bottom:-60px;z-index:2147481500;pointer-events:none;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.9),rgba(160,225,255,.42) 45%,rgba(160,225,255,.18));
+  border:2px solid rgba(159,220,245,.7);animation:bubUp linear forwards}
+@keyframes bubUp{0%{opacity:0;transform:translateY(0) translateX(0)}
+  12%{opacity:1}100%{opacity:0;transform:translateY(-105vh) translateX(40px)}}
