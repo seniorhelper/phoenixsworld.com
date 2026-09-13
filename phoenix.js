@@ -682,8 +682,26 @@
 
   /* ── arrival: down the slide small, grow, say hello, then poof to the
         corner as a little helper ───────────────────────────────────────── */
+  var SPARKCOLS = ['#ff2d95','#ffd400','#00e5ff','#00ff9d','#b14bff','#ff7a00','#ff6ec7','#ffffff'];
+  function sparks(n){
+    for (var i=0;i<n;i++){
+      (function(){
+        var s = D.createElement('i'), sz = 8 + Math.random()*26;
+        s.className = 'poofspark';
+        s.style.width = s.style.height = sz + 'px';
+        s.style.background = SPARKCOLS[Math.floor(Math.random()*SPARKCOLS.length)];
+        var a = Math.random()*Math.PI*2, d = 90 + Math.random()*420;
+        s.style.setProperty('--sx', Math.cos(a)*d + 'px');
+        s.style.setProperty('--sy', Math.sin(a)*d + 'px');
+        s.style.animationDelay = (Math.random()*.5) + 's';
+        s.style.animationDuration = (1.1 + Math.random()*1.4) + 's';
+        poof.appendChild(s);
+      })();
+    }
+  }
   function puff(n){
     n = n || 26;
+    sparks(Math.round(n * 1.6));
     for (var i=0;i<n;i++){
       var p=D.createElement('b');
       p.style.setProperty('--tx',(Math.random()*420-210)+'px');
@@ -694,7 +712,7 @@
       poof.appendChild(p);
     }
     poof.classList.add('go');
-    setTimeout(function(){ poof.classList.remove('go'); poof.innerHTML=''; }, 2200);
+    setTimeout(function(){ poof.classList.remove('go'); poof.innerHTML=''; }, 3200);
   }
 
   function toCorner(){
@@ -704,12 +722,12 @@
     setTimeout(function(){
       host.classList.add('sliding');          /* rainbow slide appears, she rides it */
     }, 700);
-    setTimeout(function(){ puff(30); }, 2500);  /* big puff of smoke at the bottom */
+    setTimeout(function(){ puff(46); }, 2400);  /* big puff of smoke at the bottom */
     setTimeout(function(){
       host.classList.remove('big', 'sliding');
       host.classList.add('mini');
       pcat.classList.remove('casting');
-      puff(18);                                /* and another one as she reappears small */
+      puff(30);                                /* and another one as she reappears small */
       speak("Ta-daaa! ✨ I am here to help you. What do you want to learn about?");
       mainChips();
     }, 3100);
@@ -717,13 +735,16 @@
 
   function goodbye(){
     if (host.classList.contains('gone')) return;
-    say.innerHTML = "Bye for now! Go be amazing. 👑";
+    say.innerHTML = "Bye for now! Watch me fly! 🦄👑";
+    puff(24);
+    var trail = setInterval(function(){ sparks(5); }, 420);
+    setTimeout(function(){ clearInterval(trail); }, 20000);
     host.classList.remove('mini'); host.classList.add('big','riding');
     setTimeout(function(){
       host.classList.add('gone');
       host.classList.remove('riding');
       reopen.classList.add('on');
-    }, 19500);
+    }, 22500);
   }
   D.getElementById('closeme').onclick=goodbye;
   reopen.onclick=function(){
@@ -734,7 +755,8 @@
   };
 
   mainChips();
-  var isHome = D.body.getAttribute('data-pw') === 'home';
+  var isHome = !D.querySelector('.crumb, .topband')
+            && D.body.getAttribute('data-pw') !== 'page';
   if (!isHome){
     /* every other page: straight into the little corner helper */
     host.classList.add('mini');
