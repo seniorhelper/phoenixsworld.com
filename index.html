@@ -1000,9 +1000,9 @@ SND.oops = function(){ this.slide(320,140,0.28,'triangle',0.08); };
 SND.bell = function(){ [1046,1567,2093].forEach(function(f,i){ SND.tone(f,0.9,'sine',0.06,i*0.02); }); };
 
 /* ── REAL SOUND FILES: put mp3s in /sounds/ named meow.mp3, woof.mp3, moo.mp3, quack.mp3, roar.mp3, laugh.mp3,
-   boing.mp3, tada.mp3, drum.mp3, bell.mp3, pop.mp3, ding.mp3, win.mp3, whoosh.mp3, purr.mp3 — they play instead of
+   boing.mp3, tada.mp3, drum.mp3, bell.mp3, pop.mp3, ding.mp3, win.mp3, whoosh.mp3, purr.mp3, tap.mp3, clunk.mp3, oops.mp3 — they play instead of
    the synth version automatically. Missing files fall back to synth, silently. CC0 sounds: pixabay.com/sound-effects */
-(function(){ var FILE={}; ['meow','woof','moo','quack','roar','laugh','boing','tada','drum','bell','pop','ding','win','whoosh','purr'].forEach(function(n){ var synth=SND[n]; if(!synth) return;
+(function(){ var FILE={}; ['meow','woof','moo','quack','roar','laugh','boing','tada','drum','bell','pop','ding','win','whoosh','purr','tap','clunk','oops'].forEach(function(n){ var synth=SND[n]; if(!synth) return;
   SND[n]=function(){ if(!SND.on) return; if(FILE[n]===false) return synth.apply(SND,arguments); try{ var a=new Audio('/sounds/'+n+'.mp3'); a.volume=0.65; var p=a.play(); if(p&&p.then) p.then(function(){ FILE[n]=true; }).catch(function(){ FILE[n]=false; synth.apply(SND,arguments); }); }catch(e){ FILE[n]=false; synth.apply(SND,arguments); } }; }); })();
 /* speech, used sparingly and only for short friendly lines */
 var voices=[], voiceCache=null;
