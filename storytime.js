@@ -171,13 +171,47 @@ var BOOKS=[
      txt:'And the most important part. <b>Sleep.</b> Ten whole hours. While she slept, her brain sorted the whole day and filed it away, like a tiny librarian. The sugar bugs did not come back. Goodnight, Phoenix.',
      hot:{}}
    ]}
+ ,{ id:'dark', title:'Pickle and the Dark', em:'🦕', c:'#3fe0a4', lesson:'Being brave',
+   say:['I am brave.','The dark is just the day having a rest.','I can do scary things one small step at a time.'],
+   note:'Fear of the dark peaks around ages 3 to 6 and is completely normal. This story gives the dark a friendly job (resting) and gives your child a tool: one small step, then the next. Tonight, let them be the one who turns the night light on.',
+   pages:[
+    {art:function(){ return room(true)+phoenix(120,150,.7,'wow')+'<g class="hot " data-toy="dino" transform="translate(300,220)"><text text-anchor="middle" y="18" font-size="54">🦕</text></g>'+'<g class="hot " data-toy="moon" transform="translate(330,60)"><text text-anchor="middle" y="13" font-size="40">🌙</text></g>'+'<g class="hot " data-toy="sock" transform="translate(210,262)"><text text-anchor="middle" y="10" font-size="30">🧦</text></g>'; },
+     txt:'The light went <b>click</b> and the room went dark. Pickle the dinosaur grabbed Phoenix’s tail. “What is THAT?” he whispered. Something lumpy was on the floor. Tap it. Tap everything.',
+     hot:{dino:'That lump. It is looking at me. I can feel it.',moon:'I am the moon. I am not scary. I am just up late.',sock:'It was a sock. A SOCK. Pickle screamed at a sock.'}},
+    {art:function(){ return room(true)+phoenix(140,150,.7,'happy')+'<g class="hot " data-toy="dino" transform="translate(300,220)"><text text-anchor="middle" y="18" font-size="54">🦕</text></g>'+'<g class="hot " data-toy="lamp" transform="translate(70,230)"><text text-anchor="middle" y="11" font-size="34">🕯️</text></g>'+'<g class="hot flt" data-toy="star" transform="translate(250,70)"><text text-anchor="middle" y="10" font-size="30">⭐</text></g>'; },
+     txt:'“The dark is not a monster,” said Phoenix. “The dark is just the day having a <b>rest</b>. Everything is exactly where it was. Only the light went to sleep.” Pickle peeked out. “Everything?” “Everything.”',
+     hot:{dino:'Even my blanket? Even my books?',lamp:'I am a little light. I can help. Small lights are still lights.',star:'I am here every single night. You just cannot always see me.'}},
+    {art:function(){ return room(true)+phoenix(110,150,.65)+'<g class="hot " data-toy="dino" transform="translate(200,225)"><text text-anchor="middle" y="18" font-size="54">🦕</text></g>'+'<g class="hot " data-toy="step1" transform="translate(260,262)"><text text-anchor="middle" y="8" font-size="26">🐾</text></g>'+'<g class="hot " data-toy="step2" transform="translate(300,250)"><text text-anchor="middle" y="8" font-size="26">🐾</text></g>'+'<g class="hot " data-toy="step3" transform="translate(340,238)"><text text-anchor="middle" y="8" font-size="26">🐾</text></g>'+'<g class="hot " data-toy="lamp" transform="translate(360,180)"><text text-anchor="middle" y="11" font-size="34">🕯️</text></g>'; },
+     txt:'“You do not have to be brave all at once,” said Phoenix. “Just one <b>small step</b>. Then another.” Pickle took one step. Then another. <b>Tap each paw print</b> to walk with him.',
+     hot:{dino:'One step. My legs are wobbly. But they are moving.',step1:'ONE. That was not so bad.',step2:'TWO. The floor is still the floor.',step3:'THREE. I can reach it!',lamp:'Click. Hello, light. I found you.'}},
+    {art:function(){ return room()+phoenix(150,140,.75)+'<g class="hot bob" data-toy="dino" transform="translate(290,215)"><text text-anchor="middle" y="20" font-size="60">🦕</text></g>'+badge(80,70,'🦁')+'<g class="flt"><text x="330" y="80" font-size="26">✨</text><text x="60" y="230" font-size="22">✨</text></g>'; },
+     txt:'The little light glowed. Pickle stood up tall. “I was scared,” he said, “and I did it anyway.” Phoenix nodded. “That is the <b>whole secret</b>. Brave does not mean not scared. Brave means scared, and then one small step.”',
+     hot:{dino:'I am brave. Say it with me. I AM BRAVE.'}}
+   ]},
+ { id:'share', title:'Snowdrop’s Big Share', em:'🐰', c:'#ff8a3d', lesson:'Sharing and kindness',
+   say:['Sharing makes two happy hearts.','I can say sorry and try again.','Kindness is my superpower.'],
+   note:'Sharing is a skill, not a personality trait, and it grows with practice. This story shows the feeling BEFORE the share (it is hard) and the feeling AFTER (it is better), which is the part children need to see. Try naming it out loud today: “That was a share. That felt good, didn’t it?”',
+   pages:[
+    {art:function(){ return meadow()+phoenix(120,160,.7)+'<g class="hot " data-toy="bunny" transform="translate(290,215)"><text text-anchor="middle" y="18" font-size="56">🐰</text></g>'+'<g class="hot " data-toy="carrot" transform="translate(300,262)"><text text-anchor="middle" y="10" font-size="30">🥕</text></g>'+'<g class="hot " data-toy="carrot2" transform="translate(330,262)"><text text-anchor="middle" y="10" font-size="30">🥕</text></g>'+'<g class="hot " data-toy="carrot3" transform="translate(270,262)"><text text-anchor="middle" y="10" font-size="30">🥕</text></g>'; },
+     txt:'Snowdrop the bunny had <b>three carrots</b>. Three! She hugged them all. Then Buttons the bear came by with a very hungry tummy. “May I have one?” he asked. Snowdrop hugged them tighter. Tap the carrots.',
+     hot:{bunny:'They are MINE. I found them. All three.',carrot:'I am carrot number one. I am delicious.',carrot2:'I am carrot number two. Also delicious.',carrot3:'I am carrot number three. Nobody can eat three carrots at once. Just saying.'}},
+    {art:function(){ return meadow()+phoenix(120,160,.7,'sad')+'<g class="hot " data-toy="bunny" transform="translate(290,215)"><text text-anchor="middle" y="18" font-size="56">🐰</text></g>'+'<g class="hot " data-toy="bear" transform="translate(200,235)"><text text-anchor="middle" y="15" font-size="46">🧸</text></g>'+'<g class="hot flt" data-toy="cloud" transform="translate(330,50)"><text text-anchor="middle" y="13" font-size="40">☁️</text></g>'; },
+     txt:'Buttons walked away with his ears down. Snowdrop looked at her three carrots. They did not taste as good anymore. Something in her tummy felt <b>wobbly</b>. Not hungry-wobbly. Sorry-wobbly.',
+     hot:{bunny:'Why does my tummy feel funny? I have all the carrots.',bear:'It is okay. I will find something else. Maybe.',cloud:'Even I feel a bit grey about this.'}},
+    {art:function(){ return meadow()+phoenix(120,160,.7)+'<g class="hot " data-toy="bunny" transform="translate(260,215)"><text text-anchor="middle" y="18" font-size="56">🐰</text></g>'+'<g class="hot " data-toy="bear" transform="translate(330,225)"><text text-anchor="middle" y="15" font-size="46">🧸</text></g>'+'<g class="hot " data-toy="carrot" transform="translate(296,262)"><text text-anchor="middle" y="10" font-size="30">🥕</text></g>'+'<g class="hot flt" data-toy="heart" transform="translate(290,120)"><text text-anchor="middle" y="11" font-size="34">💖</text></g>'; },
+     txt:'“Buttons! Wait!” Snowdrop hopped after him. “I am sorry. Here.” She held out a carrot. Buttons’ whole face lit up. And here is the strange thing: Snowdrop’s face lit up <b>too</b>. Tap the carrot to share it.',
+     hot:{bunny:'I said sorry. It was hard. And then it was easy.',bear:'For me? Really? Thank you, Snowdrop!',carrot:'Crunch. Best carrot ever. Because it was shared.',heart:'One share, two happy hearts. That is how it works.'}},
+    {art:function(){ return meadow()+phoenix(140,150,.75)+'<g class="hot bob" data-toy="bunny" transform="translate(250,220)"><text text-anchor="middle" y="18" font-size="56">🐰</text></g>'+'<g class="hot bob" data-toy="bear" transform="translate(320,225)"><text text-anchor="middle" y="15" font-size="46">🧸</text></g>'+badge(80,70,'💝')+'<g class="flt"><text x="330" y="90" font-size="26">💖</text><text x="60" y="230" font-size="22">💖</text></g>'; },
+     txt:'They ate carrots side by side in the sunshine. “Sharing is funny,” said Snowdrop. “I gave one away and I feel like I have <b>more</b>.” Phoenix smiled. “That is kindness. It is the only thing that gets bigger when you give it away.”',
+     hot:{bunny:'Kindness is my superpower.',bear:'And mine. We can both have it. It is a share.'}}
+   ]}
 ];
 
 /* ───────────── THE BOOK ───────────── */
 var mount=$('storyMount'); if(!mount) return; mount.classList.add('filled');
 mount.innerHTML='<div class="bookshelf" id="shelfBooks"></div><div class="book" id="book"></div><div class="bnav" id="bnav"></div>';
 var shelfEl=$('shelfBooks'), bookEl=$('book'), nav=$('bnav'), cur=null, pg=0, sayDone={}, turning=false;
-BOOKS.forEach(function(b,i){ var s=H('button',{type:'button','class':'spine','aria-pressed':'false'},shelfEl); s.style.background='linear-gradient(180deg,'+b.c+','+b.c+'cc)'; s.innerHTML='<span>'+b.title+'</span><span class="em">'+b.em+'</span><span style="font-size:13px;opacity:.9">'+b.lesson+'</span>'; s.addEventListener('click',function(){ open(i); }); });
+BOOKS.forEach(function(b,i){ var s=H('button',{type:'button','class':'spine','aria-pressed':'false'},shelfEl); s.style.background='linear-gradient(180deg,'+b.c+','+b.c+'cc)'; s.innerHTML='<span style="font-size:1.1em">'+b.title+'</span><span class="em">'+b.em+'</span><span style="font-size:13px;opacity:.95">'+b.lesson+'</span>'; s.addEventListener('click',function(){ open(i); }); });
 function wide(){ return window.innerWidth>760; }
 function total(){ return cur.pages.length+3; }
 function pageHTML(b,idx,side){ var n=idx+1,T=total(),last=idx>=T-1;
@@ -188,6 +222,8 @@ function pageHTML(b,idx,side){ var n=idx+1,T=total(),last=idx>=T-1;
   return '<div class="page '+side+'" data-idx="'+idx+'"><div class="pnote"><h4>For the grown-up 👋</h4>'+b.note+'<br><br><b>What just happened:</b> your child said three confidence sentences out loud, five times each, with you beside them. Repetition plus your voice is how a sentence becomes a belief. Same book again tomorrow works even better than a new one.</div><span class="num">'+n+' / '+T+'</span></div>'; }
 function render(){ var b=cur,T=total(); clear(bookEl); var cov=H('div',{'class':'cover'},bookEl); cov.style.setProperty('--bookc',b.c);
   if(wide()){ var li=pg-(pg%2),ri2=li+1; cov.innerHTML=(li<T?pageHTML(b,li,'l'):'<div class="page l"></div>')+(ri2<T?pageHTML(b,ri2,'r'):'<div class="page r"></div>'); } else cov.innerHTML=pageHTML(b,pg,'l');
+  /* a CSS animation on a group replaces its transform attribute, so every animated character needs its position on a parent group */
+  cov.querySelectorAll('.art svg g[transform][class]').forEach(function(g){ var outer=D.createElementNS('http://www.w3.org/2000/svg','g'); outer.setAttribute('transform',g.getAttribute('transform')); g.removeAttribute('transform'); g.parentNode.insertBefore(outer,g); outer.appendChild(g); });
   wire(cov); renderNav(); }
 function wire(root){
   root.querySelectorAll('.page').forEach(function(page){ var idx=+page.dataset.idx; if(isNaN(idx)) return;
