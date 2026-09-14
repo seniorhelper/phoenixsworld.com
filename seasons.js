@@ -148,7 +148,7 @@ mount.innerHTML=
   E('circle',{cx:110,cy:122,r:40,fill:'#e06a2a'},tree); E('circle',{cx:190,cy:116,r:42,fill:'#d4541f'},tree); E('circle',{cx:150,cy:92,r:42,fill:'#f08a3a'},tree); E('circle',{cx:150,cy:132,r:34,fill:'#e8762c'},tree);
   var pg=E('g',null,svg),lg=E('g',null,svg);
   /* the KID — waits on the left, runs and jumps on command */
-  var kid=E('g',{transform:'translate(60,236)'},svg);
+  var kidPos=E('g',{transform:'translate(60,236)'},svg); var kid=E('g',null,kidPos);
   E('ellipse',{cx:-10,cy:34,rx:10,ry:6,fill:'#ff4d9d',stroke:'#201540','stroke-width':3},kid); E('ellipse',{cx:10,cy:34,rx:10,ry:6,fill:'#ff4d9d',stroke:'#201540','stroke-width':3},kid);
   E('rect',{x:-16,y:-10,width:32,height:44,rx:12,fill:'#8b3dff',stroke:'#201540','stroke-width':3.5},kid);
   E('circle',{cx:0,cy:-26,r:20,fill:'#ffe0c2',stroke:'#201540','stroke-width':3.5},kid); E('path',{d:'M-20 -32 q20 -26 40 0 q-10 -8 -20 -8 q-10 0 -20 8z',fill:'#ffd84d',stroke:'#201540','stroke-width':3},kid);
@@ -166,7 +166,7 @@ mount.innerHTML=
   E('path',{d:'M-24 0 q-6 22 4 40',stroke:'#8b3dff','stroke-width':12,fill:'none','stroke-linecap':'round'},hand); /* sleeve */
   var hit=E('rect',{width:760,height:300,fill:'transparent',style:'cursor:grab'},svg);
   var LEAFC=['#e06a2a','#d4541f','#f0a13a','#c2431a','#e8b23a','#b8451f','#f08a3a'],leaves=[],pile=[],rx=380,ry=250,lastX=rx,dragging=false,PILE_X=660;
-  function mkLeaf(x,y){ var g=E('g',null,lg),c=pick(LEAFC); E('path',{d:'M0 0 q-13 -9 -13 -1 q0 10 13 11 q13 -1 13 -11 q0 -8 -13 1 z',fill:c,stroke:'#8a3f14','stroke-width':2},g); E('path',{d:'M-11 3 L11 3',stroke:'#8a3f14','stroke-width':1.6},g); var o={x:x,y:y,rot:ri(0,359),el:g,c:c}; place(o); leaves.push(o); return o; }
+  function mkLeaf(x,y){ var g=E('g',null,lg),inner=E('g',null,g),c=pick(LEAFC); E('path',{d:'M0 0 q-13 -9 -13 -1 q0 10 13 11 q13 -1 13 -11 q0 -8 -13 1 z',fill:c,stroke:'#8a3f14','stroke-width':2},inner); E('path',{d:'M-11 3 L11 3',stroke:'#8a3f14','stroke-width':1.6},inner); var o={x:x,y:y,rot:ri(0,359),el:g,fly:inner,c:c}; place(o); leaves.push(o); return o; }
   function place(o){ o.el.setAttribute('transform','translate('+o.x.toFixed(1)+','+o.y.toFixed(1)+') rotate('+o.rot+')'); }
   /* the pile is made of the ACTUAL leaves, stacked */
   function addToPile(o){ o.el.remove(); leaves.splice(leaves.indexOf(o),1); pile.push(o.c); drawPile(); }
@@ -176,18 +176,25 @@ mount.innerHTML=
     pile.forEach(function(c,i){ var lx=PILE_X-w+((i*37)%(w*2)),ly=276-((i*23)%Math.max(8,h*.95))-4; var g=E('g',{transform:'translate('+lx+','+ly+') rotate('+((i*47)%360)+')'},pg); E('path',{d:'M0 0 q-11 -8 -11 -1 q0 9 11 10 q11 -1 11 -10 q0 -7 -11 1 z',fill:c,stroke:'#8a3f14','stroke-width':1.6},g); }); }
   function moveRake(x,y){ rx=Math.max(50,Math.min(730,x)); ry=Math.max(200,Math.min(278,y)); rake.setAttribute('transform','translate('+rx.toFixed(1)+','+ry.toFixed(1)+')'); var dir=rx-lastX;
     if(Math.abs(dir)>.4){ var lo=Math.min(lastX,rx)-50,hi=Math.max(lastX,rx)+50;
-      leaves.slice().forEach(function(o){ if(o.x>lo&&o.x<hi&&o.y>ry-46&&o.y<ry+40){ o.x=dir>0?rx+48:rx-48; o.x=Math.max(16,Math.min(748,o.x)); o.rot=(o.rot+dir*2)%360; o.y=Math.max(206,Math.min(286,o.y+rnd(-1.5,1.5)));
+      leaves.slice().forEach(function(o){ if(o.x>lo&&o.x<hi&&o.y>ry-46&&o.y<ry+40){ var goal=dir>0?rx+48:rx-48; o.x=o.x+(goal-o.x)*.6; o.x=Math.max(16,Math.min(748,o.x)); o.rot=(o.rot+dir*.6)%360; o.y=Math.max(206,Math.min(286,o.y+rnd(-.4,.4)));
         if(o.x>PILE_X-52){ addToPile(o); SND.tone(220+Math.min(pile.length,20)*16,0.1,'triangle',0.05); if(pile.length===6) tip('auTip','Look at that pile growing! Keep raking.'); if(pile.length>=14) tip('auTip','Huge pile! Hit the JUMP button. 🙌'); } else place(o); } });
       lastX=rx; } }
   moveRake(rx,ry);
   hit.addEventListener('pointerdown',function(e){ dragging=true; try{svg.setPointerCapture(e.pointerId);}catch(x){} var p=pt(svg,e,760,300); moveRake(p.x,p.y); e.preventDefault(); });
   svg.addEventListener('pointermove',function(e){ if(!dragging) return; var p=pt(svg,e,760,300); moveRake(p.x,p.y); e.preventDefault(); });
   function up(){ dragging=false; } svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up); svg.addEventListener('pointerleave',up);
-  function drop(n){ for(var i=0;i<n;i++)(function(i){ setTimeout(function(){ var o=mkLeaf(rnd(70,240),86); o.el.style.transition='transform 1.7s cubic-bezier(.4,.1,.6,1)'; var tx=rnd(30,600),ty=rnd(212,282);
-    requestAnimationFrame(function(){ o.el.style.transform='translate('+(tx-o.x).toFixed(1)+'px,'+(ty-o.y).toFixed(1)+'px) rotate('+ri(160,540)+'deg)'; });
-    setTimeout(function(){ o.el.style.transition=''; o.el.style.transform=''; o.x=tx; o.y=ty; o.rot=ri(0,359); place(o); },1750); SND.tone(rnd(300,520),0.14,'sine',0.04); },i*130); })(i); }
+  function drop(n){ for(var i=0;i<n;i++)(function(i){ setTimeout(function(){ var o=mkLeaf(rnd(70,240),86); o.fly.style.transition='transform 1.7s cubic-bezier(.4,.1,.6,1)'; var tx=rnd(30,600),ty=rnd(212,282);
+    requestAnimationFrame(function(){ o.fly.style.transform='translate('+(tx-o.x).toFixed(1)+'px,'+(ty-o.y).toFixed(1)+'px) rotate('+ri(160,540)+'deg)'; });
+    setTimeout(function(){ o.fly.style.transition=''; o.fly.style.transform=''; o.x=tx; o.y=ty; o.rot=ri(0,359); place(o); },1750); SND.tone(rnd(300,520),0.14,'sine',0.04); },i*130); })(i); }
   function shake(){ tree.classList.remove('swig'); void tree.offsetWidth; tree.classList.add('swig'); drop(10); tip('auTip','Leaves everywhere! Grab the hand and rake.'); }
   tree.addEventListener('click',shake); $('auShake').addEventListener('click',shake);
+  /* pumpkins: tap to light them */
+  [[470,262],[540,272]].forEach(function(pp,i){ var g=E('g',{transform:'translate('+pp[0]+','+pp[1]+')',style:'cursor:pointer'},svg); E('path',{d:'M0 -16 q4 -14 12 -18',stroke:'#3f9e5c','stroke-width':4,fill:'none','stroke-linecap':'round'},g); [-14,14,0].forEach(function(ox){ E('ellipse',{cx:ox,cy:0,rx:16,ry:16-Math.abs(ox)*.2,fill:'#ff8a3d',stroke:'#c4541c','stroke-width':3},g); }); var face=E('g',{style:'opacity:0;transition:opacity .5s'},g); E('path',{d:'M-9 -6 l6 -6 l0 8z M9 -6 l-6 -6 l0 8z M-10 5 q10 10 20 0 l-3 4 l-4 -3 l-3 3 l-3 -3 l-4 3 l-3 -4z',fill:'#ffe08a'},face); var lit=false;
+    g.addEventListener('click',function(e){ e.stopPropagation(); lit=!lit; face.style.opacity=lit?'1':'0'; SND.tone(lit?520:300,0.2,'sine',0.06); tip('auTip',lit?'A jack-o-lantern! It is smiling at you. 🎃':'Pumpkin light off.'); if(lit) say(pick(['Boo! Just kidding.','A pumpkin with a smile. Like you.','Pumpkins are a fruit. Surprise!'])); }); });
+  var windBtn=H('button',{'class':'sbtn',type:'button',text:'💨 Wind'},$('auShake').parentNode); $('auShake').parentNode.insertBefore(windBtn,$('auSweep'));
+  windBtn.addEventListener('click',function(){ SND.whoosh(); tip('auTip','Whoosh! The wind is playing with the leaves.'); tree.classList.remove('swig'); void tree.offsetWidth; tree.classList.add('swig');
+    leaves.slice().forEach(function(o,i){ setTimeout(function(){ var tx=Math.max(30,Math.min(600,o.x+rnd(40,220))),ty=Math.max(210,Math.min(284,o.y+rnd(-30,30))); o.fly.style.transition='transform '+rnd(1.2,2.2)+'s cubic-bezier(.3,.6,.4,1)'; o.fly.style.transform='translate('+(tx-o.x).toFixed(1)+'px,'+(ty-o.y).toFixed(1)+'px) rotate('+ri(90,360)+'deg)'; setTimeout(function(){ o.fly.style.transition=''; o.fly.style.transform=''; o.x=tx; o.y=ty; o.rot=ri(0,359); place(o); },2300); },i*40); });
+    if(leaves.length<6) drop(8); });
   $('auSweep').addEventListener('click',function(){ var ys=[216,248,278],pass=0,x=40; rx=40; lastX=40; moveRake(40,ys[0]);
     var timer=setInterval(function(){ x+=10; if(x>744){ pass++; if(pass>=ys.length){ clearInterval(timer); tip('auTip','All raked up. Now JUMP! 🍂'); return; } x=40; rx=40; lastX=40; rake.setAttribute('transform','translate(40,'+ys[pass]+')'); return; } moveRake(x,ys[pass]); },28); });
   $('auJump').addEventListener('click',function(){ if(pile.length<4){ tip('auTip','Rake a few more leaves first, then jump!'); SND.oops(); return; }
@@ -195,8 +202,8 @@ mount.innerHTML=
     kid.style.transform='translate('+(PILE_X-60-120)+'px,-160px)';
     setTimeout(function(){ kid.style.transition='transform .5s cubic-bezier(.5,0,.8,.4)'; kid.style.transform='translate('+(PILE_X-60)+'px,-10px)'; },1100);
     setTimeout(function(){ SND.win(); say('Wheeeee!'); P.confetti(80); var burst=pile.length; pile=[]; drawPile();
-      for(var i=0;i<Math.min(burst,26);i++)(function(i){ var o=mkLeaf(PILE_X+rnd(-40,40),268); o.el.style.transition='transform 1.5s ease-out'; var tx=rnd(60,730),ty=rnd(208,286);
-        requestAnimationFrame(function(){ o.el.style.transform='translate('+(tx-o.x).toFixed(1)+'px,'+(ty-260).toFixed(1)+'px) rotate('+ri(-400,400)+'deg)'; }); setTimeout(function(){ o.el.style.transition=''; o.el.style.transform=''; o.x=tx; o.y=ty; place(o); },1550); })(i);
+      for(var i=0;i<Math.min(burst,26);i++)(function(i){ var o=mkLeaf(PILE_X+rnd(-40,40),268); o.fly.style.transition='transform 1.5s ease-out'; var tx=rnd(60,730),ty=rnd(208,286);
+        requestAnimationFrame(function(){ o.fly.style.transform='translate('+(tx-o.x).toFixed(1)+'px,'+(ty-o.y).toFixed(1)+'px) rotate('+ri(-400,400)+'deg)'; }); setTimeout(function(){ o.fly.style.transition=''; o.fly.style.transform=''; o.x=tx; o.y=ty; place(o); },1550); })(i);
       kid.style.transform='translate('+(PILE_X-60)+'px,10px)'; tip('auTip','WHEEEE! She is buried in leaves. Rake them up again. 🍁');
       setTimeout(function(){ kid.style.transition='transform 1.2s ease-in-out'; kid.style.transform='translate(0,0)'; arms.setAttribute('d','M-16 -2 q-14 10 -12 22 M16 -2 q14 10 12 22'); },2600); },1650); });
   drop(11);
@@ -214,7 +221,7 @@ mount.innerHTML=
   E('path',{d:'M262 168 q-40 -14 -56 -40 M212 140 l-14 -12 M212 140 l-16 8',stroke:'#8a5a33','stroke-width':7,fill:'none','stroke-linecap':'round'},man); E('path',{d:'M338 168 q40 -14 56 -40 M388 140 l14 -12 M388 140 l16 8',stroke:'#8a5a33','stroke-width':7,fill:'none','stroke-linecap':'round'},man);
   E('circle',{cx:300,cy:224,r:5,fill:'#3b2a1a'},man); E('circle',{cx:300,cy:248,r:5,fill:'#3b2a1a'},man);
   /* Marshmallow the kitty, pushing a snowball */
-  var kit=E('g',{transform:'translate(560,250)'},svg);
+  var kitPos=E('g',{transform:'translate(560,250)'},svg); var kit=E('g',null,kitPos);
   var snowball=E('circle',{cx:44,cy:8,r:18,fill:'#fff',stroke:'#c3d8e6','stroke-width':3},kit);
   E('path',{d:'M-20 6 q-30 -6 -24 -34',fill:'none',stroke:'#201540','stroke-width':11,'stroke-linecap':'round'},kit); E('path',{d:'M-20 6 q-30 -6 -24 -34',fill:'none',stroke:'#fff','stroke-width':6,'stroke-linecap':'round'},kit);
   E('ellipse',{cx:0,cy:8,rx:26,ry:18,fill:'#fff',stroke:'#201540','stroke-width':3.5},kit);
