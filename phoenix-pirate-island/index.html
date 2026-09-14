@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en" data-theme="candy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phoenix's Pirate Island — a 3D pirate adventure for kids</title>
+<meta name="description" content="Sail a pirate ship, fire the cannon at barrels, read a treasure map with a compass, learn pirate words and dig up treasure. A free 3D adventure for kids at Phoenix's World. No ads, nothing collected.">
+<meta name="theme-color" content="#17c7e8">
+<link rel="canonical" href="https://phoenixsworld.com/phoenix-pirate-island/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Phoenix's World">
+<meta property="og:title" content="Phoenix's Pirate Island — a 3D pirate adventure for kids">
+<meta property="og:description" content="Sail the ship, fire the cannon, follow the map, find the treasure. Free, ad-free, in 3D.">
+<meta property="og:url" content="https://phoenixsworld.com/phoenix-pirate-island/">
+<meta property="og:image" content="https://phoenixsworld.com/images/fun-games-for-toddlers.png">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="rating" content="general">
+<link rel="icon" href="/images/phoenixs-world-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/phoenix.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Phoenix's Pirate Island","url":"https://phoenixsworld.com/phoenix-pirate-island/",
+ "description":"A free 3D pirate island for kids: sail a ship, fire a cannon at barrels, read a treasure map with a compass, learn pirate words and dig up treasure. No ads, nothing collected.",
+ "isPartOf":{"@type":"WebSite","name":"Phoenix's World","url":"https://phoenixsworld.com/"},"isAccessibleForFree":true,
+ "audience":{"@type":"PeopleAudience","suggestedMinAge":3,"suggestedMaxAge":9},
+ "learningResourceType":"interactive game","teaches":"compass directions, counting, pirate vocabulary, kindness"}
+</script>
+<script type="importmap">{"imports":{"three":"/vendor/three.module.js"}}</script>
+<style>
+:root{--ink:#201540;--ink-rgb:32 21 64;--paper:#e6f7ff;--cloud:#fff;--sherbet:#ffe08a;--sherbet-deep:#c98d00;--grape:#8b3dff;--sea:#17c7e8;--sand:#ffe0a8;--r-pill:999px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:800 17px/1.45 "Nunito",system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:"Fredoka",sans-serif;font-weight:700;margin:0}
+.outlined{color:#fff;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;text-shadow:0 6px 0 rgb(var(--ink-rgb)/.3);text-align:center;font-size:clamp(30px,6vw,56px)}
+.top{background:var(--cloud);border-bottom:6px solid var(--ink)}.top-in{max-width:1180px;margin:0 auto;padding:12px 18px 8px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.logo-link img{width:min(60vw,380px)}.top-rainbow{height:12px;background:linear-gradient(90deg,#ff4d9d,#ff8a3d,#ffc53d,#3fe0a4,#17c7e8,#8b3dff,#ff4d9d);background-size:300% 100%;animation:slidebow 14s linear infinite}@keyframes slidebow{to{background-position:300% 0}}
+.bookmarks{position:sticky;top:0;z-index:40;background:var(--ink);padding:8px 10px;display:flex;gap:8px;justify-content:flex-start;overflow-x:auto;scrollbar-width:none}.bookmarks::-webkit-scrollbar{display:none}.bookmarks .bm:first-child{margin-left:auto}.bookmarks .bm:last-child{margin-right:auto}
+.bm{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px;padding:7px 10px 6px;border-radius:16px;border:4px solid var(--ink);background:#ffe9a8;font:700 12px/1 "Fredoka",sans-serif;color:var(--ink);text-decoration:none;box-shadow:0 4px 0 rgb(0 0 0/.35)}.bm i{font-style:normal;font-size:24px;line-height:1}.bm:active{transform:translateY(4px);box-shadow:none}
+.band{position:relative;padding:40px 14px 50px;border-bottom:6px solid var(--ink)}.lead{max-width:760px;margin:10px auto 0;text-align:center;font-size:clamp(16px,2.6vw,20px)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:12px 18px;border:5px solid var(--ink);border-radius:var(--r-pill);background:#ffe08a;font:700 16px/1 "Fredoka",sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 5px 0 var(--sherbet-deep);text-decoration:none;user-select:none;transition:transform .08s}.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--sherbet-deep)}
+.btn.pink{background:#ff9ed2;box-shadow:0 5px 0 #c41f6c}.btn.mint{background:#7df0c0;box-shadow:0 5px 0 #18a877}.btn.sea{background:#a3ecfa;box-shadow:0 5px 0 #0b8fa9}.btn.grape{background:#c9a2ff;box-shadow:0 5px 0 #5a17c0}.btn.white{background:#fff;box-shadow:0 5px 0 rgb(var(--ink-rgb)/.35)}.btn[aria-pressed="true"]{box-shadow:0 0 0 5px var(--sherbet),0 5px 0 var(--sherbet-deep)}
+.btn.huge{font-size:22px;padding:16px 26px}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:14px}
+/* hero */
+.hero{background:linear-gradient(180deg,#bfe9ff,#e6f7ff);text-align:center;padding:30px 14px 26px}.hero p{max-width:640px;margin:10px auto 0;font-size:clamp(17px,2.8vw,22px)}
+/* the island */
+.sea-wrap{background:linear-gradient(180deg,#8fd8ff 0,#17c7e8 60%,#0b6fa9 100%);padding:26px 0 30px}
+.island{max-width:1200px;margin:16px auto 0;border:7px solid var(--ink);border-radius:30px;overflow:hidden;background:#0b6fa9;box-shadow:0 14px 0 var(--ink);position:relative;aspect-ratio:16/10;min-height:360px;max-height:82vh}
+.island canvas{width:100%!important;height:100%!important;display:block;touch-action:none}
+.hud{position:absolute;inset:0;pointer-events:none}.hud>*{pointer-events:auto}
+.chip{position:absolute;padding:8px 14px;border:4px solid var(--ink);border-radius:999px;background:#fff;font:700 15px/1 "Fredoka",sans-serif;box-shadow:0 4px 0 rgb(0 0 0/.35)}
+#score{left:12px;top:12px}#hint{left:50%;top:12px;transform:translateX(-50%);max-width:88%;text-align:center;font:800 14px/1.25 "Nunito",sans-serif;background:#fff8e1;transition:opacity .4s}#hint.off{opacity:0}
+#cannonHud{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:none;gap:8px;align-items:center;padding:8px 10px;border:5px solid var(--ink);border-radius:20px;background:rgb(255 255 255/.92);box-shadow:0 6px 0 rgb(0 0 0/.35);flex-wrap:wrap;justify-content:center;max-width:96%}#cannonHud.on{display:flex}
+#cannonHud label{font:800 13px/1 "Nunito",sans-serif}#cannonHud input[type=range]{width:120px;height:30px;-webkit-appearance:none;appearance:none;background:none}#cannonHud input[type=range]::-webkit-slider-runnable-track{height:12px;border-radius:99px;background:linear-gradient(90deg,#ffb3d6,#c9a2ff,#a3ecfa);border:3px solid var(--ink)}#cannonHud input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-11px;border-radius:50%;background:var(--sherbet);border:4px solid var(--ink)}
+#loading{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#bfe9ff,#17c7e8);color:var(--ink);font:700 22px/1.3 "Fredoka",sans-serif;text-align:center;padding:20px;z-index:3}#loading.off{display:none}#loading .bar{width:min(70%,320px);height:18px;border:4px solid var(--ink);border-radius:99px;background:#fff;overflow:hidden;margin-top:12px}#loading .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff4d9d,#ffc53d,#3fe0a4,#17c7e8);transition:width .3s}
+#fallback{display:none;position:absolute;inset:0;background:#bfe9ff}#fallback.on{display:block}#fallback svg{width:100%;height:100%;display:block}
+.tools{max-width:1200px;margin:12px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pspeak{position:absolute;left:12px;bottom:12px;max-width:min(70%,360px);padding:10px 14px;border:5px solid var(--ink);border-radius:18px;background:#fff;font:800 15px/1.3 "Nunito",sans-serif;box-shadow:0 5px 0 rgb(0 0 0/.35);opacity:0;transition:opacity .3s,transform .3s;transform:translateY(8px)}.pspeak.on{opacity:1;transform:none}
+/* compass */
+.compass-wrap{background:#ffe1f0}.compass{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:24px;align-items:center;max-width:960px;margin:20px auto 0}@media(max-width:700px){.compass{grid-template-columns:1fr}}
+.rose{width:100%;max-width:340px;margin:0 auto;display:block;filter:drop-shadow(0 8px 0 rgb(var(--ink-rgb)/.22))}.rose .needle{transform-box:fill-box;transform-origin:50% 50%;transition:transform .8s cubic-bezier(.3,1.4,.5,1)}
+.dirbtns{display:grid;grid-template-columns:repeat(3,72px);grid-template-rows:repeat(3,72px);gap:8px;justify-content:center}.dirbtns .btn{justify-content:center;padding:0;font-size:24px}.dirbtns .spacer{visibility:hidden}
+.card{border:6px solid var(--ink);border-radius:28px;background:#fff;padding:16px;box-shadow:0 10px 0 rgb(var(--ink-rgb)/.2)}
+/* words */
+.words-wrap{background:#dff6ff}.wordgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:1000px;margin:20px auto 0}
+.word{border:5px solid var(--ink);border-radius:22px;background:#fff;padding:14px 10px;text-align:center;cursor:pointer;box-shadow:0 7px 0 rgb(var(--ink-rgb)/.2);transition:transform .1s}.word:active{transform:translateY(5px);box-shadow:0 2px 0 rgb(var(--ink-rgb)/.2)}.word .pic{font-size:44px;line-height:1;display:block}.word b{font:700 20px/1.2 "Fredoka",sans-serif;display:block;margin-top:6px}.word span{font-size:13px;color:#5a4a7a}
+.word.flip{animation:wflip .6s ease}@keyframes wflip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+/* map game */
+.map-wrap{background:#fff3c4}.mapbox{max-width:760px;margin:20px auto 0}.mapbox svg{width:100%;height:auto;display:block;border:6px solid var(--ink);border-radius:22px;background:#f6dfab;box-shadow:0 10px 0 rgb(var(--ink-rgb)/.22);touch-action:none}
+.steps{font:700 20px/1.3 "Fredoka",sans-serif;text-align:center;margin-top:12px;min-height:1.4em}
+/* quiz */
+.quiz-wrap{background:#e3ffef}.qopts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+/* footer */
+.foot{background:var(--cloud);text-align:center;padding:30px 16px 40px}.foot img{width:min(50vw,260px)}.foot p{margin:8px 0}
+@media(prefers-reduced-motion:reduce){.top-rainbow,.word.flip,.rose .needle{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-pw="page">
+<header class="top"><div class="top-in"><a class="logo-link" href="/" aria-label="Phoenix's World — home"><img src="/images/phoenixs-world-logo.png" width="1024" height="341" alt="Phoenix's World — a white kitten in a gold crown riding a rainbow"></a></div><div class="top-rainbow"></div></header>
+<nav class="bookmarks" aria-label="Jump to">
+  <a class="bm" href="/"><i>🏠</i>Home</a><a class="bm" href="#island" style="background:#a3ecfa"><i>🏝️</i>Island</a><a class="bm" href="#compass" style="background:#ffd1e6"><i>🧭</i>Compass</a><a class="bm" href="#words" style="background:#d8ccff"><i>🦜</i>Pirate words</a><a class="bm" href="#map" style="background:#fff"><i>🗺️</i>Map</a><a class="bm" href="/#garden" style="background:#d4ffe9"><i>🌳</i>Garden</a><a class="bm" href="/space-adventure/" style="background:#c9d4ff"><i>🚀</i>Space</a><a class="bm" href="/day-at-water-park/" style="background:#bff3ff"><i>💦</i>Water Park</a><a class="bm" href="/#worlds" style="background:#ffd6a8"><i>🚪</i>Worlds</a>
+</nav>
+
+<section class="hero"><h1 class="outlined">Phoenix’s Pirate Island</h1><p>Ahoy! Spin the island with your finger. Tap the ship to sail. Tap the cannon to fire. Follow the map to the treasure.</p></section>
+
+<section class="band sea-wrap" id="island">
+  <h2 class="outlined">The Island</h2>
+  <div class="island" id="stage">
+    <div id="loading"><div>Rowing out to the island…<div class="bar"><i id="loadBar"></i></div></div></div>
+    <div id="fallback"><svg viewBox="0 0 1000 620" role="img" aria-label="A pirate island with a ship"><rect width="1000" height="620" fill="#bfe9ff"/><rect y="330" width="1000" height="290" fill="#17c7e8"/><ellipse cx="500" cy="400" rx="330" ry="110" fill="#ffe0a8" stroke="#201540" stroke-width="6"/><ellipse cx="500" cy="380" rx="220" ry="70" fill="#7df0c0" stroke="#201540" stroke-width="5"/><path d="M420 380 v-140 M420 240 q-60 -30 -90 10 M420 240 q60 -30 90 10 M420 240 q-20 -60 0 -80 M420 240 q20 -60 0 -80" stroke="#8a5a2b" stroke-width="12" fill="none" stroke-linecap="round"/><g transform="translate(760 330)"><path d="M-90 0 q90 60 180 0 v-10 h-180z" fill="#8a5a2b" stroke="#201540" stroke-width="6"/><path d="M0 -10 v-140" stroke="#201540" stroke-width="8"/><path d="M0 -140 l90 40 l-90 40z" fill="#fff" stroke="#201540" stroke-width="6"/></g><text x="500" y="560" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="30" font-weight="700" fill="#201540">This device cannot show the 3D island yet — everything below still works!</text></svg></div>
+    <div class="hud">
+      <div class="chip" id="score">⚓ Barrels sunk: <b id="sunk">0</b></div>
+      <div class="chip" id="hint">Drag to spin the island · pinch to zoom · tap anything</div>
+      <div class="pspeak" id="pspeak"></div>
+      <div id="cannonHud"><label>Aim ↕ <input type="range" id="aimUp" min="10" max="45" value="22"></label><label>Turn ↔ <input type="range" id="aimSide" min="-45" max="45" value="0"></label><button class="btn pink" id="fireBtn" type="button">💥 FIRE</button><button class="btn white" id="cannonDone" type="button">Done</button></div>
+    </div>
+  </div>
+  <div class="tools">
+    <button class="btn sea" id="sailBtn" type="button">⛵ Sail the ship</button>
+    <button class="btn pink" id="cannonBtn" type="button">💣 Cannon</button>
+    <button class="btn mint" id="rowBtn" type="button">🚣 Row the boat</button>
+    <button class="btn grape" id="nightBtn" type="button" aria-pressed="false">🌙 Night</button>
+    <button class="btn" id="digBtn" type="button" disabled>⛏️ Dig for treasure</button>
+    <button class="btn white" id="resetBtn" type="button">🔄 Reset view</button>
+    <button class="btn white" id="liteBtn" type="button" aria-pressed="false">🐢 Lite mode</button>
+  </div>
+  <p class="lead" style="color:#fff;-webkit-text-stroke:0;text-shadow:0 2px 0 rgb(0 0 0/.4)">Tap the palm trees, the tower, the rocks, the boat, the water. Everything on the island does something.</p>
+</section>
+
+<section class="band compass-wrap" id="compass">
+  <h2 class="outlined">Which Way, Captain?</h2>
+  <p class="lead">A compass always points <b>North</b>. Tap a direction and the camera flies to that side of the island.</p>
+  <div class="compass">
+    <svg class="rose" viewBox="0 0 300 300" aria-label="Compass rose"><circle cx="150" cy="150" r="140" fill="#fff8e1" stroke="#201540" stroke-width="8"/><circle cx="150" cy="150" r="118" fill="none" stroke="#201540" stroke-width="3" stroke-dasharray="6 10"/>
+      <g fill="#ffc53d" stroke="#201540" stroke-width="4" stroke-linejoin="round"><path d="M150 40 L165 150 L135 150z"/><path d="M150 260 L165 150 L135 150z"/><path d="M40 150 L150 135 L150 165z"/><path d="M260 150 L150 135 L150 165z"/></g>
+      <g fill="#c9a2ff" stroke="#201540" stroke-width="3" stroke-linejoin="round" opacity=".8"><path d="M80 80 L150 140 L140 150z"/><path d="M220 80 L150 140 L160 150z"/><path d="M80 220 L150 160 L140 150z"/><path d="M220 220 L150 160 L160 150z"/></g>
+      <g class="needle" id="needle"><path d="M150 60 L168 150 L132 150z" fill="#ff4d9d" stroke="#201540" stroke-width="4" stroke-linejoin="round"/><path d="M150 240 L168 150 L132 150z" fill="#fff" stroke="#201540" stroke-width="4" stroke-linejoin="round"/></g>
+      <circle cx="150" cy="150" r="12" fill="#201540"/>
+      <g font-family="Fredoka,sans-serif" font-weight="700" font-size="30" fill="#201540" text-anchor="middle"><text x="150" y="34">N</text><text x="150" y="292">S</text><text x="20" y="160">W</text><text x="280" y="160">E</text></g></svg>
+    <div class="card"><div class="dirbtns"><span class="spacer"></span><button class="btn sea" type="button" data-dir="N">N</button><span class="spacer"></span><button class="btn sea" type="button" data-dir="W">W</button><button class="btn white" type="button" id="dirCenter">🏝️</button><button class="btn sea" type="button" data-dir="E">E</button><span class="spacer"></span><button class="btn sea" type="button" data-dir="S">S</button><span class="spacer"></span></div><p id="dirOut" style="text-align:center;margin:12px 0 0;font:700 18px/1.3 'Fredoka',sans-serif">Never Eat Soggy Waffles: N, E, S, W — going clockwise.</p></div>
+  </div>
+</section>
+
+<section class="band words-wrap" id="words">
+  <h2 class="outlined">Talk Like a Pirate</h2>
+  <p class="lead">Tap a word to hear it. Then say it in your best pirate voice.</p>
+  <div class="wordgrid" id="wordgrid"></div>
+  <div class="card" style="max-width:760px;margin:18px auto 0;text-align:center" id="quizCard"><h3 id="quizQ" style="font-size:24px">Quick quiz!</h3><div class="qopts" id="quizOpts"></div><p id="quizOut" style="margin:10px 0 0"></p></div>
+</section>
+
+<section class="band map-wrap" id="map">
+  <h2 class="outlined">The Treasure Map</h2>
+  <p class="lead">Follow the directions. Tap the arrows to move Phoenix one square at a time. When she reaches the <b>X</b>, the shovel unlocks on the island.</p>
+  <div class="mapbox"><svg id="mapSvg" viewBox="0 0 600 420" role="img" aria-label="A treasure map grid"></svg></div>
+  <p class="steps" id="steps"></p>
+  <div class="row"><button class="btn sea" type="button" data-move="0,-1">⬆️ North</button><button class="btn sea" type="button" data-move="-1,0">⬅️ West</button><button class="btn sea" type="button" data-move="1,0">➡️ East</button><button class="btn sea" type="button" data-move="0,1">⬇️ South</button><button class="btn white" type="button" id="newMap">🗺️ New map</button></div>
+</section>
+
+<section class="band quiz-wrap" id="lesson">
+  <h2 class="outlined">What Real Treasure Is</h2>
+  <div class="card" style="max-width:720px;margin:18px auto 0;text-align:center"><p style="font-size:clamp(18px,3vw,24px);margin:0">Pirates think treasure is gold. Princess Phoenix knows better. Real treasure is a friend who likes you exactly as you are, a family that keeps you safe, and a brave heart that tries again. Say it with me:</p><div class="row"><button class="btn pink huge" type="button" id="sayBrave">💪 “I am brave like a captain.”</button><button class="btn mint huge" type="button" id="sayKind">💖 “I share my treasure.”</button></div></div>
+</section>
+
+<footer class="foot"><img src="/images/phoenixs-world-logo.png" width="1024" height="341" alt="Phoenix's World" loading="lazy"><p>Made by a dad and his daughter. 👑</p><p>No ads. No sign-ups. Nothing collected. Ever.</p><a class="btn white" href="/">🏠 Back to Phoenix’s World</a></footer>
+
+<script>
+/* ── shared bits so phoenix.js and the page share one sound + speech system ── */
+(function(){
+  var D=document, SND={on:true, files:{}};
+  var NAMES=['tap','clunk','whoosh','pop','ding','tada','win','drum','bell','oops','thud','glass','step','pluck','open','close','toggle'];
+  NAMES.forEach(function(n){ SND[n]=function(){ if(!SND.on) return; try{ var a=new Audio('/sounds/'+n+'.mp3'); a.volume=0.6; a.play().catch(function(){}); }catch(e){} }; });
+  SND.boing=SND.pluck; SND.sparkle=SND.ding; SND.tone=function(){}; SND.ac=function(){ return null; };
+  function rnd(a,b){ return a+Math.random()*(b-a); } function ri(a,b){ return Math.floor(rnd(a,b+1)); } function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function E(t,a,p){ var e=D.createElementNS('http://www.w3.org/2000/svg',t); if(a) for(var k in a) e.setAttribute(k,a[k]); if(p) p.appendChild(e); return e; }
+  function H(t,a,p){ var e=D.createElement(t); if(a) for(var k in a){ if(k==='html') e.innerHTML=a[k]; else if(k==='text') e.textContent=a[k]; else e.setAttribute(k,a[k]); } if(p) p.appendChild(e); return e; }
+  var layer=H('div',{style:'position:fixed;inset:0;pointer-events:none;z-index:2100;overflow:hidden'},D.body);
+  function sparkleAt(x,y,n,cols){ n=n||16; cols=cols||['#ff4d9d','#ffc53d','#3fe0a4','#17c7e8','#8b3dff','#fff']; for(var i=0;i<n;i++){ var s=H('i',null,layer); var a=Math.random()*6.283,d=rnd(60,220),sz=rnd(14,32); s.textContent=pick(['✦','✧','★','✨']); s.style.cssText='position:absolute;left:'+x+'px;top:'+y+'px;font-size:'+sz+'px;line-height:1;color:'+pick(cols)+';text-shadow:0 0 10px currentColor;transform:translate(-50%,-50%) scale(.2);opacity:0;transition:transform 1.2s cubic-bezier(.15,.7,.3,1),opacity 1.1s'; (function(el,a,d){ requestAnimationFrame(function(){ el.style.opacity='1'; el.style.transform='translate(calc(-50% + '+(Math.cos(a)*d)+'px),calc(-50% + '+(Math.sin(a)*d)+'px)) scale(1.1) rotate('+ri(-180,180)+'deg)'; setTimeout(function(){ el.style.opacity='0'; },500); }); })(s,a,d); setTimeout(function(el){ return function(){ el.remove(); }; }(s),1500); } }
+  function confetti(n){ var W=window.innerWidth; for(var i=0;i<(n||60);i++){ var c=H('i',null,layer); c.style.cssText='position:absolute;left:'+rnd(0,W)+'px;top:-20px;width:'+rnd(6,12)+'px;height:'+rnd(8,16)+'px;background:'+pick(['#ff4d9d','#ffc53d','#3fe0a4','#17c7e8','#8b3dff'])+';border-radius:2px;transition:transform '+rnd(1.6,2.8)+'s ease-in,opacity .4s '+rnd(1.4,2.4)+'s;opacity:1'; (function(el){ requestAnimationFrame(function(){ el.style.transform='translate('+rnd(-80,80)+'px,'+(window.innerHeight+40)+'px) rotate('+ri(-500,500)+'deg)'; el.style.opacity='0'; }); })(c); setTimeout(function(el){ return function(){ el.remove(); }; }(c),3200); } }
+  var voices=[], vc=null; function loadVoices(){ try{ voices=speechSynthesis.getVoices()||[]; vc=null; }catch(e){} } if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+  var PREF=[/google uk english female/i,/\baria\b/i,/\bjenny\b/i,/samantha/i,/\bkaren\b/i,/moira/i,/\bzira\b/i,/google us english/i,/female/i];
+  function pickVoice(){ if(vc!==null) return vc; var vs=voices.filter(function(v){ return /^en/i.test(v.lang); }); if(!vs.length) vs=voices; var v=null; for(var i=0;i<PREF.length&&!v;i++){ var rx=PREF[i]; v=vs.filter(function(x){ return rx.test(x.name); })[0]; } vc=v||vs[0]||null; return vc; }
+  var unlocked=false; ['pointerdown','keydown','touchstart'].forEach(function(ev){ D.addEventListener(ev,function(){ unlocked=true; },{capture:true,passive:true}); });
+  function say(t){ if(!SND.on||!unlocked||!('speechSynthesis' in window)) return; try{ t=String(t).replace(/<[^>]+>/g,'').replace(/[\uD800-\uDFFF]./g,'').replace(/[\u2600-\u27BF\uFE0F\u200D]/g,'').trim(); if(!t) return; speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(t); u.rate=0.92; u.pitch=1.3; u.volume=1; var v=pickVoice(); if(v) u.voice=v; speechSynthesis.speak(u); }catch(e){} }
+  window.PW={SND:SND,E:E,H:H,rnd:rnd,ri:ri,pick:pick,say:say,sparkleAt:sparkleAt,confetti:confetti,BOW:['#ff4d9d','#ff8a3d','#ffc53d','#3fe0a4','#17c7e8','#8b3dff'],dropLayer:layer,weatherLayer:layer,REDUCED:window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches};
+  window.PWspeak=function(t){ say(t); }; window.PWfx={sparkles:sparkleAt,confetti:confetti};
+})();
+</script>
+
+<script>
+/* ── 2D games: pirate words, quiz, treasure map, compass buttons (the 3D island listens to these) ── */
+(function(){
+  var P=window.PW, D=document, $=function(id){ return D.getElementById(id); }, H=P.H, E=P.E, pick=P.pick, rnd=P.rnd, ri=P.ri, SND=P.SND, say=P.say;
+  function speak(t){ var b=$('pspeak'); b.textContent=t; b.classList.add('on'); say(t); clearTimeout(speak.t); speak.t=setTimeout(function(){ b.classList.remove('on'); },4200); }
+  window.pirateSpeak=speak;
+
+  /* words */
+  var WORDS=[['🦜','Ahoy!','Hello, pirate style'],['🤝','Matey','A friend'],['➡️','Starboard','The RIGHT side of the ship'],['⬅️','Port','The LEFT side of the ship'],['⛵','Bow','The FRONT of the ship'],['🌊','Stern','The BACK of the ship'],['🪹','Crow\u2019s nest','The lookout at the top of the mast'],['⚓','Anchor','Drops down so the ship stays put'],['🏴‍☠️','Jolly Roger','The pirate flag'],['💰','Booty','Treasure!'],['🧭','Compass','Always points North'],['🗺️','X marks the spot','Where the treasure is buried']];
+  WORDS.forEach(function(w){ var c=H('div',{'class':'word',role:'button',tabindex:0},$('wordgrid')); c.innerHTML='<span class="pic">'+w[0]+'</span><b>'+w[1]+'</b><span>'+w[2]+'</span>'; function hit(){ c.classList.remove('flip'); void c.offsetWidth; c.classList.add('flip'); SND.pop(); say(w[1]+'. '+w[2]+'.'); var r=c.getBoundingClientRect(); P.sparkleAt(r.left+r.width/2,r.top+20,10); } c.addEventListener('click',hit); c.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); hit(); } }); });
+  /* quiz */
+  var QS=[['Which side of the ship is STARBOARD?',['Right','Left','The top'],0],['Which side is PORT?',['Left','Right','Underneath'],0],['A compass always points…',['North','To the treasure','At the sun'],0],['The front of the ship is the…',['Bow','Stern','Crow\u2019s nest'],0],['What do pirates call a friend?',['Matey','Captain','Booty'],0],['Where does the lookout sit?',['Crow\u2019s nest','Anchor','Port'],0]]; var qi=0;
+  function quiz(){ var q=QS[qi%QS.length]; $('quizQ').textContent=q[0]; $('quizOpts').innerHTML=''; $('quizOut').textContent=''; var opts=q[1].map(function(t,i){ return [t,i===q[2]]; }).sort(function(){ return Math.random()-.5; });
+    opts.forEach(function(o){ var b=H('button',{type:'button','class':'btn '+(Math.random()<.5?'sea':'pink'),text:o[0]},$('quizOpts')); b.addEventListener('click',function(){ if(o[1]){ SND.win(); $('quizOut').textContent='YES! '+o[0]+'. You are a real pirate now. 🏴‍☠️'; say('Yes! '+o[0]+'.'); P.confetti(40); qi++; setTimeout(quiz,1800); } else { SND.oops(); $('quizOut').textContent='Not that one. Try again, matey!'; say('Not that one. Try again, matey.'); } }); }); }
+  quiz();
+
+  /* treasure map: a 6x4 grid, Phoenix follows spoken directions to the X */
+  var svg=$('mapSvg'), COLS=6, ROWS=4, CW=100, CH=100, cell=null, x0=0, y0=0, tx=0, ty=0, path=[], stepI=0, solved=false, pxG=null, xG=null;
+  function build(){ svg.innerHTML=''; E('rect',{width:600,height:420,fill:'#f6dfab'},svg); E('path',{d:'M0 0 h600 v420 h-600z',fill:'none',stroke:'#c9a26a','stroke-width':22,opacity:.6},svg);
+    for(var c=0;c<COLS;c++) for(var r=0;r<ROWS;r++) E('rect',{x:c*CW,y:r*CH+20,width:CW,height:CH,fill:'none',stroke:'#c9a26a','stroke-width':2,'stroke-dasharray':'6 6'},svg);
+    [[110,60,'🌴'],[440,80,'⛰️'],[300,300,'🌴'],[520,340,'🦀'],[60,340,'⚓']].forEach(function(o){ E('text',{x:o[0],y:o[1],'font-size':40,'text-anchor':'middle'},svg).textContent=o[2]; });
+    x0=0; y0=ri(0,ROWS-1); tx=ri(3,COLS-1); ty=ri(0,ROWS-1); if(ty===y0) ty=(ty+1)%ROWS;
+    path=[]; var dx=tx-x0, dy=ty-y0; if(dx>0) path.push([dx,'East','➡️']); if(dy>0) path.push([dy,'South','⬇️']); if(dy<0) path.push([-dy,'North','⬆️']);
+    xG=E('g',{transform:'translate('+(tx*CW+CW/2)+','+(ty*CH+20+CH/2)+')'},svg); E('path',{d:'M-22 -22 L22 22 M22 -22 L-22 22',stroke:'#e8163f','stroke-width':12,'stroke-linecap':'round'},xG); E('path',{d:'M-22 -22 L22 22 M22 -22 L-22 22',stroke:'#fff','stroke-width':4,'stroke-linecap':'round',opacity:.6},xG);
+    pxG=E('g',{style:'transition:transform .45s cubic-bezier(.3,1.4,.5,1)'},svg); E('circle',{r:34,fill:'#fff',stroke:'#201540','stroke-width':5},pxG); E('text',{y:14,'text-anchor':'middle','font-size':40},pxG).textContent='👑'; placePx(); stepI=0; solved=false; $('digBtn').disabled=true; $('digBtn').textContent='⛏️ Dig for treasure'; showStep(); }
+  function placePx(){ pxG.setAttribute('transform','translate('+(x0*CW+CW/2)+','+(y0*CH+20+CH/2)+')'); }
+  function showStep(){ if(stepI>=path.length){ return; } var s=path[stepI]; $('steps').textContent='Go '+s[0]+' square'+(s[0]>1?'s':'')+' '+s[1]+' '+s[2]; }
+  var remaining=null;
+  D.querySelectorAll('[data-move]').forEach(function(b){ b.addEventListener('click',function(){ if(solved) return; var m=b.dataset.move.split(',').map(Number); var s=path[stepI]; if(!s) return; var want=s[1]==='East'?[1,0]:s[1]==='West'?[-1,0]:s[1]==='North'?[0,-1]:[0,1];
+    if(m[0]!==want[0]||m[1]!==want[1]){ SND.oops(); say('Not that way. The map says '+s[1]+'.'); b.style.transition='transform .1s'; b.style.transform='translateX(-6px)'; setTimeout(function(){ b.style.transform=''; },120); return; }
+    if(remaining===null) remaining=s[0]; x0=Math.max(0,Math.min(COLS-1,x0+m[0])); y0=Math.max(0,Math.min(ROWS-1,y0+m[1])); placePx(); SND.step(); remaining--; say(String(s[0]-remaining)); $('steps').textContent=s[0]-remaining+' of '+s[0]+' '+s[1]+'…';
+    if(remaining<=0){ remaining=null; stepI++; if(stepI>=path.length){ solved=true; $('steps').textContent='X MARKS THE SPOT! Now go up to the island and DIG. ⛏️'; SND.tada(); P.confetti(80); say('X marks the spot! Go up to the island and dig!'); $('digBtn').disabled=false; $('digBtn').textContent='⛏️ DIG HERE!'; $('digBtn').classList.add('pink'); if(window.pirateUnlockDig) window.pirateUnlockDig(); } else showStep(); } }); });
+  $('newMap').addEventListener('click',function(){ SND.tap(); remaining=null; build(); }); build();
+
+  /* compass buttons */
+  var DIRS={N:0,E:90,S:180,W:270}; D.querySelectorAll('[data-dir]').forEach(function(b){ b.addEventListener('click',function(){ var d=b.dataset.dir; $('needle').style.transform='rotate('+(-DIRS[d])+'deg)'; SND.tap(); var line={N:'North! The tower is on the north side.',E:'East! That is where the ship is anchored.',S:'South! The cannon points south, out to sea.',W:'West! The rowboat and the dock are on the west beach.'}[d]; $('dirOut').textContent=line; say(line); if(window.pirateLook) window.pirateLook(d); $('stage').scrollIntoView({behavior:'smooth',block:'center'}); }); });
+  $('dirCenter').addEventListener('click',function(){ $('needle').style.transform=''; if(window.pirateLook) window.pirateLook('home'); SND.tap(); });
+  $('sayBrave').addEventListener('click',function(){ say('I am brave like a captain!'); SND.tada(); P.confetti(50); }); $('sayKind').addEventListener('click',function(){ say('I share my treasure!'); SND.win(); P.sparkleAt(window.innerWidth/2,window.innerHeight/2,30); });
+})();
+</script>
+
+<script type="module">
+/* ── THE 3D ISLAND ── */
+import * as THREE from 'three';
+import { GLTFLoader } from '/vendor/GLTFLoader.js';
+import { OrbitControls } from '/vendor/OrbitControls.js';
+const P=window.PW, $=id=>document.getElementById(id), rnd=P.rnd, pick=P.pick, SND=P.SND, say=P.say, speak=window.pirateSpeak;
+const stage=$('stage'), lite={on:false};
+let renderer, scene, camera, controls, clock;
+try{
+  renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); renderer.setSize(stage.clientWidth,stage.clientHeight);
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+  stage.insertBefore(renderer.domElement,stage.firstChild);
+}catch(e){ $('loading').classList.add('off'); $('fallback').classList.add('on'); throw e; }
+scene=new THREE.Scene(); scene.background=new THREE.Color(0x8fd8ff); scene.fog=new THREE.Fog(0x8fd8ff,60,140);
+camera=new THREE.PerspectiveCamera(50,stage.clientWidth/stage.clientHeight,0.1,300); camera.position.set(0,20,40);
+controls=new OrbitControls(camera,renderer.domElement); controls.target.set(0,1.5,0); controls.enableDamping=true; controls.dampingFactor=.08; controls.enablePan=false; controls.minDistance=10; controls.maxDistance=70; controls.maxPolarAngle=1.42; controls.minPolarAngle=.3; controls.autoRotate=true; controls.autoRotateSpeed=.5;
+clock=new THREE.Clock();
+/* lights */
+const hemi=new THREE.HemisphereLight(0xffffff,0x3fa9e0,.9); scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff3c4,1.6); sun.position.set(30,42,20); sun.castShadow=true; sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.left=-40; sun.shadow.camera.right=40; sun.shadow.camera.top=40; sun.shadow.camera.bottom=-40; sun.shadow.camera.near=1; sun.shadow.camera.far=140; sun.shadow.bias=-0.0006; scene.add(sun);
+/* sky */
+const texLoader=new THREE.TextureLoader(); const skies={}; function loadSky(n){ if(skies[n]) return Promise.resolve(skies[n]); return new Promise(res=>{ texLoader.load('/models/pirate/sky-'+n+'.jpg',t=>{ t.mapping=THREE.EquirectangularReflectionMapping; t.colorSpace=THREE.SRGBColorSpace; skies[n]=t; res(t); },undefined,()=>res(null)); }); }
+loadSky('day').then(t=>{ if(t){ scene.background=t; } });
+/* the sea */
+const seaGeo=new THREE.PlaneGeometry(220,220,70,70); seaGeo.rotateX(-Math.PI/2); const seaPos=seaGeo.attributes.position; const seaBase=seaPos.array.slice();
+const seaMat=new THREE.MeshStandardMaterial({color:0x22b7ea,roughness:.25,metalness:.1,transparent:true,opacity:.92,flatShading:true});
+const sea=new THREE.Mesh(seaGeo,seaMat); sea.receiveShadow=true; scene.add(sea);
+const deep=new THREE.Mesh(new THREE.PlaneGeometry(220,220),new THREE.MeshBasicMaterial({color:0x0b6fa9})); deep.rotation.x=-Math.PI/2; deep.position.y=-2; scene.add(deep);
+/* the island: sand base + grass top (our own geometry), decorated with Kenney models */
+const sandMat=new THREE.MeshStandardMaterial({color:0xffe3a6,roughness:1,flatShading:true}), grassMat=new THREE.MeshStandardMaterial({color:0x7fd07f,roughness:1,flatShading:true});
+function blob(r,h,mat,y,segs){ const g=new THREE.CylinderGeometry(r,r*1.15,h,segs||14,1); const p=g.attributes.position; for(let i=0;i<p.count;i++){ const x=p.getX(i),z=p.getZ(i); const a=Math.atan2(z,x); const k=1+Math.sin(a*3)*.08+Math.cos(a*5)*.05; p.setX(i,x*k); p.setZ(i,z*k); } g.computeVertexNormals(); const m=new THREE.Mesh(g,mat); m.position.y=y; m.receiveShadow=true; m.castShadow=false; return m; }
+const island=new THREE.Group(); scene.add(island);
+island.add(blob(16,1.6,sandMat,.6)); island.add(blob(11,1.1,grassMat,1.9)); const hill=blob(5,2.2,grassMat,3.2,10); hill.position.set(-6,3.2,-4); island.add(hill);
+/* models */
+const loader=new GLTFLoader(); const cache={}; let toLoad=0, loaded=0;
+function load(name){ toLoad++; return new Promise(res=>{ if(cache[name]){ toLoad--; res(cache[name].clone()); return; } loader.load('/models/pirate/'+name+'.glb',g=>{ cache[name]=g.scene; loaded++; $('loadBar').style.width=Math.round(loaded/toLoad*100)+'%'; res(g.scene.clone()); },undefined,()=>{ loaded++; res(new THREE.Group()); }); }); }
+function prep(o,kind){ o.traverse(c=>{ if(c.isMesh){ c.castShadow=true; c.receiveShadow=true; } }); if(kind) o.userData.kind=kind; return o; }
+const clickable=[]; const anim={ship:null,boat:null,balls:[],barrels:[],coconuts:[],flag:null,chest:null,hole:null,shovel:null,cannon:null,cannonYaw:0,birds:[],clouds:[],flags:[]};
+async function build(){
+  const put=async(name,x,y,z,ry,s,kind)=>{ const o=prep(await load(name),kind); o.position.set(x,y,z); o.rotation.y=ry||0; o.scale.setScalar(s||1); island.add(o); if(kind) clickable.push(o); return o; };
+  await Promise.all([
+    put('palm-detailed-bend',6,2.4,4,.4,1.5,'palm'), put('palm-detailed-straight',-4,2.4,7,2,1.4,'palm'), put('palm-bend',9,2.4,-3,-1.2,1.3,'palm'), put('palm-straight',-9,2.4,3,.8,1.2,'palm'),
+    put('rocks-a',-13,1.2,-1,.6,.9,'rock'), put('rocks-sand-b',12,1.2,7,-.4,.8,'rock'), put('rocks-b',4,2.4,-9,1.7,.7,'rock'),
+    put('patch-grass-foliage',2,2.45,1,0,1.2), put('patch-sand-foliage',-6,1.4,10,1,1),
+    put('grass-plant',0,2.45,-5,0,1.4), put('grass-plant',-2,2.45,5,1,1.2), put('grass-plant',7,2.45,0,2,1.1),
+    put('tower-complete-small',0,2.4,-9,0,1.15,'tower'), put('flag-pirate-high',3,2.4,-7,0,1,'flagpole'),
+    put('structure-platform-dock',-16,1.1,3,Math.PI/2,1.2,'dock'), put('structure-platform-dock',-18.4,1.1,3,Math.PI/2,1.2,'dock'),
+    put('crate',-3,2.45,-1,.4,1,'crate'), put('crate',-4,2.45,-2,1.3,.9,'crate'), put('barrel',2,2.45,3,0,1,'barrelLand'), put('bottle',-1,2.45,2,0,1.2,'bottle'),
+  ]);
+  anim.cannon=await put('cannon',-6,5.35,-4,0,1.4,'cannon'); anim.cannonBase=0;
+  anim.hole=await put('hole',5,2.44,6,0,1); anim.hole.visible=false; anim.shovel=await put('tool-shovel',5.6,2.45,5.4,-.4,1.1); anim.shovel.visible=false;
+  anim.chest=await put('chest',5,1.0,6,.3,1.2,'chest'); anim.chest.visible=false;
+  /* ship, rowboat, floating barrels live in the scene, not on the island */
+  anim.ship=prep(await load('ship-pirate-large'),'ship'); anim.ship.position.set(26,0,6); anim.ship.rotation.y=-Math.PI/2; anim.ship.scale.setScalar(1.15); scene.add(anim.ship); clickable.push(anim.ship);
+  anim.boat=prep(await load('boat-row-small'),'boat'); anim.boat.position.set(-20.5,0,3); anim.boat.rotation.y=Math.PI/2; scene.add(anim.boat); clickable.push(anim.boat);
+  const wreck=prep(await load('ship-wreck'),'wreck'); wreck.position.set(-24,-.6,-22); wreck.rotation.y=.6; wreck.rotation.z=.22; scene.add(wreck); clickable.push(wreck);
+  for(let i=0;i<3;i++){ const b=prep(await load('barrel'),'barrelSea'); const ba=(i-1)*32*Math.PI/180; b.position.set(-6+24*Math.sin(ba),-.2,-4+24*Math.cos(ba)); b.scale.setScalar(1.3); b.rotation.z=.5; scene.add(b); clickable.push(b); anim.barrels.push({o:b,home:b.position.clone(),alive:true}); }
+  /* clouds + birds, made of code */
+  const cloudMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,flatShading:true});
+  for(let i=0;i<7;i++){ const g=new THREE.Group(); [[0,0,0,2.2],[1.8,.3,.4,1.6],[-1.7,.2,.3,1.5],[.6,.8,-.5,1.3]].forEach(c=>{ const m=new THREE.Mesh(new THREE.SphereGeometry(c[3],7,6),cloudMat); m.position.set(c[0],c[1],c[2]); g.add(m); }); const ca=rnd(0,6.28), cr=rnd(45,80); g.position.set(Math.cos(ca)*cr,rnd(26,36),Math.sin(ca)*cr); g.scale.setScalar(rnd(1.2,2.2)); scene.add(g); anim.clouds.push({o:g,v:rnd(.4,1)}); }
+  const birdMat=new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide});
+  for(let i=0;i<3;i++){ const g=new THREE.Group(); const l=new THREE.Mesh(new THREE.PlaneGeometry(1.4,.35),birdMat), r=l.clone(); l.position.x=-.7; r.position.x=.7; g.add(l,r); g.userData={l,r}; g.position.set(rnd(-20,20),rnd(12,18),rnd(-20,20)); scene.add(g); anim.birds.push({o:g,a:rnd(0,6.28),r:rnd(14,26),h:g.position.y,s:rnd(.15,.3)}); }
+  $('loading').classList.add('off'); speak('Ahoy, matey! Welcome to my island. Spin it around and tap things!');
+}
+build().catch(e=>{ console.error(e); $('loading').classList.add('off'); $('fallback').classList.add('on'); });
+/* picking */
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let downAt=null;
+renderer.domElement.addEventListener('pointerdown',e=>{ downAt=[e.clientX,e.clientY,Date.now()]; controls.autoRotate=false; });
+renderer.domElement.addEventListener('pointerup',e=>{ if(!downAt) return; const moved=Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1]); const dt=Date.now()-downAt[2]; downAt=null; if(moved>8||dt>500) return;
+  const r=renderer.domElement.getBoundingClientRect(); ptr.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(ptr,camera);
+  const hits=ray.intersectObjects(clickable,true); if(hits.length){ let o=hits[0].object; while(o&&!o.userData.kind) o=o.parent; if(o) tapped(o,hits[0].point); return; }
+  const seaHit=ray.intersectObject(sea); if(seaHit.length){ splash(seaHit[0].point,.8); SND.pop(); }
+});
+function tapped(o,pt){ const k=o.userData.kind; SND.tap();
+  if(k==='ship') sail(); else if(k==='cannon') cannonMode(true); else if(k==='boat') row();
+  else if(k==='palm'){ coconut(o); speak(pick(['A coconut! Watch your head.','Palm trees grow on beaches because they love sunshine and sand.','Coconuts can float across the whole ocean to grow on a new island.'])); }
+  else if(k==='tower'){ speak(pick(['The lookout tower! From up here you can see a ship coming from far away.','Ahoy from the tower! Land ho!'])); wobble(o); }
+  else if(k==='flagpole'){ speak('That is the Jolly Roger. Every pirate crew has its own flag. Ours has a crown on it.'); wobble(o); }
+  else if(k==='rock'){ speak(pick(['A rock. A very good rock.','Crabs hide under rocks like this one. Shhh.','Rocks on a beach get smooth because the waves rub them for a million years.'])); wobble(o); }
+  else if(k==='crate'){ speak(pick(['What is in the crate? Oranges! Pirates ate oranges so they would not get sick.','A crate of supplies for the voyage.'])); wobble(o); }
+  else if(k==='barrelLand'){ speak('A barrel of fresh water. Pirates had to carry every drop.'); wobble(o); }
+  else if(k==='bottle'){ speak('A message in a bottle! It says: You are doing great.'); wobble(o); }
+  else if(k==='barrelSea'){ speak('Those barrels are the cannon targets. Tap the cannon!'); }
+  else if(k==='wreck'){ speak('An old shipwreck. The fish live in it now. Everything gets a second life.'); }
+  else if(k==='chest'){ openChest(); }
+  else if(k==='dock'){ speak('The dock. This is where the rowboat ties up.'); }
+}
+function wobble(o){ const s=o.scale.x; o.userData.wob=Date.now(); o.userData.s0=s; }
+/* ship sailing */
+let sailing=null;
+function sail(){ if(sailing) return; SND.whoosh(); speak(pick(['Raise the anchor! We are sailing!','Hoist the sails, matey!','Full speed ahead!'])); const start=Math.atan2(anim.ship.position.z,anim.ship.position.x); sailing={t0:performance.now(),start,R:Math.hypot(anim.ship.position.x,anim.ship.position.z)}; controls.autoRotate=false; }
+function row(){ if(anim.boat.userData.busy) return; anim.boat.userData.busy=true; SND.step(); speak(pick(['Row, row, row your boat…','Splash splash splash. Rowing is hard work!'])); const b=anim.boat, t0=performance.now(), from=b.position.clone(), to=new THREE.Vector3(18,0,8); (function step(){ const k=Math.min(1,(performance.now()-t0)/5000); const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; b.position.lerpVectors(from,to,e); b.position.y=Math.sin(k*40)*.08; b.rotation.y=Math.PI/2+Math.sin(k*40)*.05; if(k%.1<.02&&Math.random()<.5) splash(b.position.clone().add(new THREE.Vector3(0,0,-1)),.3); if(k<1) requestAnimationFrame(step); else { speak('We made it to the ship! Now row back.'); setTimeout(()=>{ const t1=performance.now(); (function back(){ const k2=Math.min(1,(performance.now()-t1)/5000); b.position.lerpVectors(to,from,k2); b.position.y=Math.sin(k2*40)*.08; if(k2<1) requestAnimationFrame(back); else b.userData.busy=false; })(); },1200); } })(); }
+/* cannon */
+let cannonOn=false; function cannonMode(on){ cannonOn=on; $('cannonHud').classList.toggle('on',on); if(on){ speak('Aim with the sliders, then FIRE at the floating barrels!'); lookAt(-6,4,-4,14,9,10); } }
+$('cannonBtn').addEventListener('click',()=>cannonMode(true)); $('cannonDone').addEventListener('click',()=>cannonMode(false));
+function aimCannon(){ if(!anim.cannon) return; anim.cannon.rotation.y=anim.cannonBase+(+$('aimSide').value)*Math.PI/180; anim.cannon.rotation.x=-(+$('aimUp').value-20)*Math.PI/360; }
+$('aimSide').addEventListener('input',aimCannon); $('aimUp').addEventListener('input',aimCannon);
+let sunk=0; function fire(){ if(!anim.cannon) return; SND.drum(); const up=(+$('aimUp').value)*Math.PI/180, yaw=anim.cannon.rotation.y; const dir=new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw)).multiplyScalar(Math.cos(up)); dir.y=Math.sin(up); const ball=new THREE.Mesh(new THREE.SphereGeometry(.42,10,8),new THREE.MeshStandardMaterial({color:0x201540,roughness:.6})); ball.castShadow=true; const muzzle=new THREE.Vector3(-6,5.9,-4).add(dir.clone().multiplyScalar(1.6)); ball.position.copy(muzzle); ball.position.copy(muzzle); scene.add(ball); anim.balls.push({o:ball,v:dir.multiplyScalar(20),t:0}); puff(muzzle); anim.cannon.position.z+=.5; setTimeout(()=>{ anim.cannon.position.z-=.5; },120); }
+$('fireBtn').addEventListener('click',fire);
+function puff(p){ for(let i=0;i<8;i++){ const m=new THREE.Mesh(new THREE.SphereGeometry(rnd(.3,.7),6,5),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9})); m.position.copy(p); scene.add(m); anim.coconuts.push({o:m,v:new THREE.Vector3(rnd(-2,2),rnd(1,4),rnd(-2,2)),g:-2,life:.7,fade:true}); } }
+function splash(p,s){ for(let i=0;i<10;i++){ const m=new THREE.Mesh(new THREE.SphereGeometry(rnd(.15,.35)*s*2,5,4),new THREE.MeshBasicMaterial({color:0xe6f7ff,transparent:true,opacity:.95})); m.position.set(p.x,0,p.z); scene.add(m); anim.coconuts.push({o:m,v:new THREE.Vector3(rnd(-3,3)*s,rnd(5,10)*s,rnd(-3,3)*s),g:-18,life:1.1,fade:true}); } const ring=new THREE.Mesh(new THREE.RingGeometry(.4,.7,24),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8,side:THREE.DoubleSide})); ring.rotation.x=-Math.PI/2; ring.position.set(p.x,.05,p.z); scene.add(ring); anim.coconuts.push({o:ring,v:new THREE.Vector3(0,0,0),g:0,life:1,fade:true,grow:6*s}); }
+function coconut(palm){ const m=new THREE.Mesh(new THREE.SphereGeometry(.42,8,6),new THREE.MeshStandardMaterial({color:0x8a5a2b,roughness:1,flatShading:true})); m.castShadow=true; m.position.copy(palm.position).add(new THREE.Vector3(rnd(-1,1),5.2,rnd(-1,1))); island.add(m); anim.coconuts.push({o:m,v:new THREE.Vector3(rnd(-1.5,1.5),0,rnd(-1.5,1.5)),g:-14,life:6,bounce:true,floor:palm.position.y+.42}); SND.pluck(); }
+/* treasure */
+let digReady=false, chestOpen=false; window.pirateUnlockDig=()=>{ digReady=true; if(anim.hole){ anim.hole.visible=true; } speak('The map says the treasure is by the big palm tree. Tap DIG!'); };
+$('digBtn').addEventListener('click',()=>{ if(!digReady){ speak('Solve the treasure map first, then come back and dig!'); $('map').scrollIntoView({behavior:'smooth'}); return; } dig(); });
+function dig(){ if(chestOpen) return; digReady=false; $('digBtn').disabled=true; lookAt(5,2.5,6,14,8,14); anim.shovel.visible=true; let n=0; SND.step(); const t=setInterval(()=>{ anim.shovel.rotation.z=(n%2?.6:-.2); SND.thud(); for(let i=0;i<6;i++){ const m=new THREE.Mesh(new THREE.SphereGeometry(.18,5,4),sandMat); m.position.set(5+rnd(-.5,.5),2.6,6+rnd(-.5,.5)); island.add(m); anim.coconuts.push({o:m,v:new THREE.Vector3(rnd(-2,2),rnd(3,6),rnd(-2,2)),g:-14,life:.9,fade:true}); } if(++n>6){ clearInterval(t); anim.shovel.visible=false; anim.chest.visible=true; anim.chest.position.y=1; const t0=performance.now(); (function rise(){ const k=Math.min(1,(performance.now()-t0)/1200); anim.chest.position.y=1+k*1.55; anim.chest.rotation.y=.3+Math.sin(k*12)*.1*(1-k); if(k<1) requestAnimationFrame(rise); else { SND.tada(); speak('TREASURE! Tap the chest to open it!'); } })(); } },380); }
+function openChest(){ if(chestOpen) { speak(pick(['Gold! But you know what is worth more? A friend.','Real treasure is people who love you. And also cookies.'])); return; } chestOpen=true; SND.win(); P.confetti(120); speak('You found the treasure! Gold coins, a crown… and a note that says: the best treasure is a friend.');
+  for(let i=0;i<30;i++) setTimeout(()=>{ const c=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.08,10),new THREE.MeshStandardMaterial({color:0xffd84d,metalness:.6,roughness:.3})); c.position.copy(anim.chest.position).add(new THREE.Vector3(0,.8,0)); c.castShadow=true; island.add(c); anim.coconuts.push({o:c,v:new THREE.Vector3(rnd(-3,3),rnd(5,9),rnd(-3,3)),g:-14,life:4,bounce:true,floor:2.5,spin:true}); },i*60);
+  $('digBtn').textContent='🏆 Treasure found!'; }
+/* camera helpers */
+function lookAt(tx,ty,tz,cx,cy,cz){ const t0=performance.now(), from=camera.position.clone(), to=new THREE.Vector3(cx,cy,cz), tf=controls.target.clone(), tt=new THREE.Vector3(tx,ty,tz); controls.autoRotate=false; (function step(){ const k=Math.min(1,(performance.now()-t0)/1200); const e=1-Math.pow(1-k,3); camera.position.lerpVectors(from,to,e); controls.target.lerpVectors(tf,tt,e); if(k<1) requestAnimationFrame(step); })(); }
+window.pirateLook=d=>{ const R=38,h=16; if(d==='N') lookAt(0,2,0,0,h,-R); else if(d==='S') lookAt(0,2,0,0,h,R); else if(d==='E') lookAt(0,2,0,R,h,0); else if(d==='W') lookAt(0,2,0,-R,h,0); else lookAt(0,1.5,0,0,20,40); };
+$('resetBtn').addEventListener('click',()=>{ window.pirateLook('home'); controls.autoRotate=true; SND.tap(); });
+$('sailBtn').addEventListener('click',sail); $('rowBtn').addEventListener('click',row);
+$('nightBtn').addEventListener('click',async()=>{ const on=$('nightBtn').getAttribute('aria-pressed')!=='true'; $('nightBtn').setAttribute('aria-pressed',on?'true':'false'); $('nightBtn').textContent=on?'☀️ Day':'🌙 Night'; SND.toggle(); const t=await loadSky(on?'night':'day'); if(t) scene.background=t; scene.fog.color.set(on?0x1a1440:0x8fd8ff); sun.intensity=on?.35:1.6; hemi.intensity=on?.35:.9; sun.color.set(on?0xc9d4ff:0xfff3c4); seaMat.color.set(on?0x0f4f8a:0x22b7ea); speak(on?'Night on the island. The stars come out and the sea goes quiet.':'Good morning, captain!'); });
+$('liteBtn').addEventListener('click',()=>{ lite.on=!lite.on; $('liteBtn').setAttribute('aria-pressed',lite.on?'true':'false'); renderer.shadowMap.enabled=!lite.on; renderer.setPixelRatio(lite.on?1:Math.min(window.devicePixelRatio||1,2)); scene.traverse(o=>{ if(o.material) o.material.needsUpdate=true; }); SND.tap(); speak(lite.on?'Lite mode on. Smoother on older phones.':'Full sparkle mode.'); });
+/* the loop */
+let t=0; const tmp=new THREE.Vector3();
+function loop(){ requestAnimationFrame(loop); const dt=Math.min(.05,clock.getDelta()); t+=dt;
+  if(!lite.on||Math.floor(t*10)%3===0){ for(let i=0;i<seaPos.count;i++){ const x=seaBase[i*3],z=seaBase[i*3+2]; seaPos.setY(i,Math.sin(x*.35+t*1.3)*.22+Math.cos(z*.3+t*.9)*.18+Math.sin((x+z)*.15+t*.6)*.12); } seaPos.needsUpdate=true; if(Math.floor(t*10)%4===0) seaGeo.computeVertexNormals(); }
+  if(anim.ship){ if(sailing){ const k=(performance.now()-sailing.t0)/14000; const a=sailing.start+k*Math.PI*2; anim.ship.position.set(Math.cos(a)*sailing.R,0,Math.sin(a)*sailing.R); anim.ship.rotation.y=-a; if(Math.random()<.25) splash(anim.ship.position.clone().add(new THREE.Vector3(-Math.sin(a)*4,0,Math.cos(a)*4)),.35); if(k>=1){ sailing=null; anim.ship.rotation.y=-Math.PI/2; speak('Drop the anchor! Back home.'); SND.clunk(); } } anim.ship.position.y=Math.sin(t*1.1)*.18; anim.ship.rotation.z=Math.sin(t*.9)*.04; anim.ship.rotation.x=Math.cos(t*1.3)*.02; }
+  if(anim.boat&&!anim.boat.userData.busy){ anim.boat.position.y=Math.sin(t*1.5+1)*.1; }
+  anim.barrels.forEach((b,i)=>{ if(b.alive){ b.o.position.y=-.2+Math.sin(t*1.4+i)*.15; b.o.rotation.x=Math.sin(t+i)*.15; } });
+  for(let i=anim.balls.length-1;i>=0;i--){ const b=anim.balls[i]; b.v.y-=18*dt; b.o.position.addScaledVector(b.v,dt); b.t+=dt; let hit=false; anim.barrels.forEach(bar=>{ if(bar.alive&&b.o.position.distanceTo(bar.o.position)<3.2){ hit=true; bar.alive=false; sunk++; $('sunk').textContent=sunk; SND.glass(); splash(bar.o.position,1.2); speak(pick(['You SANK it! That is '+sunk+'!','BOOM! '+sunk+' barrel'+(sunk>1?'s':'')+' down!','Great shot, captain! '+sunk+'!'])); const t0=performance.now(), o=bar.o; (function sink(){ const k=Math.min(1,(performance.now()-t0)/1200); o.position.y=-.2-k*3; o.rotation.z=.5+k*1.5; if(k<1) requestAnimationFrame(sink); else { o.visible=false; setTimeout(()=>{ o.visible=true; o.position.copy(bar.home); o.rotation.z=.5; bar.alive=true; },4000); } })(); if(anim.barrels.every(x=>!x.alive)){ setTimeout(()=>{ P.confetti(80); speak('All three barrels! You are the best cannon captain on the seven seas!'); },600); } } });
+    if(hit||b.o.position.y<-.3||b.t>6){ if(!hit&&b.o.position.y<-.3){ splash(b.o.position,.9); SND.pop(); } scene.remove(b.o); anim.balls.splice(i,1); } }
+  for(let i=anim.coconuts.length-1;i>=0;i--){ const c=anim.coconuts[i]; c.v.y+=c.g*dt; c.o.position.addScaledVector(c.v,dt); c.life-=dt; if(c.grow){ c.o.scale.addScalar(c.grow*dt); } if(c.spin){ c.o.rotation.x+=dt*4; c.o.rotation.z+=dt*3; } if(c.bounce&&c.o.position.y<c.floor){ c.o.position.y=c.floor; c.v.y=Math.abs(c.v.y)*.45; c.v.x*=.8; c.v.z*=.8; if(Math.abs(c.v.y)>1.5) SND.thud(); } if(c.fade&&c.o.material.transparent) c.o.material.opacity=Math.max(0,Math.min(1,c.life)); if(c.life<=0){ c.o.parent&&c.o.parent.remove(c.o); anim.coconuts.splice(i,1); } }
+  anim.clouds.forEach(c=>{ c.o.position.x+=c.v*dt; if(c.o.position.x>85) c.o.position.x=-85; });
+  anim.birds.forEach(b=>{ b.a+=b.s*dt; b.o.position.set(Math.cos(b.a)*b.r,b.h+Math.sin(t*2+b.a)*.6,Math.sin(b.a)*b.r); b.o.rotation.y=-b.a; const f=Math.sin(t*9+b.a)*.6; b.o.userData.l.rotation.z=f; b.o.userData.r.rotation.z=-f; });
+  clickable.forEach(o=>{ if(o.userData.wob){ const k=(Date.now()-o.userData.wob)/600; if(k>=1){ o.scale.setScalar(o.userData.s0); o.userData.wob=0; } else o.scale.setScalar(o.userData.s0*(1+Math.sin(k*Math.PI*2)*.08*(1-k))); } });
+  controls.update(); renderer.render(scene,camera); }
+loop();
+function resize(){ const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); } window.addEventListener('resize',resize); resize();
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) clock.stop(); else clock.start(); });
+</script>
+<script src="/phoenix.js"></script>
+</body>
+</html>
