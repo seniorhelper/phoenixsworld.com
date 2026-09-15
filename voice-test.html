@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phoenix voice audition</title>
+<style>
+  :root{--bg:#fff3f9;--ink:#3a1f4a;--pink:#ff6fb5;--soft:#ffd6ea;--ok:#2e9e6b}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);padding:16px}
+  h1{font-size:22px;margin:0 0 4px}
+  p{margin:0 0 12px;font-size:14px}
+  .ctl{display:grid;grid-template-columns:70px 1fr 42px;gap:8px;align-items:center;margin:6px 0}
+  input[type=range]{width:100%}
+  select,textarea{width:100%;padding:8px;border:2px solid var(--soft);border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
+  textarea{height:64px;margin:8px 0}
+  .list{margin-top:14px}
+  .v{display:flex;gap:8px;align-items:center;background:#fff;border-radius:12px;padding:10px;margin-bottom:8px;border:2px solid transparent}
+  .v.playing{border-color:var(--pink)}
+  .v .n{flex:1;min-width:0}
+  .v .n b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .v .n small{color:#7a5a8a}
+  button{border:0;border-radius:999px;padding:9px 14px;font:inherit;font-weight:700;background:var(--pink);color:#fff;cursor:pointer}
+  button.pick{background:#fff;color:var(--ink);border:2px solid var(--soft)}
+  button.pick.on{background:var(--ok);color:#fff;border-color:var(--ok)}
+  #out{margin-top:14px;background:#fff;border-radius:12px;padding:10px;font-size:13px;word-break:break-all}
+  .row{display:flex;gap:8px;margin:8px 0}
+  .row button{flex:1}
+</style>
+</head>
+<body>
+<h1>Phoenix voice audition</h1>
+<p>Open this on the phone AND the laptop. Tap ▶ to hear each voice, ★ the ones you like, then copy the box at the bottom and send it to me.</p>
+
+<label>Sample line
+<select id="line">
+  <option>Hi! I'm Princess Phoenix Sparkles. Welcome to my world! Wanna play?</option>
+  <option>Ooh, you found the candy castle! Nothing here can break, so go ahead and touch everything.</option>
+  <option>Great job! You counted all ten blocks. Let's give Marshmallow a high five!</option>
+  <option>Ahoy! Captain Phoenix here. Raise the pink sails, we're off to Kitty Island!</option>
+  <option value="custom">Type my own…</option>
+</select></label>
+<textarea id="custom" placeholder="Type a line for her to say" style="display:none"></textarea>
+
+<div class="ctl"><span>Pitch</span><input id="pitch" type="range" min="0.5" max="2" step="0.1" value="1.3"><span id="pv">1.3</span></div>
+<div class="ctl"><span>Speed</span><input id="rate" type="range" min="0.6" max="1.6" step="0.05" value="1.05"><span id="rv">1.05</span></div>
+<p style="font-size:13px">Tip: pitch 1.2–1.5 + speed 1.0–1.1 = most "kid princess". Pitch 1.0 = adult narrator.</p>
+
+<div class="row"><button id="us">Show US only</button><button id="all" class="pick on">Show all</button><button id="stop" class="pick">Stop</button></div>
+
+<div class="list" id="list">Loading voices… (on iPhone, tap anywhere first)</div>
+<div id="out">Your picks will appear here.</div>
+
+<script>
+const S=speechSynthesis;let voices=[],picks={},usOnly=false,cur=null;
+const $=id=>document.getElementById(id);
+function text(){const l=$('line');return l.value==='custom'?($('custom').value||'Hi, I am Princess Phoenix Sparkles!'):l.value;}
+$('line').onchange=()=>{$('custom').style.display=$('line').value==='custom'?'block':'none'};
+$('pitch').oninput=e=>$('pv').textContent=e.target.value;
+$('rate').oninput=e=>$('rv').textContent=e.target.value;
+$('us').onclick=()=>{usOnly=true;$('us').classList.add('on');$('all').classList.remove('on');render()};
+$('all').onclick=()=>{usOnly=false;$('all').classList.add('on');$('us').classList.remove('on');render()};
+$('stop').onclick=()=>S.cancel();
+function say(v,el){S.cancel();const u=new SpeechSynthesisUtterance(text());u.voice=v;u.lang=v.lang;u.pitch=+$('pitch').value;u.rate=+$('rate').value;
+ document.querySelectorAll('.v').forEach(x=>x.classList.remove('playing'));el.classList.add('playing');u.onend=()=>el.classList.remove('playing');S.speak(u);}
+function render(){
+ const L=$('list');L.innerHTML='';
+ let vs=voices.filter(v=>!usOnly||/en[-_]US/i.test(v.lang));
+ vs.sort((a,b)=>(/en[-_]US/i.test(b.lang)-/en[-_]US/i.test(a.lang))||a.name.localeCompare(b.name));
+ if(!vs.length){L.textContent='No voices found. Tap the page once, then reload.';return;}
+ vs.forEach(v=>{const d=document.createElement('div');d.className='v';
+  d.innerHTML=`<div class="n"><b>${v.name}</b><small>${v.lang}${v.localService?'':' · online'}${v.default?' · default':''}</small></div>`;
+  const p=document.createElement('button');p.textContent='▶';p.onclick=()=>say(v,d);
+  const k=document.createElement('button');k.className='pick'+(picks[v.name]?' on':'');k.textContent='★';
+  k.onclick=()=>{picks[v.name]=!picks[v.name];k.classList.toggle('on');out()};
+  d.append(p,k);L.appendChild(d);});
+}
+function out(){const dev=navigator.userAgent.replace(/\(.*?\)/g,'').slice(0,60);
+ const list=Object.keys(picks).filter(k=>picks[k]);
+ $('out').textContent=list.length?`DEVICE: ${dev}\nPITCH ${$('pitch').value} SPEED ${$('rate').value}\nLIKED: ${list.join(' | ')}`:'Your picks will appear here.';}
+function load(){voices=S.getVoices();if(voices.length)render();}
+S.onvoiceschanged=load;load();
+document.body.addEventListener('touchstart',load,{once:true});
+</script>
+</body>
+</html>
