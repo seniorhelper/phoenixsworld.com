@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /voice-test.html
+
+Sitemap: https://phoenixsworld.com/sitemap.xml
