@@ -49,6 +49,10 @@
 .heart{position:fixed;font-size:24px;line-height:1;pointer-events:none;animation:heartup 1.5s ease-out forwards;z-index:2200}@keyframes heartup{from{transform:translate(0,0) scale(.5);opacity:1}to{transform:translate(var(--dx),-140px) scale(1.2);opacity:0}}
 @media(max-width:640px){#campers .av{width:44px;height:44px;font-size:20px}#pad{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px)}#pad button{width:48px;height:48px;font-size:19px}#pad .mid{font-size:13px}#zoom{bottom:96px}#zoom .btn{width:40px;height:40px;font-size:18px}.btn{font-size:13px;padding:8px 11px}#nav{bottom:8px;left:auto;right:8px;transform:none;max-width:46vw}#where{top:64px}}
 </style>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-592Q0DZ5X9"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-592Q0DZ5X9');</script>
+<script>(function(){function s(n,p){try{gtag('event',n,p)}catch(e){}}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="tel:"]');if(a)s('phone_click',{phone_number:a.getAttribute('href').slice(4),link_text:(a.textContent||'').trim().slice(0,60)})},true);document.addEventListener('submit',function(e){var f=e.target;if(!f||f.getAttribute('role')==='search'||/search/i.test(f.id+' '+f.className+' '+(f.action||'')))return;var id=f.id||f.getAttribute('name')||f.className||'form';if(/estimat|calc/i.test(id+' '+(f.action||'')))s('estimator_use',{form_id:id});s('generate_lead',{form_id:id})},true);window.etAB=function(n,v){var k='etab_'+n,x;try{x=localStorage.getItem(k)}catch(e){}if(!x||v.indexOf(x)<0){x=v[Math.floor(Math.random()*v.length)];try{localStorage.setItem(k,x)}catch(e){}}s('ab_view',{experiment:n,variant:x});try{gtag('set','user_properties',{['ab_'+n]:x})}catch(e){}document.documentElement.setAttribute('data-ab-'+n,x);return x}})();</script>
 </head>
 <body>
 <div id="stage"></div>
